@@ -1,0 +1,39 @@
+<?php
+$hydratorName = '';
+if ($this->details) {
+    $hydratorName = $this->details->hydratorName;
+}
+?>
+namespace <?= $module ?>\V<?= $version ?>\Rest\<?= $resource ?>;
+<?php if ($hydratorName == 'ArraySerializable') : // Entity class implementing ArraySerializableInterface ?>
+
+use Zend\Stdlib\ArraySerializableInterface;
+
+class <?= $classname ?> implements ArraySerializableInterface
+{
+    /**
+     * Exchange internal values from provided array
+     *
+     * @param  array $array
+     * @return void
+     */
+    public function exchangeArray(array $array)
+    {
+    }
+
+    /**
+     * Return an array representation of the object
+     *
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+    }
+}
+<?php else : // Simple entity class ?>
+
+class <?= $classname ?>
+
+{
+}
+<?php endif ?>
