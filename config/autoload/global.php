@@ -1,14 +1,10 @@
 <?php
 use Zend\Session;
 use Zend\Session\Storage\SessionArrayStorage;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\DBAL\Driver\IBMDB2\DB2Driver;
-
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  * @copyright Copyright (c] 2014-2016 Zend Technologies USA Inc. (http://www.zend.com]
  */
-
 return [
     'applicationTitle' => 'Eye Chart',
     'zf-content-negotiation' => [
