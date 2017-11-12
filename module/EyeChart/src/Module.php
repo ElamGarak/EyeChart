@@ -1,12 +1,4 @@
 <?php
-/**
- *
- * DriverManager Module
- *
- * @package DriverManager2.0
- * @copyright 2017, Swift Transportation
- * @author Guido Faecke <guido_faecke@swifttrans.com>
- */
 namespace EyeChart;
 
 class Module
