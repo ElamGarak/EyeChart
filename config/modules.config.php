@@ -32,4 +32,5 @@ return [
     'ZF\\Versioning',
     'API',
     'EyeChart',
+    'TacticianModule',
 ];
