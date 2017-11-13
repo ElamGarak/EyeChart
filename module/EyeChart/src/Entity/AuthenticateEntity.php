@@ -115,4 +115,13 @@ class AuthenticateEntity extends AbstractEntity
     {
         $this->userData = $userData;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getMessages(): array
+    {
+        // Stub
+        return [];
+    }
 }
