@@ -9,10 +9,9 @@ declare(strict_types=1);
  */
 
 namespace EyeChart\Exception;
-
 /**
  * Class SettingNotFoundException
- * @package DriverManager\Exception
+ * @package EyeChart\Exception
  */
 final class SettingNotFoundException extends \OutOfBoundsException
 {
