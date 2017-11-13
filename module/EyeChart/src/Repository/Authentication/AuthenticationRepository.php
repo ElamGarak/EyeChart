@@ -13,6 +13,7 @@ use EmployeeModel;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
+use EyeChart\VO\LoginVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
@@ -135,7 +136,7 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param VOInterface $loginVO
+     * @param VOInterface|LoginVO $loginVO
      * @return void
      */
     public function login(VOInterface $loginVO): void
@@ -156,5 +157,24 @@ final class AuthenticationRepository
     public function getUserSessionByToken(TokenVO $tokenVO): array
     {
         return $this->authenticateStorageModel->getUserSessionByToken($tokenVO);
+    }
+
+    /**
+     * @param VOInterface|TokenVO $tokenVO
+     * @return array
+     */
+    public function getTokenSession(VOInterface $tokenVO): array
+    {
+        // Stub
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        // Stub
+        return '';
     }
 }
