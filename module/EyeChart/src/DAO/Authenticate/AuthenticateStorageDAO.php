@@ -55,7 +55,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      *
      * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         $this->existingStorage = $this->read();
 
@@ -68,7 +68,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      * @return mixed[]
      * @throws RuntimeException
      */
-    public function read()
+    public function read(): array
     {
         $select = $this->sql->select();
 
@@ -112,7 +112,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      * @throws ExceptionInterface
      * @return boolean
      */
-    public function write($storage)
+    public function write($storage): bool
     {
         // Unable to implement parameter datatype, due to StorageInterface declaration in ZF
         Assertion::isArray($storage);
@@ -129,7 +129,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      *
      * @return bool
      */
-    public function clear()
+    public function clear(): bool
     {
         $delete = $this->sql->delete();
 
@@ -153,7 +153,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      * @param mixed[] $storage
      * @return bool
      */
-    private function add($storage)
+    private function add($storage): bool
     {
         $sessionData = [ $this->sessionEntity->getId() => $storage ];
 
@@ -182,7 +182,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      * @param mixed[] $storage
      * @return bool
      */
-    private function merge($storage)
+    private function merge($storage): bool
     {
         $sessionData = [ $this->sessionEntity->getId() => $storage ];
 
@@ -244,7 +244,7 @@ final class AuthenticateStorageDAO implements StorageInterface
     /**
      * @return mixed[]
      */
-    public function getEmployeeInformation()
+    public function getEmployeeInformation(): array
     {
         return $this->getUserStorage();
     }
@@ -252,7 +252,7 @@ final class AuthenticateStorageDAO implements StorageInterface
     /**
      * @return mixed[]
      */
-    public function getUserStorage()
+    public function getUserStorage(): array
     {
         $userSession = $this->read();
 
