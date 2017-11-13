@@ -7,7 +7,7 @@ declare (strict_types=1);
  * (c) Eye Chart
  */
 
-namespace EyeChart\Model\Email;
+namespace EyeChart\Model\Employee;
 
 use Psr\Container\ContainerInterface;
 
@@ -19,9 +19,9 @@ final class EmployeeModelFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return \EmployeeModel
+     * @return EmployeeModel
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): EmployeeModel
     {
         return new EmployeeModel();
     }
