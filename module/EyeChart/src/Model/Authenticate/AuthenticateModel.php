@@ -44,13 +44,15 @@ final class AuthenticateModel
      * @param VOInterface $authenticationVO
      * @throws UnableToAuthenticateException
      */
-    public function authenticateUser(VOInterface $authenticationVO): void
+    public function checkCredentials(VOInterface $authenticationVO): void
     {
         if ($this->authenticateDAO->checkCredentials($authenticationVO) === false) {
             throw new UnableToAuthenticateException($authenticationVO);
         };
 
-        $this->authenticateEntity->initializeByVO($authenticationVO);
+        $this->authenticateEntity
+             ->setIsValid(true)
+             ->initializeByVO($authenticationVO);
     }
 
     /**
