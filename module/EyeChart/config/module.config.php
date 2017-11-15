@@ -49,6 +49,7 @@ return [
             Model\Authenticate\AuthenticateModel::class                     => Model\Authenticate\AuthenticateModelFactory::class,
             Model\Authenticate\AuthenticateStorageModel::class              => Model\Authenticate\AuthenticateStorageModelFactory::class,
             Model\Email\EmailModel::class                                   => Model\Email\EmailModelFactory::class,
+            Model\Employee\EmployeeModel::class                             => Model\Employee\EmployeeModelFactory::class,
 
             // Repositories
             Repository\Authentication\AuthenticationRepository::class       => Repository\Authentication\AuthenticationRepositoryFactory::class,
