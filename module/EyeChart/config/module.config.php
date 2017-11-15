@@ -63,10 +63,12 @@ return [
             Entity\AuthenticateEntity::class                                => InvokableFactory::class,
             Entity\Email\EmailEntity::class                                 => InvokableFactory::class,
             Entity\SessionEntity::class                                     => InvokableFactory::class,
+            Entity\EmployeeEntity::class                                    => InvokableFactory::class,
 
             // DAOs
             DAO\Authenticate\AuthenticateDAO::class                         => DAO\Authenticate\AuthenticateDAOFactory::class,
             DAO\Authenticate\AuthenticateStorageDAO::class                  => DAO\Authenticate\AuthenticateStorageDAOFactory::class,
+            DAO\Employee\EmployeeDao::class                                 => DAO\Employee\EmployeeDaoFactory::class,
 
         ],
         'aliases' => [
