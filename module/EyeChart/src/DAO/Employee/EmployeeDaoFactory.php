@@ -23,7 +23,7 @@ final class EmployeeDaoFactory
      */
     public function __invoke(ContainerInterface $container): EmployeeDao
     {
-        $adapter = $container->get(''); //TODO Need to set up a database adapter
+        $adapter = $container->get('db');
 
         return new EmployeeDao($adapter);
     }

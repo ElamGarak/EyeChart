@@ -23,7 +23,7 @@ final class AuthenticateDAOFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateDAO
     {
-        $adapter = $container->get(''); //TODO Need to set up a database adapter
+        $adapter = $container->get('db');
 
         return new AuthenticateDAO($adapter);
     }

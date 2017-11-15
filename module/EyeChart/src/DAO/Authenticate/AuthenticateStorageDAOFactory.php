@@ -24,7 +24,7 @@ final class AuthenticateStorageDAOFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateStorageDAO
     {
-        $adapter = $container->get(''); //TODO Need to set up a database adapter
+        $adapter = $container->get('db');
         $entity  = $container->get(SessionEntity::class);
 
         return new AuthenticateStorageDAO($adapter, $entity);
