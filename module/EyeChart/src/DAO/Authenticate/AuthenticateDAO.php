@@ -44,14 +44,4 @@ class AuthenticateDAO extends AbstractDAO
 
         return (! is_null($result));
     }
-
-    /**
-     * TODO
-     * @param string $userId
-     * @return bool
-     */
-    public function isUserValid(string $userId): bool
-    {
-        return false;
-    }
 }
