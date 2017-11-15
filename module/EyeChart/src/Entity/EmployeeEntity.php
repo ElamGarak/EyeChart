@@ -27,9 +27,12 @@ class EmployeeEntity extends AbstractEntity
 
     /**
      * @param int $employeeId
+     * @return EmployeeEntity
      */
-    public function setEmployeeId(int $employeeId): void
+    public function setEmployeeId(int $employeeId): EmployeeEntity
     {
         $this->employeeId = $employeeId;
+
+        return $this;
     }
 }

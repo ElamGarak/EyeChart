@@ -61,12 +61,15 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $from
+     * @return EmailEntity
      */
-    public function setFrom(string $from): void
+    public function setFrom(string $from): EmailEntity
     {
         Assertion::email($from);
 
         $this->from = $from;
+
+        return $this;
     }
 
     /**
@@ -79,14 +82,17 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string[] $recipients
+     * @return EmailEntity
      */
-    public function setRecipients(array $recipients): void
+    public function setRecipients(array $recipients): EmailEntity
     {
         Assertion::notEmpty($recipients);
 
         $this->assertValidEmailAddresses($recipients);
 
         $this->recipients = $recipients;
+
+        return $this;
     }
 
     /**
@@ -99,12 +105,15 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $recipientName
+     * @return EmailEntity
      */
-    public function setRecipientNames(string $recipientName): void
+    public function setRecipientNames(string $recipientName): EmailEntity
     {
         Assertion::notEmpty($recipientName);
 
         $this->recipientName = $recipientName;
+
+        return $this;
     }
 
     /**
@@ -117,12 +126,15 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string[] $cc
+     * @return EmailEntity
      */
-    public function setCc(array $cc): void
+    public function setCc(array $cc): EmailEntity
     {
         $this->assertValidEmailAddresses($cc);
 
         $this->cc = $cc;
+
+        return $this;
     }
 
     /**
@@ -135,12 +147,15 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string[] $bcc
+     * @return EmailEntity
      */
-    public function setBcc(array $bcc): void
+    public function setBcc(array $bcc): EmailEntity
     {
         $this->assertValidEmailAddresses($bcc);
 
         $this->bcc = $bcc;
+
+        return $this;
     }
 
     /**
@@ -153,12 +168,15 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $replyTo
+     * @return EmailEntity
      */
-    public function setReplyTo(string $replyTo): void
+    public function setReplyTo(string $replyTo): EmailEntity
     {
         Assertion::email($replyTo);
 
         $this->replyTo = $replyTo;
+
+        return $this;
     }
 
     /**
@@ -171,10 +189,13 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $subject
+     * @return EmailEntity
      */
-    public function setSubject(string $subject): void
+    public function setSubject(string $subject): EmailEntity
     {
         $this->subject = $subject;
+
+        return $this;
     }
 
     /**
@@ -187,10 +208,13 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $body
+     * @return EmailEntity
      */
-    public function setBody(string $body): void
+    public function setBody(string $body): EmailEntity
     {
         $this->body = $body;
+
+        return $this;
     }
 
     /**
@@ -203,10 +227,13 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $attachmentName
+     * @return EmailEntity
      */
-    public function setAttachmentName(string $attachmentName): void
+    public function setAttachmentName(string $attachmentName): EmailEntity
     {
         $this->attachmentName = $attachmentName;
+
+        return $this;
     }
 
     /**
@@ -219,10 +246,13 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $attachmentPath
+     * @return EmailEntity
      */
-    public function setAttachmentPath(string $attachmentPath): void
+    public function setAttachmentPath(string $attachmentPath): EmailEntity
     {
         $this->attachmentPath = $attachmentPath;
+
+        return $this;
     }
 
     /**
@@ -235,13 +265,17 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $attachmentType
+     * @return EmailEntity
      */
-    public function setAttachmentType(string $attachmentType): void
+    public function setAttachmentType(string $attachmentType): EmailEntity
     {
         $this->attachmentType = $attachmentType;
+
+        return $this;
     }
 
     /** Helpers *******************************************************************************************************/
+
     /**
      * @return bool
      */
@@ -252,37 +286,49 @@ final class EmailEntity extends AbstractEntity
 
     /**
      * @param string $recipient
+     * @return EmailEntity
      */
-    public function addRecipient(string $recipient): void
+    public function addRecipient(string $recipient): EmailEntity
     {
         Assertion::email($recipient);
 
         array_push($this->recipients, $recipient);
+
+        return $this;
     }
 
     /**
      * @param string $cc
+     * @return EmailEntity
      */
-    public function addCc(string $cc): void
+    public function addCc(string $cc): EmailEntity
     {
         array_push($this->cc, $cc);
+
+        return $this;
     }
 
     /**
      * @param string $bcc
+     * @return EmailEntity
      */
-    public function addBcc(string $bcc): void
+    public function addBcc(string $bcc): EmailEntity
     {
         array_push($this->bcc, $bcc);
+
+        return $this;
     }
 
     /**
      * @param array $recipients
+     * @return EmailEntity
      */
-    private function assertValidEmailAddresses(array $recipients): void
+    private function assertValidEmailAddresses(array $recipients): EmailEntity
     {
         foreach ($recipients as $recipient) {
             Assertion::email($recipient);
         }
+
+        return $this;
     }
 }

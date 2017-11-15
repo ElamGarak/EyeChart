@@ -42,10 +42,13 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @param string $username
+     * @return AuthenticateEntity
      */
-    public function setUserName(string $username): void
+    public function setUserName(string $username): AuthenticateEntity
     {
         $this->username = $username;
+
+        return $this;
     }
 
     /**
@@ -58,10 +61,13 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @param string $password
+     * @return AuthenticateEntity
      */
-    public function setPassword(string $password): void
+    public function setPassword(string $password): AuthenticateEntity
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -74,14 +80,17 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @param string $token
+     * @return AuthenticateEntity
      */
-    public function setToken(string $token): void
+    public function setToken(string $token): AuthenticateEntity
     {
         if (trim($token) !== '') {
             Assertion::length($token, 36, 'Token not provided');
 
             $this->token = $token;
         }
+
+        return $this;
     }
 
     /**
@@ -94,10 +103,13 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @param bool $isValid
+     * @return AuthenticateEntity
      */
-    public function setIsValid(bool $isValid): void
+    public function setIsValid(bool $isValid): AuthenticateEntity
     {
         $this->isValid = $isValid;
+
+        return $this;
     }
 
     /**
@@ -110,10 +122,13 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @param array $userData
+     * @return AuthenticateEntity
      */
-    public function setUserData(array $userData): void
+    public function setUserData(array $userData): AuthenticateEntity
     {
         $this->userData = $userData;
+
+        return $this;
     }
 
     /**
