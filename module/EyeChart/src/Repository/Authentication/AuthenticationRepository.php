@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace EyeChart\Repository\Authentication;
 
-use EmployeeModel;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
+use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\LoginVO;
 use EyeChart\VO\TokenVO;
