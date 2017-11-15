@@ -141,13 +141,15 @@ final class AuthenticationRepository
      */
     public function login(VOInterface $authenticationVO): void
     {
-        $this->authenticateModel->authenticateUser($authenticationVO);
+        $this->authenticateModel->checkCredentials($authenticationVO);
 
-        $employeeEntity = $this->employeeModel->getEmployeeRecordByCredentials($authenticationVO);
-        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
 
-        $this->authenticateStorageModel->write($storageRecord);
-        $this->zendAuthentication->setStorage($this->authenticateStorageModel);
+        // TODO
+        //$storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+
+        //$this->authenticateStorageModel->write($storageRecord);
+        //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
     }
 
     /**
