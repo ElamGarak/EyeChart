@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Employee;
 
-use EyeChart\VO\AuthenticationVO;
-use EyeChart\VO\VOInterface;
+use EyeChart\Mappers\EmployeeMapper;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Where;
 
 /**
  * Class EmployeeDao
@@ -33,12 +35,37 @@ class EmployeeDao
     }
 
     /**
-     * TODO
-     * @param AuthenticationVO|VOInterface $vo
+     * @param string $userId
      * @return mixed[]
      */
-    public function getEmployeeRecordByCredentials(VOInterface $vo): array
+    public function getEmployeeRecordByUserId(string $userId): array
     {
+        $select = $this->sql->select();
+
+        $select->from(EmployeeMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(EmployeeMapper::USER_ID, $userId);
+
+        $select->where($where);
+
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
+            $resultSet->initialize($result);
+
+            $row = $resultSet->current();
+
+            if (! is_null($row)) {
+                $row[EmployeeMapper::EMPLOYEE_ID] = (int) $row[EmployeeMapper::EMPLOYEE_ID];
+
+                return $row;
+            }
+        }
+
         return [];
     }
 }
