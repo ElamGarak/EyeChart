@@ -13,12 +13,20 @@ namespace EyeChart\VO;
 
 use EyeChart\Exception\InvalidDynamicSettingException;
 
+
 /**
  * Class AbstractVO
  * @package EyeChart\VO
  */
 class AbstractVO implements VOInterface
 {
+    /**
+     * @return VOInterface
+     */
+    public static function build(): VOInterface
+    {
+        return new self;
+    }
 
     /**
      * @param string $name
