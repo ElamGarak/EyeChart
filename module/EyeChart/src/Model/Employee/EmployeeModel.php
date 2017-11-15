@@ -10,7 +10,7 @@ declare (strict_types=1);
 namespace EyeChart\Model\Employee;
 
 use EyeChart\Entity\EmployeeEntity;
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 
 /**
  * Class EmployeeModel
@@ -27,10 +27,10 @@ final class EmployeeModel
     }
 
     /**
-     * @param LoginVO $loginVO
+     * @param AuthenticationVO $authenticationVO
      * @return EmployeeEntity
      */
-    public function getEmployeeRecordByCredentials(LoginVO $loginVO): EmployeeEntity
+    public function getEmployeeRecordByCredentials(AuthenticationVO $authenticationVO): EmployeeEntity
     {
         // Stub
         return new EmployeeEntity();

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Authenticate;
 
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
@@ -34,7 +34,7 @@ class AuthenticateDAO
 
     /**
      * TODO
-     * @param LoginVO|VOInterface $vo
+     * @param AuthenticationVO|VOInterface $vo
      * @return bool
      */
     public function checkCredentials(VOInterface $vo): bool

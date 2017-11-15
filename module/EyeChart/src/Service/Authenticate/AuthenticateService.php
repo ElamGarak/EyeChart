@@ -61,12 +61,12 @@ final class AuthenticateService
     }
 
     /**
-     * @param VOInterface $loginVO
+     * @param VOInterface $authenticationVO
      * @return string
      */
-    public function login(VOInterface $loginVO): string
+    public function login(VOInterface $authenticationVO): string
     {
-        $this->authenticationRepository->login($loginVO);
+        $this->authenticationRepository->login($authenticationVO);
 
         return $this->authenticationRepository->getToken();
     }

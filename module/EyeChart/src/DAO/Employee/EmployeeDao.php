@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Employee;
 
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
@@ -34,7 +34,7 @@ class EmployeeDao
 
     /**
      * TODO
-     * @param LoginVO|VOInterface $vo
+     * @param AuthenticationVO|VOInterface $vo
      * @return mixed[]
      */
     public function getEmployeeRecordByCredentials(VOInterface $vo): array
