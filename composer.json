@@ -1,0 +1,86 @@
+{
+	"name" : "zfcampus/zf-apigility-skeleton",
+	"description" : "Skeleton Application for Apigility",
+	"type" : "library",
+	"license" : "BSD-3-Clause",
+	"keywords" : [
+		"api",
+		"apigility",
+		"framework",
+		"zf2"
+	],
+	"homepage" : "http://apigility.org/",
+	"support" : {
+		"email" : "apigility-users@zend.com",
+		"irc" : "irc://irc.freenode.net/apigility",
+		"source" : "https://github.com/zfcampus/zf-apigility-skeleton",
+		"issues" : "https://github.com/zfcampus/zf-apigility-skeleton/issues"
+	},
+	"config" : {
+		"process-timeout" : 5000
+	},
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "1.4-dev",
+			"dev-develop" : "1.5-dev"
+		}
+	},
+	"require" : {
+		"php" : "^5.6 || ^7.0",
+		"zfcampus/zf-apigility" : "^1.3",
+		"zfcampus/zf-apigility-documentation" : "^1.2.3",
+		"zfcampus/zf-development-mode" : "^3.0",
+		"beberlei/assert" : "^2.7",
+		"roave/security-advisories" : "dev-master",
+		"zendframework/zend-cache" : "^2.7.1",
+		"zendframework/zend-mvc-i18n" : "^1.0",
+		"zendframework/zend-log" : "^2.9",
+		"zfcampus/zf-apigility-admin-ui" : "^1.3",
+		"zendframework/zend-session" : "^2.7",
+		"zendframework/zend-authentication" : "^2.5",
+		"ramsey/uuid" : "^3.6",
+		"zendframework/zend-hydrator" : "^2.2",
+		"zendframework/zend-navigation" : "^2.8",
+		"moontoast/math" : "^1.1",
+		"zendframework/zend-xml2json" : "^3.0",
+		"zendframework/zend-test" : "^3.1",
+		"mikemix/tactician-module" : "^2.0",
+		"doctrine/orm" : "^2.5",
+		"doctrine/doctrine-orm-module": "^1.1",
+		"zendframework/zend-mail": "^2.8"
+	},
+	"require-dev" : {
+		"zendframework/zend-developer-tools" : "^1.1",
+		"zfcampus/zf-apigility-admin" : "^1.5.9",
+		"zfcampus/zf-asset-manager" : "^1.0",
+		"zfcampus/zf-composer-autoloading" : "^1.0",
+		"zfcampus/zf-deploy" : "^1.2",
+		"phpunit/phpunit" : "^6.2"
+	},
+	"suggest" : {
+		"zfcampus/zf-apigility-doctrine" : "zfcampus/zf-apigility-doctrine ^2.1 to create Doctrine-Connected REST services",
+		"zfcampus/zf-http-cache" : "zfcampus/zf-http-cache ^1.3 to add HTTP caching to your API",
+		"zfr/zfr-cors" : "zfr/zfr-cors ^1.2 to add CORS support to your API"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"EyeChart\\" : "module/EyeChart/src",
+			"API\\" : "module/API/src"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"DriverManager\\Tests\\" : "tests/EyeChart/Tests/",
+			"API\\Tests\\" : "tests/API/Tests/"
+		}
+	},
+	"scripts" : {
+		"cs-check" : "phpcs",
+		"cs-fix" : "phpcbf",
+		"development-disable" : "zf-development-mode disable",
+		"development-enable" : "zf-development-mode enable",
+		"development-status" : "zf-development-mode status",
+		"serve" : "php -S 0.0.0.0:8080 -t public/ public/index.php",
+		"test" : "phpunit"
+	}
+}

@@ -1,0 +1,55 @@
+<?php echo $this->doctype(); ?>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<?php echo $this->headTitle()->setAutoEscape(false)->setTranslatorEnabled(false); ?>
+<?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')->appendHttpEquiv('X-UA-Compatible', 'IE=edge'); ?>
+<?php
+echo $this->headLink([
+    'rel'  => 'shortcut icon',
+    'type' => 'image/vnd.microsoft.icon',
+    'href' => $this->basePath() . '/img/favicon.ico?v=' . filemtime(getcwd() . '/public/img/favicon.ico')
+])->prependStylesheet($this->basePath('css/partials/index.css?v=' . filemtime(getcwd() . '/public/css/partials/index.css')))
+  ->prependStylesheet($this->basePath('css/login.css?v=' . filemtime(getcwd() . '/public/css/login.css')))
+  ->prependStylesheet($this->basepath('css/select2-bootstrap.min.css'))
+  ->prependStylesheet($this->basePath('css/select2.min.css'))
+  ->prependStylesheet($this->basePath('css/font-awesome.min.css'))
+  ->prependStylesheet($this->basePath('css/jquery-ui.min.css'))
+  ->prependStylesheet($this->basePath('css/bootstrap.min.css'));
+?>
+<!--suppress JSUnusedLocalSymbols -->
+<script type="text/javascript">
+    var BASE_PATH  = '<?php echo $this->basepath(); ?>';
+    var ROUTE_NAME = '<?php echo $this->menuRoute; ?>';
+    var TOKEN      = '<?php echo $this->token; ?>';
+ </script>
+<?php
+echo $this->headScript()
+          ->prependFile($this->basepath('js/sessionHandler.js?v=' . filemtime(getcwd() . '/public/js/sessionHandler.js')))
+          ->prependFile($this->basepath('js/globalLibrary.js?v=' . filemtime(getcwd() . '/public/js/globalLibrary.js')))
+          ->prependFile($this->basepath('js/globalVars.js?v=' . filemtime(getcwd() . '/public/js/globalVars.js')))
+          ->prependFile($this->basePath('js/assets/jquery.inputmask.bundle.min.js'))
+          ->prependFile($this->basePath('js/assets/jquery.redirect.js'))
+          ->prependFile($this->basepath('js/assets/jquery.noty.packaged.min.js'))
+          ->prependFile($this->basepath('js/assets/jquery.bootstrap-touchspin.min.js'))
+          ->prependFile($this->basepath('js/assets/select2.full.min.js'))
+          ->prependFile($this->basepath('js/assets/parsley.min.js'))
+          ->prependFile($this->basePath('js/assets/dataTables.bootstrap.min.js'))
+          ->prependFile($this->basePath('js/assets/jquery.dataTables.min.js'))
+          ->prependFile($this->basePath('js/assets/bootstrap-switch.min.js'))
+          ->prependFile($this->basePath('js/assets/bootstrap.min.js'))
+          ->prependFile($this->basePath('js/assets/jquery.easyModal.js'))
+          ->prependFile($this->basePath('js/assets/jquery-ui.min.js'))
+          ->prependFile($this->basePath('js/assets/jquery.min.js'));
+
+echo $this->prependFile($this->basePath('js/assets/respond.min.js'), 'text/javascript', [ 'conditional' => 'lt IE 9' ]);
+echo $this->prependFile($this->basePath('js/assets/html5shiv.min.js'), 'text/javascript', [ 'conditional' => 'lt IE 9' ]);
+
+?>
+</head>
+    <body>
+        <div class="easy-modal hidden" id="loaderModal">
+            <div class="loader">Loading...</div>
+        </div>
+    </body>
+</html>
