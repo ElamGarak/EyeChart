@@ -42,12 +42,15 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param string $id
+     * @return SessionEntity
      */
-    public function setId(string $id): void
+    public function setId(string $id): SessionEntity
     {
         Assertion::maxLength($id, 32);
 
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -60,12 +63,15 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param string $name
+     * @return SessionEntity
      */
-    public function setName(string $name): void
+    public function setName(string $name): SessionEntity
     {
         Assertion::maxLength($name, 32);
 
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -77,11 +83,14 @@ class SessionEntity extends AbstractEntity
     }
 
     /**
-     * @param int|string $lifeTime
+     * @param int $lifeTime
+     * @return SessionEntity
      */
-    public function setLifeTime(int $lifeTime): void
+    public function setLifeTime(int $lifeTime): SessionEntity
     {
         $this->lifeTime = $lifeTime;
+
+        return $this;
     }
 
     /**
@@ -94,10 +103,13 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param int $modified
+     * @return SessionEntity
      */
-    public function setModified(int $modified): void
+    public function setModified(int $modified): SessionEntity
     {
         $this->modified = $modified;
+
+        return $this;
     }
 
     /**
@@ -110,9 +122,12 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param mixed $data
+     * @return SessionEntity
      */
-    public function setData(string $data): void
+    public function setData(string $data): SessionEntity
     {
         $this->data = $data;
+
+        return $this;
     }
 }
