@@ -45,7 +45,7 @@ class AbstractEntity implements EntityInterface
      */
     public function initializeByVO(VOInterface $vo): void
     {
-        Assertion::isInstanceOf(VOInterface::class, "Invalid Value Object Passed to " . __METHOD__);
+        Assertion::isInstanceOf($vo, VOInterface::class, "Invalid Value Object Passed to " . __METHOD__);
 
         $this->initializeByArray($vo->toArray());
     }
