@@ -18,14 +18,12 @@ use EyeChart\Entity\AbstractEntity;
 class EmployeeMapper extends AbstractEntity
 {
     public const SCHEMA = '';
-    public const TABLE  = '';
-    public const ALIAS  = '';
+    public const TABLE  = 'employees';
+    public const ALIAS  = 'e';
 
-    public const EMPLOYEE_ID    = '';
-    public const USER_ID        = '';
-    public const USERNAME       = '';
-    public const PASSWORD       = '';
-    public const FIRST_NAME     = '';
-    public const LAST_NAME      = '';
-
+    public const EMPLOYEE_ID   = 'EmployeeId';
+    public const USER_ID       = 'UserName';
+    public const FIRST_NAME    = 'FirstName';
+    public const LAST_NAME     = 'LastName';
+    public const EMAIL_ADDRESS = 'EmailAddress';
 }
