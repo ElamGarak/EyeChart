@@ -9,8 +9,8 @@ declare (strict_types=1);
 
 namespace EyeChart\Model\Employee;
 
+use EyeChart\DAO\Employee\EmployeeDao;
 use EyeChart\Entity\EmployeeEntity;
-use EyeChart\VO\AuthenticationVO;
 
 /**
  * Class EmployeeModel
@@ -18,21 +18,33 @@ use EyeChart\VO\AuthenticationVO;
  */
 final class EmployeeModel
 {
+    /** @var EmployeeDao */
+    private $employeeDao;
+
+    /** @var EmployeeEntity */
+    private $employeeEntity;
+
     /**
      * EmployeeModel constructor.
+     * @param EmployeeDao $employeeDao
+     * @param EmployeeEntity $employeeEntity
      */
-    public function __construct()
+    public function __construct(EmployeeDao $employeeDao, EmployeeEntity $employeeEntity)
     {
-        // Stub
+        $this->employeeDao    = $employeeDao;
+        $this->employeeEntity = $employeeEntity;
     }
 
     /**
-     * @param AuthenticationVO $authenticationVO
+     * @param string $userId
      * @return EmployeeEntity
      */
-    public function getEmployeeRecordByCredentials(AuthenticationVO $authenticationVO): EmployeeEntity
+    public function getEmployeeRecordByUserId(string $userId): EmployeeEntity
     {
-        // Stub
-        return new EmployeeEntity();
+        $results = $this->employeeDao->getEmployeeRecordByUserId($userId);
+
+        $this->employeeEntity->hydrateFromDataBase($results);
+
+        return $this->employeeEntity;
     }
 }
