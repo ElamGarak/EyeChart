@@ -33,6 +33,11 @@ interface EntityInterface
     public function initializeByArray(array $dataSource): void;
 
     /**
+     * @param mixed[] $dataSource
+     */
+    public function hydrateFromDataBase(array $dataSource): void;
+
+    /**
      * @return mixed[]
      */
     public function toArray(): array;
