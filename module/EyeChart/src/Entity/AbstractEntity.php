@@ -71,6 +71,29 @@ class AbstractEntity implements EntityInterface
     }
 
     /**
+     * @param mixed[] $dataSource
+     * @throws UndefinedSetterException
+     */
+    public function hydrateFromDataBase(array $dataSource): void
+    {
+        try {
+            foreach ($dataSource as $key => $value) {
+                $property = lcfirst($key);
+
+                if (! property_exists($this, $property)) {
+                    throw new Exception($property);
+                }
+
+                $setter = "set" . ucfirst($key);
+
+                $this->$setter($value);
+            }
+        } catch (Exception $exception) {
+            throw new UndefinedSetterException($exception->getMessage(),__CLASS__);
+        }
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(): array
