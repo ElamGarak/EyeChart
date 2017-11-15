@@ -9,38 +9,24 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Employee;
 
+use EyeChart\DAO\AbstractDAO;
 use EyeChart\Mappers\EmployeeMapper;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
 /**
  * Class EmployeeDao
  * @package EyeChart\DAO\Employee
  */
-class EmployeeDao
+class EmployeeDao extends AbstractDAO
 {
-    /** @var Sql */
-    private $sql;
-
-    /**
-     * AuthenticateDAO constructor.
-     * @param Adapter $adapter
-     */
-    public function __construct(Adapter $adapter)
-    {
-        $this->sql = new Sql($adapter);
-    }
-
     /**
      * @param string $userId
      * @return mixed[]
      */
     public function getEmployeeRecordByUserId(string $userId): array
     {
-        $select = $this->sql->select();
+        $select = parent::getSqlAdapter()->select();
 
         $select->from(EmployeeMapper::TABLE);
 
@@ -49,23 +35,12 @@ class EmployeeDao
 
         $select->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $results = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        $result = $statement->execute();
-
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
-            $resultSet->initialize($result);
-
-            $row = $resultSet->current();
-
-            if (! is_null($row)) {
-                $row[EmployeeMapper::EMPLOYEE_ID] = (int) $row[EmployeeMapper::EMPLOYEE_ID];
-
-                return $row;
-            }
+        if (! empty($results)) {
+            $results[EmployeeMapper::EMPLOYEE_ID] = (int) $results[EmployeeMapper::EMPLOYEE_ID];
         }
 
-        return [];
+        return $results;
     }
 }

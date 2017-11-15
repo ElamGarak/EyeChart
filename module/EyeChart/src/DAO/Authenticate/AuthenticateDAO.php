@@ -9,40 +9,26 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Authenticate;
 
+use EyeChart\DAO\AbstractDAO;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
 /**
  * Class AuthenticateDAO
  * @package EyeChart\DAL\DAO\Authenticate
  */
-class AuthenticateDAO
+class AuthenticateDAO extends AbstractDAO
 {
-    /** @var Sql */
-    private $sql;
-
-    /**
-     * AuthenticateDAO constructor.
-     * @param Adapter $adapter
-     */
-    public function __construct(Adapter $adapter)
-    {
-        $this->sql = new Sql($adapter);
-    }
-
     /**
      * @param AuthenticationVO|VOInterface $vo
      * @return bool
      */
     public function checkCredentials(VOInterface $vo): bool
     {
-        $select = $this->sql->select();
+        $select = parent::getSqlAdapter()->select();
 
         $select->columns([
             AuthenticateMapper::USER_NAME,
@@ -54,20 +40,9 @@ class AuthenticateDAO
 
         $select->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        $result = $statement->execute();
-
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet(ResultSet::TYPE_ARRAY);
-            $resultSet->initialize($result);
-
-            $row = $resultSet->current();
-
-            return (! is_null($row));
-        }
-
-        return false;
+        return (! is_null($result));
     }
 
     /**
