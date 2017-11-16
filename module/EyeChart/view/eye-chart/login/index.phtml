@@ -1,1 +1,12 @@
-Hello Login World
+<?php
+/** @var Zend\View\Renderer\PhpRenderer $this */
+echo $this->doctype();
+?>
+<html lang="en">
+    <?php echo $this->partial('partials/head.phtml'); ?>
+    <body>
+        <?php echo $this->partial('partials/header.phtml'); ?>
+        Login
+        <?php echo $this->partial('partials/footer.phtml'); ?>
+    </body>
+</html>
