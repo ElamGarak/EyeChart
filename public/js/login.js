@@ -8,7 +8,7 @@
 function Login() {
     "use strict";
 
-    var messageDisplay = $("#message");
+    var messages = $("#messages");
 
     this.initialize = function() {
         enableBindings();
@@ -37,14 +37,18 @@ function Login() {
         loginForm.parsley();
 
         $("#submit").on("click", function() {
-            messageDisplay.addClass('hidden');
+            messages.addClass("hidden");
+            messages.html('');
+
             loginForm.parsley().validate();
 
             if (!loginForm.parsley().isValid()) {
-                messageDisplay.removeClass('hidden');
+                messages.removeClass("hidden");
 
                 return
             }
+
+            messages.addClass("hidden");
 
             ajaxLogin();
         });
@@ -91,19 +95,19 @@ function Login() {
 
     /**
      *
-     * @param {json} messages
+     * @param {json} incomingMessages
      */
-    function setMessageContainer(messages) {
-        if (typeof messages === "object") {
+    function setMessageContainer(incomingMessages) {
+        if (incomingMessages && typeof incomingMessages === "object") {
             var container = $('<div></div>');
 
-            $.each(messages, function (index, value) {
+            $.each(incomingMessages, function (index, value) {
                 var p = $('<p>').text(value);
                 container.append(p);
             });
 
-            messageDisplay.html(container.html());
-            messageDisplay.removeClass("hidden");
+            messages.html(container.html());
+            messages.removeClass("hidden");
         }
     }
 }
