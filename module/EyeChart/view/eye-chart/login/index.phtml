@@ -20,7 +20,7 @@ echo $this->doctype();
                                    placeholder="Enter User Name"
                                    required
                                    data-parsley-required-message="User Name is required"
-                                   data-parsley-errors-container="#message">
+                                   data-parsley-errors-container="#messages">
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
@@ -30,13 +30,12 @@ echo $this->doctype();
                                    placeholder="Password"
                                    required
                                    data-parsley-required-message="Password is required"
-                                   data-parsley-errors-container="#message">
+                                   data-parsley-errors-container="#messages">
                         </div>
                         <a id="submit" class="btn btn-primary btn-block">Login</a>
                     </form>
-                    <div id="message" class="bs-callout bs-callout-danger hidden"></div>
+                    <div id="messages" class="bs-callout bs-callout-danger hidden"></div>
                 </div>
-
             </div>
         </div>
         <?php echo $this->partial('partials/footer.phtml'); ?>

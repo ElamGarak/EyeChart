@@ -12,7 +12,7 @@
     <!-- Custom styles for this template-->
     <link href="<?php echo $this->basePath('assets/SBAdmin/css/sb-admin.css'); ?>" rel="stylesheet">
 
-    <link href="<?php echo $this->basePath('css/common.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $this->basePath('css/common.css?v=' . rand(1, 1000)); ?>" rel="stylesheet">
 
     <script src="<?php echo $this->basePath('assets/SBAdmin/vendor/jquery/jquery.min.js'); ?>"></script>
     <script src="<?php echo $this->basePath('assets/SBAdmin/vendor/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
@@ -25,6 +25,6 @@
 
     <!-- Application Specific -->
     <?php echo $this->partial('partials/JSEmbed.phtml'); ?>
-    <script src="<?php echo $this->basePath('js/globalVars.js'); ?>"></script>
-    <script src="<?php echo $this->basePath('js/globalLibrary.js'); ?>"></script>
+    <script src="<?php echo $this->basePath('js/globalVars.js?v=' . rand(1, 1000)); ?>"></script>
+    <script src="<?php echo $this->basePath('js/globalLibrary.js?v=' . rand(1, 1000)); ?>"></script>
 </head>
