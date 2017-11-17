@@ -16,14 +16,14 @@ namespace EyeChart\Mappers;
 final class SessionMapper extends AbstractMapper
 {
     public const SCHEMA = '';
-    public const TABLE  = 'SESSION';
-    public const ALIAS  = 'STORAGE';
+    public const TABLE  = 'session';
+    public const ALIAS  = 'storage';
 
-    public const ID       = 'ID';
-    public const NAME     = 'NAME';
-    public const MODIFIED = 'MODIFIED';
-    public const DATA     = 'DATA';
-    public const LIFETIME = 'LIFETIME';
+    public const SESSION_ID   = 'SessionId';
+    public const PHP_SESS_ID  = 'PHPSessId';
+    public const MODIFIED     = 'Modified';
+    public const SESSION_USER = 'SessionUser';
+    public const LIFETIME     = 'Lifetime';
 
     public const MODIFIED_TIME  = 'modifiedTime';
     public const SYS_TIME       = 'systemTime';

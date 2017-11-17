@@ -15,8 +15,9 @@ namespace EyeChart\VO;
  */
 interface VOInterface
 {
-    /**
-     * @return mixed[]
-     */
+    /** @return VOInterface */
+    public static function build(): VOInterface;
+
+    /** @return mixed[] */
     public function toArray(): array;
 }

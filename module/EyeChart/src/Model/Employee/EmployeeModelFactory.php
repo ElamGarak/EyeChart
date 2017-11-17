@@ -9,6 +9,8 @@ declare (strict_types=1);
 
 namespace EyeChart\Model\Employee;
 
+use EyeChart\DAO\Employee\EmployeeDao;
+use EyeChart\Entity\EmployeeEntity;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -23,6 +25,9 @@ final class EmployeeModelFactory
      */
     public function __invoke(ContainerInterface $container): EmployeeModel
     {
-        return new EmployeeModel();
+        return new EmployeeModel(
+            $container->get(EmployeeDao::class),
+            $container->get(EmployeeEntity::class)
+        );
     }
 }

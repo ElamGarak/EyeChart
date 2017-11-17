@@ -9,36 +9,38 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Employee;
 
-use EyeChart\VO\LoginVO;
-use EyeChart\VO\VOInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
+use EyeChart\DAO\AbstractDAO;
+use EyeChart\Mappers\EmployeeMapper;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Where;
 
 /**
  * Class EmployeeDao
  * @package EyeChart\DAO\Employee
  */
-class EmployeeDao
+class EmployeeDao extends AbstractDAO
 {
-    /** @var Sql */
-    private $sql;
-
     /**
-     * AuthenticateDAO constructor.
-     * @param Adapter $adapter
-     */
-    public function __construct(Adapter $adapter)
-    {
-        $this->sql = new Sql($adapter);
-    }
-
-    /**
-     * TODO
-     * @param LoginVO|VOInterface $vo
+     * @param string $userId
      * @return mixed[]
      */
-    public function getEmployeeRecordByCredentials(VOInterface $vo): array
+    public function getEmployeeRecordByUserId(string $userId): array
     {
-        return [];
+        $select = parent::getSqlAdapter()->select();
+
+        $select->from(EmployeeMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(EmployeeMapper::USER_ID, $userId);
+
+        $select->where($where);
+
+        $results = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+
+        if (! empty($results)) {
+            $results[EmployeeMapper::EMPLOYEE_ID] = (int) $results[EmployeeMapper::EMPLOYEE_ID];
+        }
+
+        return $results;
     }
 }

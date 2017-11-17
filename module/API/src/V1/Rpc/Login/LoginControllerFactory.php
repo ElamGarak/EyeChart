@@ -20,7 +20,7 @@ final class LoginControllerFactory
      * @param ContainerInterface $container
      * @return LoginController
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): LoginController
     {
         $authenticationService = $container->get(AuthenticateService::class);
 

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Exception;
 
 use Exception;
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Throwable;
 
@@ -28,11 +28,15 @@ final class UnableToAuthenticateException extends Exception
 
     /**
      * UnableToAuthenticateException constructor.
-     * @param VOInterface|LoginVO $loginVO
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @param Throwable|null $previous
      */
-    public function __construct(VOInterface $loginVO, Throwable $previous = null)
+    public function __construct(VOInterface $authenticationVO, Throwable $previous = null)
     {
-        parent::__construct("Unable to authenticate {$loginVO->getUserName()}", $this->code, $previous);
+        parent::__construct(
+            "Unable to authenticate {$authenticationVO->getUsername()}",
+            $this->code,
+            $previous
+        );
     }
 }

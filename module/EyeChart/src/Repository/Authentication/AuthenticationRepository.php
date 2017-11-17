@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace EyeChart\Repository\Authentication;
 
-use EmployeeModel;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
+use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
@@ -136,18 +136,20 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param VOInterface|LoginVO $loginVO
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @return void
      */
-    public function login(VOInterface $loginVO): void
+    public function login(VOInterface $authenticationVO): void
     {
-        $this->authenticateModel->authenticateUser($loginVO);
+        $this->authenticateModel->checkCredentials($authenticationVO);
 
-        $employeeEntity = $this->employeeModel->getEmployeeRecordByCredentials($loginVO);
-        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
 
-        $this->authenticateStorageModel->write($storageRecord);
-        $this->zendAuthentication->setStorage($this->authenticateStorageModel);
+        // TODO
+        //$storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+
+        //$this->authenticateStorageModel->write($storageRecord);
+        //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
     }
 
     /**

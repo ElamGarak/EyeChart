@@ -49,6 +49,7 @@ return [
             Model\Authenticate\AuthenticateModel::class                     => Model\Authenticate\AuthenticateModelFactory::class,
             Model\Authenticate\AuthenticateStorageModel::class              => Model\Authenticate\AuthenticateStorageModelFactory::class,
             Model\Email\EmailModel::class                                   => Model\Email\EmailModelFactory::class,
+            Model\Employee\EmployeeModel::class                             => Model\Employee\EmployeeModelFactory::class,
 
             // Repositories
             Repository\Authentication\AuthenticationRepository::class       => Repository\Authentication\AuthenticationRepositoryFactory::class,
@@ -62,10 +63,12 @@ return [
             Entity\AuthenticateEntity::class                                => InvokableFactory::class,
             Entity\Email\EmailEntity::class                                 => InvokableFactory::class,
             Entity\SessionEntity::class                                     => InvokableFactory::class,
+            Entity\EmployeeEntity::class                                    => InvokableFactory::class,
 
             // DAOs
             DAO\Authenticate\AuthenticateDAO::class                         => DAO\Authenticate\AuthenticateDAOFactory::class,
             DAO\Authenticate\AuthenticateStorageDAO::class                  => DAO\Authenticate\AuthenticateStorageDAOFactory::class,
+            DAO\Employee\EmployeeDao::class                                 => DAO\Employee\EmployeeDaoFactory::class,
 
         ],
         'aliases' => [

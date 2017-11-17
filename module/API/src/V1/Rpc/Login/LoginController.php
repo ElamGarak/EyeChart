@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace API\V1\Rpc\Login;
 
-use EyeChart\VO\LoginVO;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use EyeChart\Service\Authenticate\AuthenticateService;
@@ -29,7 +29,7 @@ final class LoginController extends AbstractActionController
     private $inputData;
 
     /** @var VOInterface */
-    private $loginVO;
+    private $authenticationVO;
 
     /** @var string */
     private $token = '';
@@ -77,12 +77,13 @@ final class LoginController extends AbstractActionController
 
     private function prepareServiceData(): void
     {
-        $this->loginVO = new LoginVO($this->inputData->username, $this->inputData->password);
+        $this->authenticationVO = AuthenticationVO::build()->setUsername($this->inputData->username)
+                                                  ->setPassword($this->inputData->password);
     }
 
     private function executeService(): void
     {
-        $this->token = $this->authenticateService->login($this->loginVO);
+        $this->token = $this->authenticateService->login($this->authenticationVO);
     }
 
     private function prepareReturnData(): void

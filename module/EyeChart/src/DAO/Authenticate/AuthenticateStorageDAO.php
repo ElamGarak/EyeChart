@@ -72,14 +72,14 @@ final class AuthenticateStorageDAO implements StorageInterface
     {
         $select = $this->sql->select();
 
-        $select->columns([ SessionMapper::DATA ]);
+        //$select->columns([ SessionMapper::DATA ]);
 
         $select->from(SessionMapper::TABLE);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::NAME, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
+              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
 
         $select->where($where);
 
@@ -96,7 +96,7 @@ final class AuthenticateStorageDAO implements StorageInterface
             if (null != $row) {
                 $storage = $row->getArrayCopy();
 
-                return json_decode($storage[SessionMapper::DATA], true);
+                //return json_decode($storage[SessionMapper::DATA], true);
             }
 
             return [];
@@ -137,8 +137,8 @@ final class AuthenticateStorageDAO implements StorageInterface
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::NAME, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
+              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
 
         $delete->where($where);
 
@@ -162,9 +162,9 @@ final class AuthenticateStorageDAO implements StorageInterface
         $insert = $this->sql->insert();
 
         $insert->values([
-            SessionMapper::ID       => $this->sessionEntity->getId(),
-            SessionMapper::NAME     => $this->sessionEntity->getName(),
-            SessionMapper::DATA     => $this->sessionEntity->getData(),
+            SessionMapper::SESSION_ID       => $this->sessionEntity->getId(),
+            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getName(),
+            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getData(),
             SessionMapper::MODIFIED => new Literal(time()),
             SessionMapper::LIFETIME => new Literal($this->sessionEntity->getLifeTime())
         ]);
@@ -195,14 +195,14 @@ final class AuthenticateStorageDAO implements StorageInterface
         $update->table(SessionMapper::TABLE);
 
         $update->set([
-            SessionMapper::DATA     => $this->sessionEntity->getData(),
+            //SessionMapper::DATA     => $this->sessionEntity->getData(),
             SessionMapper::MODIFIED => time()
         ]);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::NAME, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
+              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
 
         $update->where($where);
 

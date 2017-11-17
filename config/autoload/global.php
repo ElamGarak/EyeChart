@@ -12,11 +12,7 @@ return [
     'zf-content-negotiation' => [
         'selectors' => [],
     ],
-    'db' => [
-        'adapters' => [
-
-        ]
-    ],
+    'db' => [],
     'emailModel' => [
         'options' => [
             'name' => '',

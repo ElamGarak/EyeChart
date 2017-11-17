@@ -9,46 +9,39 @@ declare(strict_types=1);
 
 namespace EyeChart\DAO\Authenticate;
 
-use EyeChart\VO\LoginVO;
+use EyeChart\DAO\AbstractDAO;
+use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Where;
 
 /**
  * Class AuthenticateDAO
  * @package EyeChart\DAL\DAO\Authenticate
  */
-class AuthenticateDAO
+class AuthenticateDAO extends AbstractDAO
 {
-    /** @var Sql */
-    private $sql;
-
     /**
-     * AuthenticateDAO constructor.
-     * @param Adapter $adapter
-     */
-    public function __construct(Adapter $adapter)
-    {
-        $this->sql = new Sql($adapter);
-    }
-
-    /**
-     * TODO
-     * @param LoginVO|VOInterface $vo
+     * @param AuthenticationVO|VOInterface $vo
      * @return bool
      */
     public function checkCredentials(VOInterface $vo): bool
     {
-        return false;
-    }
+        $select = parent::getSqlAdapter()->select();
 
-    /**
-     * TODO
-     * @param string $userId
-     * @return bool
-     */
-    public function isUserValid(string $userId): bool
-    {
-        return false;
+        $select->columns([
+            AuthenticateMapper::USER_NAME,
+        ])->from(AuthenticateMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
+              ->equalTo(AuthenticateMapper::PASSWORD, $vo->getPassword());
+
+        $select->where($where);
+
+        $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+
+        return (! is_null($result));
     }
 }
