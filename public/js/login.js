@@ -8,31 +8,21 @@
 function Login() {
     "use strict";
 
-    var loaderModal,
-        loginErrorContainer;
+    var messageDisplay = $("#message");
 
     this.initialize = function() {
-        loginErrorContainer = $("#loginError");
-
         enableBindings();
-        bindModal();
         displayIncomingMessages();
     };
 
     function enableBindings() {
         $("#username").focus();
 
-        registerPasswordKeypress();
-        loginClick();
+        bindPasswordKeyPress();
+        bindSubmit();
     }
 
-    function bindModal() {
-        loaderModal = $("#loaderModal");
-        loaderModal.removeClass("hidden");
-        loaderModal.easyModal(EASY_MODAL_CONFIG);
-    }
-
-    function registerPasswordKeypress() {
+    function bindPasswordKeyPress() {
         $('#password').keypress(function (e) {
             if (e.which === 13) {
                 $('#login').click();
@@ -42,14 +32,21 @@ function Login() {
         });
     }
 
-    function loginClick() {
-        var loginForm = $("#login-form");
+    function bindSubmit() {
+        var loginForm = $("form#login");
+        loginForm.parsley();
 
-        $("#login").on("click", function() {
-            loginForm.parsley();
-            if (loginForm.parsley().validate() && loginForm.parsley().isValid()) {
-                ajaxLogin();
+        $("#submit").on("click", function() {
+            messageDisplay.addClass('hidden');
+            loginForm.parsley().validate();
+
+            if (!loginForm.parsley().isValid()) {
+                messageDisplay.removeClass('hidden');
+
+                return
             }
+
+            ajaxLogin();
         });
     }
 
@@ -59,8 +56,6 @@ function Login() {
             password: $("#password").val()
         };
 
-        loaderModal.trigger("openModal");
-
         $.ajax({
             headers:  JSON_HEADER,
             url:      API_LOGIN_SEGMENT,
@@ -68,8 +63,6 @@ function Login() {
             dataType: "json",
             data:     JSON.stringify(params),
             success:  function(data) {
-                loginErrorContainer.html('');
-
                 if (data.success === true) {
                     $.redirect(INDEX_SEGMENT, {"token" : data.token }, "POST");
 
@@ -78,8 +71,10 @@ function Login() {
 
                 setMessageContainer(data.messages);
             },
-            complete: function() {
-                loaderModal.trigger('closeModal');
+            error: function(jqXHR, textStatus, errorThrown) {
+                setMessageContainer({
+                    error: [ errorThrown ]
+                });
             }
         });
     }
@@ -96,7 +91,7 @@ function Login() {
 
     /**
      *
-     * @param messages
+     * @param {json} messages
      */
     function setMessageContainer(messages) {
         if (typeof messages === "object") {
@@ -107,7 +102,8 @@ function Login() {
                 container.append(p);
             });
 
-            loginErrorContainer.html(container.html());
+            messageDisplay.html(container.html());
+            messageDisplay.removeClass("hidden");
         }
     }
 }
