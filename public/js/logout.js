@@ -31,8 +31,11 @@ function Logout() {
             type:     "POST",
             dataType: "json",
             data:     JSON.stringify(params),
-            complete:  function () {
-                $.redirect(LOGIN_SEGMENT, { "message" : "You have been logged out" }, "POST");
+            success: function (results) {
+                $.redirect(LOGIN_SEGMENT, { "messages" : results.messages }, "POST");
+            },
+            error:  function (jqXHR, textStatus, errorThrown) {
+                $.redirect(LOGIN_SEGMENT, { "message" : [ errorThrown ] }, "POST");
             }
         });
     }
