@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use Assert\Assertion;
-use EyeChart\Entity\AuthenticateEntity;
+use Exception;
+use EyeChart\DAO\AbstractDAO;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
+use EyeChart\Exception\MissingSessionException;
 use EyeChart\Mappers\SessionMapper;
-use Zend\Authentication\Adapter\DbTable\Exception\RuntimeException;
+use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\VOInterface;
 use Zend\Authentication\Exception\ExceptionInterface;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\Literal;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
@@ -28,7 +29,7 @@ use Zend\Db\Sql\Where;
  * Class AuthenticateStorageDAO
  * @package EyeChart\DAO\Authenticate
  */
-final class AuthenticateStorageDAO implements StorageInterface
+final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 {
     /** @var Sql */
     private $sql;
@@ -46,6 +47,8 @@ final class AuthenticateStorageDAO implements StorageInterface
      */
     public function __construct(Adapter $adapter, SessionEntity $sessionEntity)
     {
+        parent::__construct($adapter);
+
         $this->sql           = new Sql($adapter);
         $this->sessionEntity = $sessionEntity;
     }
@@ -64,50 +67,43 @@ final class AuthenticateStorageDAO implements StorageInterface
     }
 
     /**
-     * Returns the contents of storage
+     * Return token record from session table
      *
      * @return mixed[]
-     * @throws RuntimeException
+     * @throws MissingSessionException
      */
     public function read(): array
     {
         $select = $this->sql->select();
 
-        //$select->columns([ SessionMapper::DATA ]);
+        $select->columns([
+            SessionMapper::SESSION_RECORD_ID,
+            SessionMapper::PHP_SESSION_ID,
+            SessionMapper::SESSION_USER,
+            SessionMapper::TOKEN,
+            SessionMapper::LIFETIME,
+            SessionMapper::ACCESSED
+        ]);
 
         $select->from(SessionMapper::TABLE);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
-              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
+        $where->equalTo(SessionMapper::TOKEN, $this->sessionEntity->getToken());
 
         $select->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = parent::getResultSingleResult($select);
 
-        $result = $statement->execute();
-
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet();
-            $resultSet->initialize($result);
-
-            $row = $resultSet->current();
-
-            if (null != $row) {
-                $storage = $row->getArrayCopy();
-
-                //return json_decode($storage[SessionMapper::DATA], true);
-            }
-
-            return [];
+        if (empty($result)) {
+            throw new MissingSessionException($this->sessionEntity, __METHOD__);
         }
 
-        throw new RuntimeException("Failed to find session record {$this->sessionEntity->getSessionRecordId()} in " . __METHOD__);
+        return $result;
     }
 
     /**
-     * Writes $contents to storage
+     * Add token record to session table
      *
      * @param  SessionEntity[] $storage
      * @throws ExceptionInterface
@@ -134,20 +130,26 @@ final class AuthenticateStorageDAO implements StorageInterface
     }
 
     /**
-     * Clears contents from storage
+     * Remove token record from session table
      *
      * @return bool
+     * @throws Exception
      */
     public function clear(): bool
     {
+        if (empty($this->sessionEntity->getToken())) {
+            throw new Exception(
+                'Session record can not be cleared without a valid token set to the session entity'
+            );
+        }
+
         $delete = $this->sql->delete();
 
         $delete->from(SessionMapper::TABLE);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
-              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
+        $where->equalTo(SessionMapper::TOKEN, $this->sessionEntity->getToken());
 
         $delete->where($where);
 
@@ -170,7 +172,8 @@ final class AuthenticateStorageDAO implements StorageInterface
             SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
             SessionMapper::SESSION_USER   => $sessionEntity->getSessionUser(),
             SessionMapper::TOKEN          => $sessionEntity->getToken(),
-            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime())
+            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime()),
+            SessionMapper::ACCESSED       => new Literal($this->sessionEntity->getLastActive())
         ]);
 
         $insert->into(SessionMapper::TABLE);
@@ -183,81 +186,30 @@ final class AuthenticateStorageDAO implements StorageInterface
     }
 
     /**
-     * @param EntityInterface|SessionEntity $storage
-     * @return bool
-     * @deprecated
-     */
-    private function merge(EntityInterface $storage): bool
-    {
-        $sessionData = [ $this->sessionEntity->getSessionRecordId() => $storage ];
-
-        $this->existingStorage = json_encode(array_merge_recursive($this->existingStorage, $sessionData));
-
-        $this->sessionEntity->setToken($this->existingStorage);
-
-        $update = $this->sql->update();
-
-        $update->table(SessionMapper::TABLE);
-
-        $update->set([
-            //SessionMapper::DATA     => $this->sessionEntity->getToken(),
-            SessionMapper::MODIFIED => time()
-        ]);
-
-        $where = new Where();
-
-        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
-              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
-
-        $update->where($where);
-
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-
-        $result = $statement->execute();
-
-        return $result->isQueryResult();
-    }
-
-    /**
-     * @param AuthenticateEntity|EntityInterface $authenticateEntity
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
      */
-    public function prune(EntityInterface $authenticateEntity): bool
+    public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
-        $currentStorage = $this->read();
+        $this->sessionEntity->setToken($authenticationVO->getToken());
 
-        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $currentStorage) === false) {
-            // User session expired at some point and there is nothing to prune
-
-            $authenticateEntity->addMessage('Your session has expired');
-
+        try {
+            // Check to see if user is still logged in with current token
+            $this->read();
+        } catch (MissingSessionException $exception) {
+            // User token was removed prior to the check
             return false;
         }
 
-        $userStorage = $currentStorage[$this->sessionEntity->getSessionRecordId()];
-
-        if (array_key_exists($authenticateEntity->getToken(), $userStorage) === true) {
-            unset($userStorage[$authenticateEntity->getToken()]);
-        }
-
-        if (count($userStorage) != 0) {
-            // User has more than one token in the session, update with token removed and return
-
-            $authenticateEntity->addMessage('You have been logged out of this session');
-
-            return $this->merge($userStorage);
-        }
-
-        // User had only one token in the session, clear them out rather than leave an empty, orphan record
+        // User has an active token, clear it now
         $this->clear();
-
-        $authenticateEntity->addMessage('You have been logged out');
 
         return true;
     }
 
     /**
      * @return mixed[]
+     * @deprecated
      */
     public function getEmployeeInformation(): array
     {
@@ -266,6 +218,7 @@ final class AuthenticateStorageDAO implements StorageInterface
 
     /**
      * @return mixed[]
+     * @deprecated
      */
     public function getUserStorage(): array
     {
@@ -280,6 +233,7 @@ final class AuthenticateStorageDAO implements StorageInterface
 
     /**
      * @return int
+     * @deprecated
      */
     public function getSessionLifeTime(): int
     {
@@ -288,12 +242,28 @@ final class AuthenticateStorageDAO implements StorageInterface
 
     /**
      * @param string $token
+     * @return bool
      */
-    public function refresh(string $token): void
+    public function refresh(string $token): bool
     {
-        $userStorage                                  = $this->getUserStorage();
-        $userStorage[$token][SessionMapper::MODIFIED] = time();
+        $update = $this->sql->update();
 
-        $this->merge($userStorage);
+        $update->table(SessionMapper::TABLE);
+
+        $update->set([
+            SessionMapper::ACCESSED => time()
+        ]);
+
+        $where = new Where();
+
+        $where->equalTo(SessionMapper::TOKEN, $token);
+
+        $update->where($where);
+
+        $statement = $this->sql->prepareStatementForSqlObject($update);
+
+        $result = $statement->execute();
+
+        return $result->isQueryResult();
     }
 }
