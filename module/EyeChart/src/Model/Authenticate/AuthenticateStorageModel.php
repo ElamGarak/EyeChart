@@ -112,14 +112,17 @@ final class AuthenticateStorageModel implements StorageInterface
         return $storageData[$this->authenticateEntity->getToken()];
     }
 
-    public function checkSessionStatus(): void
+    /**
+     * @param VOInterface $vo
+     */
+    public function checkSessionStatus(VOInterface $vo): void
     {
         $employeeInformation = $this->getEmployeeInformation();
 
         $hasExpired = $this->hasTokenExpired($employeeInformation);
 
         if ($hasExpired === true) {
-            $this->clearSessionRecord(); // TODO This requires a vo passed to it.  Resolve with issue #2
+            $this->clearSessionRecord($vo);
             $this->authenticateEntity->setIsValid(false);
 
             return;
