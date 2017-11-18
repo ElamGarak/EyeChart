@@ -9,13 +9,21 @@ function Logout() {
     "use strict";
 
     this.initialize = function() {
-        callLogoutApi();
+        bindLogoutElements();
     };
+
+    function bindLogoutElements() {
+        $(".logout").on('click', function () {
+            callLogoutApi();
+        })
+    }
 
     function callLogoutApi() {
         var params = {
             token: TOKEN
         };
+
+        $.openLoaderModal(true);
 
         $.ajax({
             headers:  JSON_HEADER_WITH_AUTH,
