@@ -223,6 +223,9 @@ final class AuthenticateStorageDAO implements StorageInterface
 
         if (array_key_exists($this->sessionEntity->getId(), $currentStorage) === false) {
             // User session expired at some point and there is nothing to prune
+
+            $authenticateEntity->addMessage('Your session has expired');
+
             return false;
         }
 
@@ -234,11 +237,18 @@ final class AuthenticateStorageDAO implements StorageInterface
 
         if (count($userStorage) != 0) {
             // User has more than one token in the session, update with token removed and return
+
+            $authenticateEntity->addMessage('You have been logged out of this session');
+
             return $this->merge($userStorage);
         }
 
         // User had only one token in the session, clear them out rather than leave an empty, orphan record
-        return $this->clear();
+        $this->clear();
+
+        $authenticateEntity->addMessage('You have been logged out');
+
+        return true;
     }
 
     /**
