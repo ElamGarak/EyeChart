@@ -145,8 +145,7 @@ final class AuthenticationRepository
 
         $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
 
-        // TODO
-        //$storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
 
         //$this->authenticateStorageModel->write($storageRecord);
         //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
@@ -176,7 +175,6 @@ final class AuthenticationRepository
      */
     public function getToken(): string
     {
-        // Stub
-        return '';
+        return $this->authenticateModel->getToken();
     }
 }

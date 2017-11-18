@@ -67,7 +67,7 @@ function Login() {
             dataType: "json",
             data:     JSON.stringify(params),
             success:  function(data) {
-                if (data.success === true) {
+                if (data.token) {
                     $.redirect(INDEX_SEGMENT, {"token" : data.token }, "POST");
 
                     return true;

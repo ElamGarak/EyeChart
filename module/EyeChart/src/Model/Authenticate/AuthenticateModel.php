@@ -77,4 +77,12 @@ final class AuthenticateModel
 
         return $storageRecord;
     }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->authenticateEntity->getToken();
+    }
 }
