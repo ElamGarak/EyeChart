@@ -15,7 +15,9 @@ use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Exception\SettingNotFoundException;
 use EyeChart\Mappers\SessionMapper;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\TokenVO;
+use EyeChart\VO\VOInterface;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Config\Config;
 
@@ -84,11 +86,22 @@ final class AuthenticateStorageModel implements StorageInterface
     }
 
     /**
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
      */
-    public function prune(): bool
+    public function prune(VOInterface $authenticationVO): bool
     {
+        $this->authenticateEntity->setToken($authenticationVO->getToken());
+
         return $this->authenticateStorageDao->prune($this->authenticateEntity);
+    }
+
+    /**
+     * @return AuthenticateEntity
+     */
+    public function getAuthenticateEntity(): AuthenticateEntity
+    {
+        return $this->authenticateEntity;
     }
 
     /**
