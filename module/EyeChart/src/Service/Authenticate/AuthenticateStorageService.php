@@ -63,11 +63,12 @@ final class AuthenticateStorageService implements StorageInterface
     }
 
     /**
+     * @param VOInterface $vo
      * @return bool
      */
-    public function prune(): bool
+    public function prune(VOInterface $vo): bool
     {
-        return $this->authenticationRepository->prune();
+        return $this->authenticationRepository->prune($vo);
     }
 
     /**

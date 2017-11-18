@@ -76,8 +76,12 @@ final class AuthenticateService
         return $token;
     }
 
-    public function logout(): void
+    /**
+     * @param VOInterface $vo
+     * @return string[]
+     */
+    public function logout(VOInterface $vo): array
     {
-        $this->authenticationRepository->logout();
+        return $this->authenticationRepository->logout($vo);
     }
 }
