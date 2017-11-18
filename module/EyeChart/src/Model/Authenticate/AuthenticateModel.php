@@ -75,4 +75,28 @@ final class AuthenticateModel
             ->setSessionUser($authenticationVO->getUsername())
             ->setLastActive(time());
     }
+
+    /**
+     * @param VOInterface|AuthenticationVO $authenticationVO
+     */
+    public function setTokenToAuthenticate(VOInterface $authenticationVO): void
+    {
+        $this->authenticateEntity->setToken($authenticationVO->getToken());
+    }
+
+    /**
+     * @param string $message
+     */
+    public function addMessage(string $message): void
+    {
+        $this->authenticateEntity->addMessage($message);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getMessages(): array
+    {
+        return $this->authenticateEntity->getMessages();
+    }
 }
