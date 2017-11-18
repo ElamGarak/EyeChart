@@ -32,6 +32,9 @@ class AuthenticateEntity extends AbstractEntity
     /** @var mixed[] */
     protected $userData = [];
 
+    /** @var string[] */
+    protected $messages = [];
+
     /**
      * @return string
      */
@@ -136,7 +139,14 @@ class AuthenticateEntity extends AbstractEntity
      */
     public function getMessages(): array
     {
-        // Stub
-        return [];
+        return $this->messages;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function addMessage(string $message): void
+    {
+        $this->messages[] = $message;
     }
 }
