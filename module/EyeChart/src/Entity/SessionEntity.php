@@ -17,38 +17,57 @@ use Assert\Assertion;
  */
 class SessionEntity extends AbstractEntity
 {
-    /** @var string */
-    protected $id = '';
-
-    /** @var string */
-    protected $name = '';
+    /** @var string  */
+    protected $sessionId = '';
 
     /** @var int */
-    protected $lifeTime = -1;
-
-    /** @var int */
-    protected $modified = -1;
+    protected $sessionRecordId = -1;
 
     /** @var string */
-    protected $data = '';
+    protected $phpSessionId = '';
+
+    /** @var string */
+    protected $sessionUser = '';
+
+    /** @var int */
+    protected $lastActive;
+
+    /** @var string */
+    protected $token = '';
 
     /**
      * @return string
      */
-    public function getId(): string
+    public function getSessionId(): string
     {
-        return $this->id;
+        return $this->sessionId;
     }
 
     /**
-     * @param string $id
+     * @param string $sessionId
+     */
+    public function setSessionId(string $sessionId)
+    {
+        Assertion::maxLength($sessionId, 32);
+
+        $this->sessionId = $sessionId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSessionRecordId(): int
+    {
+        return $this->sessionRecordId;
+    }
+
+    /**
+     * @param int $sessionRecordId
      * @return SessionEntity
      */
-    public function setId(string $id): SessionEntity
+    public function setSessionRecordId(int $sessionRecordId): SessionEntity
     {
-        Assertion::maxLength($id, 32);
-
-        $this->id = $id;
+        $this->sessionRecordId = $sessionRecordId;
 
         return $this;
     }
@@ -56,58 +75,20 @@ class SessionEntity extends AbstractEntity
     /**
      * @return string
      */
-    public function getName(): string
+    public function getPhpSessionId(): string
     {
-        return $this->name;
+        return $this->phpSessionId;
     }
 
     /**
      * @param string $name
      * @return SessionEntity
      */
-    public function setName(string $name): SessionEntity
+    public function setPhpSessionId(string $name): SessionEntity
     {
         Assertion::maxLength($name, 32);
 
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLifeTime(): int
-    {
-        return $this->lifeTime;
-    }
-
-    /**
-     * @param int $lifeTime
-     * @return SessionEntity
-     */
-    public function setLifeTime(int $lifeTime): SessionEntity
-    {
-        $this->lifeTime = $lifeTime;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getModified(): int
-    {
-        return $this->modified;
-    }
-
-    /**
-     * @param int $modified
-     * @return SessionEntity
-     */
-    public function setModified(int $modified): SessionEntity
-    {
-        $this->modified = $modified;
+        $this->phpSessionId = $name;
 
         return $this;
     }
@@ -115,18 +96,66 @@ class SessionEntity extends AbstractEntity
     /**
      * @return string
      */
-    public function getData(): string
+    public function getSessionUser(): string
     {
-        return $this->data;
+        return $this->sessionUser;
+    }
+
+    /**
+     * @param string $sessionUser
+     * @return SessionEntity
+     */
+    public function setSessionUser(string $sessionUser): SessionEntity
+    {
+        Assertion::maxLength($sessionUser, 10);
+
+        $this->sessionUser = $sessionUser;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLifetime(): int
+    {
+        return (int) ini_get('session.gc_maxlifetime');
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastActive(): int
+    {
+        return $this->lastActive;
+    }
+
+    /**
+     * @param int $lastActive
+     * @return SessionEntity
+     */
+    public function setLastActive(int $lastActive): SessionEntity
+    {
+        $this->lastActive = $lastActive;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
     }
 
     /**
      * @param mixed $data
      * @return SessionEntity
      */
-    public function setData(string $data): SessionEntity
+    public function setToken(string $data): SessionEntity
     {
-        $this->data = $data;
+        $this->token = $data;
 
         return $this;
     }

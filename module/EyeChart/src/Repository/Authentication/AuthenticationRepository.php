@@ -144,19 +144,18 @@ final class AuthenticationRepository
 
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
-     * @return void
+     * @return string
      */
-    public function login(VOInterface $authenticationVO): void
+    public function login(VOInterface $authenticationVO): string
     {
         $this->authenticateModel->checkCredentials($authenticationVO);
 
-        $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
+        $sessionEntity = $this->authenticateModel->generateSessionEntity($authenticationVO);
 
-        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $this->authenticateStorageModel->write([ $sessionEntity ]);
+        $this->zendAuthentication->setStorage($this->authenticateStorageModel);
 
-        // TODO Resolve this with issue #2
-        //$this->authenticateStorageModel->write($storageRecord);
-        //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
+        return $sessionEntity->getToken();
     }
 
     /**
@@ -176,13 +175,5 @@ final class AuthenticationRepository
     {
         // Stub TODO Resolve this with issue #2
         return [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->authenticateModel->getToken();
     }
 }

@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace EyeChart\Service\Authenticate;
 
-use Assert\Assertion;
 use EyeChart\Repository\Authentication\AuthenticationRepository;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
@@ -67,13 +66,7 @@ final class AuthenticateService
      */
     public function login(VOInterface $authenticationVO): string
     {
-        $this->authenticationRepository->login($authenticationVO);
-
-        $token = $this->authenticationRepository->getToken();
-
-        Assertion::length($token, 36, "Invalid token was generated.");
-
-        return $token;
+        return $this->authenticationRepository->login($authenticationVO);
     }
 
     /**

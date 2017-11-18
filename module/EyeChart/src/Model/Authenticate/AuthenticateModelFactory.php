@@ -11,6 +11,7 @@ namespace EyeChart\Model\Authenticate;
 
 use EyeChart\DAO\Authenticate\AuthenticateDAO;
 use EyeChart\Entity\AuthenticateEntity;
+use EyeChart\Entity\SessionEntity;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -27,7 +28,8 @@ final class AuthenticateModelFactory
     {
         $authenticateDAO    = $container->get(AuthenticateDAO::class);
         $authenticateEntity = $container->get(AuthenticateEntity::class);
+        $sessionEntity      = $container->get(SessionEntity::class);
 
-        return new AuthenticateModel($authenticateDAO, $authenticateEntity);
+        return new AuthenticateModel($authenticateDAO, $authenticateEntity, $sessionEntity);
     }
 }

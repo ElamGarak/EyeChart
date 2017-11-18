@@ -54,6 +54,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      * Returns true if and only if storage is empty
      *
      * @return bool
+     * @deprecated
      */
     public function isEmpty(): bool
     {
@@ -78,8 +79,8 @@ final class AuthenticateStorageDAO implements StorageInterface
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
+              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
 
         $select->where($where);
 
@@ -102,26 +103,34 @@ final class AuthenticateStorageDAO implements StorageInterface
             return [];
         }
 
-        throw new RuntimeException("Failed to find session record {$this->sessionEntity->getId()} in " . __METHOD__);
+        throw new RuntimeException("Failed to find session record {$this->sessionEntity->getSessionRecordId()} in " . __METHOD__);
     }
 
     /**
      * Writes $contents to storage
      *
-     * @param  mixed[] $storage
+     * @param  SessionEntity[] $storage
      * @throws ExceptionInterface
      * @return boolean
      */
     public function write($storage): bool
     {
-        // Unable to implement parameter datatype, due to StorageInterface declaration in ZF
-        Assertion::isArray($storage);
+        // ZF StorageInterface for write does not permit type hint so we can check it here
+        Assertion::isArray($storage, 'Session Entity must be in an array');
+        // Now ensure only one session was passed
+        Assertion::eq(count($storage), 1, 'Storage array may only contain one Session Entity');
 
-        if ($this->isEmpty() === true) {
-            return $this->add($storage);
-        }
+        // Now get the session entity and proceed...
+        $sessionEntity = $storage[0];
 
-        return $this->merge($storage);
+        // Make sure this is an actual session entity
+        Assertion::isInstanceOf(
+            $sessionEntity,
+            SessionEntity::class,
+            'Only a session entity may be passed though storage'
+        );
+
+        return $this->add($sessionEntity);
     }
 
     /**
@@ -137,8 +146,8 @@ final class AuthenticateStorageDAO implements StorageInterface
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
+              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
 
         $delete->where($where);
 
@@ -150,23 +159,18 @@ final class AuthenticateStorageDAO implements StorageInterface
     }
 
     /**
-     * @param mixed[] $storage
+     * @param EntityInterface|SessionEntity $sessionEntity
      * @return bool
      */
-    private function add($storage): bool
+    private function add(EntityInterface $sessionEntity): bool
     {
-        $sessionData = [ $this->sessionEntity->getId() => $storage ];
-
-        $this->sessionEntity->setData(json_encode($sessionData));
-
         $insert = $this->sql->insert();
 
-        $insert->values([
-            SessionMapper::SESSION_ID       => $this->sessionEntity->getId(),
-            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getName(),
-            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getData(),
-            SessionMapper::MODIFIED => new Literal(time()),
-            SessionMapper::LIFETIME => new Literal($this->sessionEntity->getLifeTime())
+        $insert->values($test = [
+            SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
+            SessionMapper::SESSION_USER   => $sessionEntity->getSessionUser(),
+            SessionMapper::TOKEN          => $sessionEntity->getToken(),
+            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime())
         ]);
 
         $insert->into(SessionMapper::TABLE);
@@ -179,30 +183,31 @@ final class AuthenticateStorageDAO implements StorageInterface
     }
 
     /**
-     * @param mixed[] $storage
+     * @param EntityInterface|SessionEntity $storage
      * @return bool
+     * @deprecated
      */
-    private function merge($storage): bool
+    private function merge(EntityInterface $storage): bool
     {
-        $sessionData = [ $this->sessionEntity->getId() => $storage ];
+        $sessionData = [ $this->sessionEntity->getSessionRecordId() => $storage ];
 
         $this->existingStorage = json_encode(array_merge_recursive($this->existingStorage, $sessionData));
 
-        $this->sessionEntity->setData($this->existingStorage);
+        $this->sessionEntity->setToken($this->existingStorage);
 
         $update = $this->sql->update();
 
         $update->table(SessionMapper::TABLE);
 
         $update->set([
-            //SessionMapper::DATA     => $this->sessionEntity->getData(),
+            //SessionMapper::DATA     => $this->sessionEntity->getToken(),
             SessionMapper::MODIFIED => time()
         ]);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::SESSION_RECORD_ID, $this->sessionEntity->getSessionRecordId())->and
+              ->equalTo(SessionMapper::PHP_SESSION_ID, $this->sessionEntity->getPhpSessionId());
 
         $update->where($where);
 
@@ -221,7 +226,7 @@ final class AuthenticateStorageDAO implements StorageInterface
     {
         $currentStorage = $this->read();
 
-        if (array_key_exists($this->sessionEntity->getId(), $currentStorage) === false) {
+        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $currentStorage) === false) {
             // User session expired at some point and there is nothing to prune
 
             $authenticateEntity->addMessage('Your session has expired');
@@ -229,7 +234,7 @@ final class AuthenticateStorageDAO implements StorageInterface
             return false;
         }
 
-        $userStorage = $currentStorage[$this->sessionEntity->getId()];
+        $userStorage = $currentStorage[$this->sessionEntity->getSessionRecordId()];
 
         if (array_key_exists($authenticateEntity->getToken(), $userStorage) === true) {
             unset($userStorage[$authenticateEntity->getToken()]);
@@ -266,8 +271,8 @@ final class AuthenticateStorageDAO implements StorageInterface
     {
         $userSession = $this->read();
 
-        if (array_key_exists($this->sessionEntity->getId(), $userSession)) {
-            return $userSession[$this->sessionEntity->getId()];
+        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $userSession)) {
+            return $userSession[$this->sessionEntity->getSessionRecordId()];
         }
 
         return [];
@@ -278,7 +283,7 @@ final class AuthenticateStorageDAO implements StorageInterface
      */
     public function getSessionLifeTime(): int
     {
-        return $this->sessionEntity->getLifeTime();
+        return $this->sessionEntity->getLifetime();
     }
 
     /**

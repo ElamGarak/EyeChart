@@ -12,8 +12,9 @@ namespace EyeChart\Model\Authenticate;
 use EyeChart\DAO\Authenticate\AuthenticateDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
+use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\UnableToAuthenticateException;
-use EyeChart\Mappers\SessionMapper;
+use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -29,15 +30,23 @@ final class AuthenticateModel
     /** @var AuthenticateEntity */
     private $authenticateEntity;
 
+    /** @var SessionEntity */
+    private $sessionEntity;
+
     /**
      * AuthenticateModel constructor.
      * @param AuthenticateDAO $authenticateDAO
      * @param EntityInterface|AuthenticateEntity $authenticateEntity
+     * @param SessionEntity $sessionEntity
      */
-    public function __construct(AuthenticateDAO $authenticateDAO, EntityInterface $authenticateEntity)
-    {
+    public function __construct(
+        AuthenticateDAO $authenticateDAO,
+        EntityInterface $authenticateEntity,
+        SessionEntity $sessionEntity
+    ) {
         $this->authenticateDAO    = $authenticateDAO;
         $this->authenticateEntity = $authenticateEntity;
+        $this->sessionEntity      = $sessionEntity;
     }
 
     /**
@@ -56,26 +65,14 @@ final class AuthenticateModel
     }
 
     /**
-     * @param EntityInterface $employeeEntity
-     * @return array[]
+     * @param VOInterface|AuthenticationVO $authenticationVO
+     * @return SessionEntity
      */
-    public function assembleStorageRecord(EntityInterface $employeeEntity): array
+    public function generateSessionEntity(VOInterface $authenticationVO): SessionEntity
     {
-        $this->authenticateEntity->setToken(Uuid::uuid1()->toString());
-
-        $storageRecord = [
-            $this->authenticateEntity->getToken() => [
-                SessionMapper::MODIFIED => time(),
-            ]
-        ];
-
-        $storageRecord[$this->authenticateEntity->getToken()] = array_merge(
-            $storageRecord[$this->authenticateEntity->getToken()],
-            $this->authenticateEntity->toArray(),
-            $employeeEntity->toArray()
-        );
-
-        return $storageRecord;
+        return $this->sessionEntity->setToken(Uuid::uuid1()->toString())
+            ->setSessionUser($authenticationVO->getUsername())
+            ->setLastActive(time());
     }
 
     /**

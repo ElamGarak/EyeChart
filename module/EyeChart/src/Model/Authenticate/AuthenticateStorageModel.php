@@ -13,6 +13,7 @@ use Assert\Assertion;
 use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
+use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\SettingNotFoundException;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\VO\AuthenticationVO;
@@ -69,15 +70,12 @@ final class AuthenticateStorageModel implements StorageInterface
     }
 
     /**
-     * @param mixed[] $storage
+     * @param SessionEntity[] $storage
      * @return bool
      */
     public function write($storage): bool
     {
-        $userData                          = $this->authenticateStorageDao->write($storage);
-        $userData[SessionMapper::MODIFIED] = time();
-
-        return $userData;
+        return $this->authenticateStorageDao->write($storage);
     }
 
     public function clear(): void
