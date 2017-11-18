@@ -87,11 +87,9 @@ final class AuthenticateStorageModel implements StorageInterface
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
      */
-    public function prune(VOInterface $authenticationVO): bool
+    public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
-        $this->authenticateEntity->setToken($authenticationVO->getToken());
-
-        return $this->authenticateStorageDao->prune($this->authenticateEntity);
+        return $this->authenticateStorageDao->clearSessionRecord($authenticationVO);
     }
 
     /**
@@ -121,7 +119,7 @@ final class AuthenticateStorageModel implements StorageInterface
         $hasExpired = $this->hasTokenExpired($employeeInformation);
 
         if ($hasExpired === true) {
-            $this->prune(); // TODO This requires a vo passed to it.  Resolve with issue #2
+            $this->clearSessionRecord(); // TODO This requires a vo passed to it.  Resolve with issue #2
             $this->authenticateEntity->setIsValid(false);
 
             return;
