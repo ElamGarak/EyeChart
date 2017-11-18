@@ -123,7 +123,7 @@ final class AuthenticateStorageModel implements StorageInterface
         $hasExpired = $this->hasTokenExpired($employeeInformation);
 
         if ($hasExpired === true) {
-            $this->prune();
+            $this->prune(); // TODO This requires a vo passed to it.  Resolve with issue #2
             $this->authenticateEntity->setIsValid(false);
 
             return;
