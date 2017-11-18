@@ -70,16 +70,9 @@ final class AuthenticateModel
      */
     public function generateSessionEntity(VOInterface $authenticationVO): SessionEntity
     {
-        return $this->sessionEntity->setToken(Uuid::uuid1()->toString())
+        return $this->sessionEntity
+            ->setToken(Uuid::uuid1()->toString())
             ->setSessionUser($authenticationVO->getUsername())
             ->setLastActive(time());
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->authenticateEntity->getToken();
     }
 }
