@@ -51,6 +51,14 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
      * @param string $userName
      * @return AuthenticationVO
      */
