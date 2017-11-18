@@ -147,6 +147,8 @@ class AuthenticateEntity extends AbstractEntity
      */
     public function addMessage(string $message): void
     {
+        Assertion::notBlank($message, 'Message may not be blank');
+
         $this->messages[] = $message;
     }
 }
