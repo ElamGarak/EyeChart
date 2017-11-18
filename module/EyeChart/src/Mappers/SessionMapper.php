@@ -24,6 +24,7 @@ final class SessionMapper extends AbstractMapper
     public const SESSION_USER      = 'SessionUser';
     public const TOKEN             = 'Token';
     public const LIFETIME          = 'Lifetime';
+    public const ACCESSED          = 'AccessTimestamp';
 
     public const MODIFIED_TIME  = 'modifiedTime';
     public const SYS_TIME       = 'systemTime';
