@@ -20,7 +20,7 @@ class LogoutControllerFactory
     /**
      *
      * @param ContainerInterface $container
-     * @return \API\V1\Rpc\Logout\LogoutController
+     * @return LogoutController
      */
     public function __invoke(ContainerInterface $container): LogoutController
     {
