@@ -56,9 +56,12 @@ final class AuthenticateService
         return $this->authenticationRepository->authenticateUser($vo);
     }
 
-    public function checkSessionStatus(): void
+    /**
+     * @param VOInterface $vo
+     */
+    public function checkSessionStatus(VOInterface $vo): void
     {
-        $this->authenticationRepository->checkSessionStatus();
+        $this->authenticationRepository->checkSessionStatus($vo);
     }
 
     /**

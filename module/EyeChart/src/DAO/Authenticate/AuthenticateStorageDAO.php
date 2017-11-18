@@ -233,7 +233,6 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
 
     /**
      * @return int
-     * @deprecated
      */
     public function getSessionLifeTime(): int
     {

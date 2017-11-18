@@ -135,9 +135,12 @@ final class AuthenticationRepository
         return $result->isValid();
     }
 
-    public function checkSessionStatus(): void
+    /**
+     * @param VOInterface $vo
+     */
+    public function checkSessionStatus(VOInterface $vo): void
     {
-        $this->authenticateStorageModel->checkSessionStatus();
+        $this->authenticateStorageModel->checkSessionStatus($vo);
     }
 
     /**

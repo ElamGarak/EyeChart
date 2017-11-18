@@ -34,6 +34,9 @@ final class AuthenticateStorageModel implements StorageInterface
     /** @var AuthenticateEntity */
     private $authenticateEntity;
 
+    /** @var SessionEntity|EntityInterface */
+    private $sessionEntity;
+
     /** @var Config */
     private $environments;
 
@@ -41,15 +44,18 @@ final class AuthenticateStorageModel implements StorageInterface
      * AuthenticateStorageModel constructor.
      * @param StorageInterface|AuthenticateStorageDAO $authenticateStorageDAO
      * @param EntityInterface|AuthenticateEntity $authenticateEntity
+     * @param EntityInterface|SessionEntity $sessionEntity
      * @param Config $environments
      */
     public function __construct(
         StorageInterface $authenticateStorageDAO,
         EntityInterface $authenticateEntity,
+        EntityInterface $sessionEntity,
         Config $environments
     ) {
         $this->authenticateStorageDao = $authenticateStorageDAO;
         $this->authenticateEntity     = $authenticateEntity;
+        $this->sessionEntity          = $sessionEntity;
         $this->environments           = $environments;
     }
 
@@ -113,27 +119,29 @@ final class AuthenticateStorageModel implements StorageInterface
     }
 
     /**
-     * @param VOInterface $vo
+     * @param VOInterface|AuthenticationVO $authenticationVo
      */
-    public function checkSessionStatus(VOInterface $vo): void
+    public function checkSessionStatus(VOInterface $authenticationVo): void
     {
-        $employeeInformation = $this->getEmployeeInformation();
+        $this->sessionEntity->setToken($authenticationVo->getToken());
+        $record = $this->authenticateStorageDao->read();
 
-        $hasExpired = $this->hasTokenExpired($employeeInformation);
-
-        if ($hasExpired === true) {
-            $this->clearSessionRecord($vo);
+        if ($this->hasTokenExpired($record) === true) {
+            $this->clearSessionRecord($authenticationVo);
             $this->authenticateEntity->setIsValid(false);
 
             return;
         }
 
-        $this->refresh();
+        $this->refresh($record[SessionMapper::TOKEN]);
     }
 
-    public function refresh(): void
+    /**
+     * @param string $token
+     */
+    public function refresh(string $token): void
     {
-        $this->authenticateStorageDao->refresh($this->authenticateEntity->getToken());
+        $this->authenticateStorageDao->refresh($token);
     }
 
     /**
@@ -169,12 +177,12 @@ final class AuthenticateStorageModel implements StorageInterface
     }
 
     /**
-     * @param mixed[] $employeeInformation
+     * @param mixed[] $sessionRecord
      * @return bool
      */
-    private function hasTokenExpired(array $employeeInformation): bool
+    private function hasTokenExpired(array $sessionRecord): bool
     {
-        $remainingSeconds = ($employeeInformation[SessionMapper::MODIFIED] +
+        $remainingSeconds = ($sessionRecord[SessionMapper::ACCESSED] +
                              $this->authenticateStorageDao->getSessionLifeTime()) - time();
 
         return ($remainingSeconds <= 0);

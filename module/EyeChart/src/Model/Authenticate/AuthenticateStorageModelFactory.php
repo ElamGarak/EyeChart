@@ -11,6 +11,7 @@ namespace EyeChart\Model\Authenticate;
 
 use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
+use EyeChart\Entity\SessionEntity;
 use Psr\Container\ContainerInterface;
 use Zend\Config\Config;
 
@@ -28,12 +29,14 @@ final class AuthenticateStorageModelFactory
     {
         $authenticateStorageDAO = $container->get(AuthenticateStorageDAO::class);
         $authenticateEntity     = $container->get(AuthenticateEntity::class);
+        $sessionEntity          = $container->get(SessionEntity::class);
         $config                 = new Config($container->get('Config'));
         $environments           = $config->get('environments');
 
         return new AuthenticateStorageModel(
             $authenticateStorageDAO,
             $authenticateEntity,
+            $sessionEntity,
             $environments
         );
     }

@@ -165,7 +165,7 @@ final class AuthenticateListener implements ListenerAggregateInterface
 
             $this->authenticateEntity->setIsValid($this->authenticateService->authenticateUser($authenticationVO));
 
-            $this->authenticateService->checkSessionStatus();
+            $this->authenticateService->checkSessionStatus($authenticationVO);
 
             if ($this->authenticateEntity->getIsValid() === true) {
                 return;
