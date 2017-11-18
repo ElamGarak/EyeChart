@@ -3,7 +3,7 @@
 echo $this->doctype();
 ?>
 <html lang="en">
-    <?php echo $this->partial('partials/head.phtml'); ?>
+    <?php echo $this->partial('partials/head.phtml', [ 'messages' => $this->messages ]); ?>
     <body class="fixed-nav sticky-footer bg-dark" id="page-top">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
