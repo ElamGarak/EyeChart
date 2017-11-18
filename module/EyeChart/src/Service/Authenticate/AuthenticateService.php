@@ -48,11 +48,12 @@ final class AuthenticateService
     }
 
     /**
+     * @param VOInterface $vo
      * @return bool
      */
-    public function authenticateUser(): bool
+    public function authenticateUser(VOInterface $vo): bool
     {
-        return $this->authenticationRepository->authenticateUser();
+        return $this->authenticationRepository->authenticateUser($vo);
     }
 
     public function checkSessionStatus(): void

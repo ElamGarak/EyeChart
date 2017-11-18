@@ -11,6 +11,7 @@ namespace EyeChart\Service\Authenticate;
 
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\AuthenticationVO;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Config\Config;
@@ -160,9 +161,9 @@ final class AuthenticateListener implements ListenerAggregateInterface
         }
 
         if (array_key_exists(AuthenticateMapper::HEADER, $headers)) {
-            $this->authenticateEntity->setToken($headers[AuthenticateMapper::HEADER]);
+            $authenticationVO = AuthenticationVO::build()->setToken($headers[AuthenticateMapper::HEADER]);
 
-            $this->authenticateEntity->setIsValid($this->authenticateService->authenticateUser());
+            $this->authenticateEntity->setIsValid($this->authenticateService->authenticateUser($authenticationVO));
 
             $this->authenticateService->checkSessionStatus();
 

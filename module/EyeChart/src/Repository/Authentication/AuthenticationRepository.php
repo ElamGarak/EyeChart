@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace EyeChart\Repository\Authentication;
 
+use EyeChart\Entity\SessionEntity;
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
@@ -81,7 +83,7 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param mixed[] $storage
+     * @param SessionEntity[] $storage
      * @return bool
      */
     public function write($storage): bool
@@ -96,11 +98,15 @@ final class AuthenticationRepository
 
     /**
      * @param VOInterface $vo
-     * @return bool
      */
-    public function prune(VOInterface $vo): bool
+    public function prune(VOInterface $vo): void
     {
-        return $this->authenticateStorageModel->prune($vo);
+        $message = AuthenticateMapper::SESSION_ENDED_MESSAGE;
+        if ($this->authenticateStorageModel->clearSessionRecord($vo) === false) {
+            $message = AuthenticateMapper::SESSION_EXPIRED_MESSAGE;
+        }
+
+        $this->authenticateModel->addMessage($message);
     }
 
     /**
@@ -112,15 +118,18 @@ final class AuthenticationRepository
     }
 
     /**
+     * @param VOInterface $vo
      * @return bool
      */
-    public function authenticateUser(): bool
+    public function authenticateUser(VOInterface $vo): bool
     {
+        $this->authenticateModel->setTokenToAuthenticate($vo);
         $this->zendAuthentication->setStorage($this->authenticateStorageModel);
+
         $result = $this->zendAuthentication->authenticate($this->authenticateAdapter);
 
         if ($result->isValid() === false) {
-            $this->logout(); // Required VO is missing, resolve with issue #2
+            $this->logout($vo);
         }
 
         return $result->isValid();
@@ -137,9 +146,9 @@ final class AuthenticationRepository
      */
     public function logout(VOInterface $vo): array
     {
-        $this->authenticateStorageModel->prune($vo);
+        $this->authenticateStorageModel->clearSessionRecord($vo);
 
-        return $this->authenticateStorageModel->getAuthenticateEntity()->getMessages();
+        return $this->authenticateModel->getMessages();
     }
 
     /**
