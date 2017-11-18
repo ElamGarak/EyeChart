@@ -43,6 +43,7 @@ function Login() {
             loginForm.parsley().validate();
 
             if (!loginForm.parsley().isValid()) {
+                $.openLoaderModal();
                 messages.removeClass("hidden");
 
                 return
@@ -60,6 +61,8 @@ function Login() {
             password: $("#password").val()
         };
 
+        $.openLoaderModal(true);
+
         $.ajax({
             headers:  JSON_HEADER,
             url:      API_LOGIN_SEGMENT,
@@ -73,9 +76,11 @@ function Login() {
                     return true;
                 }
 
+                $.openLoaderModal();
                 setMessageContainer(data.messages);
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                $.openLoaderModal();
                 setMessageContainer({
                     error: [ errorThrown ]
                 });
