@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 namespace API\V1\Rpc\Logout;
 
-use EyeChart\Entity\AuthenticateEntity;
+use EyeChart\VO\AuthenticationVO;
 use Zend\Mvc\Controller\AbstractActionController;
 use EyeChart\Service\Authenticate\AuthenticateService;
 use ZF\ApiProblem\ApiProblemResponse;
@@ -23,24 +23,25 @@ class LogoutController extends AbstractActionController
     /** @var AuthenticateService */
     private $authenticateService;
 
-    /** @var AuthenticateEntity */
-    private $authenticateEntity;
-
     /** @var \stdClass */
     private $inputData;
+
+    /** @var AuthenticationVO */
+    private $authenticationVO;
 
     /** @var mixed[] */
     private $jsonReturn;
 
+    /** @var string[] */
+    private $messages;
+
     /**
      * LogoutController constructor.
      * @param AuthenticateService $authenticateService
-     * @param AuthenticateEntity $authenticateEntity
      */
-    public function __construct(AuthenticateService $authenticateService, AuthenticateEntity $authenticateEntity)
+    public function __construct(AuthenticateService $authenticateService)
     {
         $this->authenticateService = $authenticateService;
-        $this->authenticateEntity  = $authenticateEntity;
     }
 
     /**
@@ -74,19 +75,21 @@ class LogoutController extends AbstractActionController
 
     private function prepareServiceData(): void
     {
-        $this->authenticateEntity->setToken($this->inputData->token);
+        // If no token is passed, we are still going to log out of the application
+        $token = $this->inputData->token ?? '';
+
+        $this->authenticationVO = AuthenticationVO::build()->setToken($token);
     }
 
     private function executeService(): void
     {
-        $this->authenticateService->logout();
+        $this->messages = $this->authenticateService->logout($this->authenticationVO);
     }
 
     private function prepareReturnData(): void
     {
         $this->jsonReturn = [
-            'messages' => $this->authenticateEntity->getMessages(),
-            'logout'   => true
+            'messages' => $this->messages
         ];
     }
 }
