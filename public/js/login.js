@@ -8,31 +8,21 @@
 function Login() {
     "use strict";
 
-    var loaderModal,
-        loginErrorContainer;
+    var messages = $("#messages");
 
     this.initialize = function() {
-        loginErrorContainer = $("#loginError");
-
         enableBindings();
-        bindModal();
         displayIncomingMessages();
     };
 
     function enableBindings() {
         $("#username").focus();
 
-        registerPasswordKeypress();
-        loginClick();
+        bindPasswordKeyPress();
+        bindSubmit();
     }
 
-    function bindModal() {
-        loaderModal = $("#loaderModal");
-        loaderModal.removeClass("hidden");
-        loaderModal.easyModal(EASY_MODAL_CONFIG);
-    }
-
-    function registerPasswordKeypress() {
+    function bindPasswordKeyPress() {
         $('#password').keypress(function (e) {
             if (e.which === 13) {
                 $('#login').click();
@@ -42,14 +32,26 @@ function Login() {
         });
     }
 
-    function loginClick() {
-        var loginForm = $("#login-form");
+    function bindSubmit() {
+        var loginForm = $("form#login");
+        loginForm.parsley();
 
-        $("#login").on("click", function() {
-            loginForm.parsley();
-            if (loginForm.parsley().validate() && loginForm.parsley().isValid()) {
-                ajaxLogin();
+        $("#submit").on("click", function() {
+            messages.addClass("hidden");
+            messages.html('');
+
+            loginForm.parsley().validate();
+
+            if (!loginForm.parsley().isValid()) {
+                $.openLoaderModal();
+                messages.removeClass("hidden");
+
+                return
             }
+
+            messages.addClass("hidden");
+
+            ajaxLogin();
         });
     }
 
@@ -59,7 +61,7 @@ function Login() {
             password: $("#password").val()
         };
 
-        loaderModal.trigger("openModal");
+        $.openLoaderModal(true);
 
         $.ajax({
             headers:  JSON_HEADER,
@@ -68,18 +70,20 @@ function Login() {
             dataType: "json",
             data:     JSON.stringify(params),
             success:  function(data) {
-                loginErrorContainer.html('');
-
-                if (data.success === true) {
+                if (data.token) {
                     $.redirect(INDEX_SEGMENT, {"token" : data.token }, "POST");
 
                     return true;
                 }
 
+                $.openLoaderModal();
                 setMessageContainer(data.messages);
             },
-            complete: function() {
-                loaderModal.trigger('closeModal');
+            error: function(jqXHR, textStatus, errorThrown) {
+                $.openLoaderModal();
+                setMessageContainer({
+                    error: [ errorThrown ]
+                });
             }
         });
     }
@@ -96,18 +100,19 @@ function Login() {
 
     /**
      *
-     * @param messages
+     * @param {json} incomingMessages
      */
-    function setMessageContainer(messages) {
-        if (typeof messages === "object") {
+    function setMessageContainer(incomingMessages) {
+        if (incomingMessages && typeof incomingMessages === "object") {
             var container = $('<div></div>');
 
-            $.each(messages, function (index, value) {
+            $.each(incomingMessages, function (index, value) {
                 var p = $('<p>').text(value);
                 container.append(p);
             });
 
-            loginErrorContainer.html(container.html());
+            messages.html(container.html());
+            messages.removeClass("hidden");
         }
     }
 }

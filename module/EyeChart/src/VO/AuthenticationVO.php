@@ -23,6 +23,9 @@ final class AuthenticationVO extends AbstractVO
     /** @var string */
     protected $password = '';
 
+    /** @var string */
+    protected $token = '';
+
     /**
      * @return VOInterface|AuthenticationVO
      */
@@ -48,6 +51,14 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
      * @param string $userName
      * @return AuthenticationVO
      */
@@ -69,6 +80,21 @@ final class AuthenticationVO extends AbstractVO
         Assertion::notEmpty($password, "Password was not provided");
 
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @param string $token
+     * @return AuthenticationVO
+     */
+    public function setToken(string $token): AuthenticationVO
+    {
+        if (! empty($token)) {
+            Assertion::length($token, 36, "Invalid Token was passed");
+        }
+
+        $this->token = $token;
 
         return $this;
     }

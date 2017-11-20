@@ -5,14 +5,6 @@
  * (c) 2017
  */
 
-$(document).ready(function() {
-    "use strict";
-
-    var loaderModal = $("#loaderModal");
-    loaderModal.removeClass("hidden");
-    loaderModal.easyModal(EASY_MODAL_CONFIG);
-});
-
 $.notify = function(messageText, messageType) {
     "use strict";
 
@@ -41,16 +33,23 @@ $.ajaxSetup({
     }
 });
 
-$.openLoaderModal = function() {
+/**
+ *
+ * @param {boolean} state
+ */
+$.openLoaderModal = function(state) {
     "use strict";
 
-    $("#loaderModal").trigger("openModal");
-};
+    var loaderModal = $("#loaderModal");
 
-$.closeLoaderModal = function() {
-    "use strict";
+    if (state === true) {
+        loaderModal.removeClass("hidden");
 
-    $("#loaderModal").trigger("closeModal");
+        return;
+    }
+
+    loaderModal.addClass("hidden");
+
 };
 
 /**

@@ -41,10 +41,7 @@ final class IndexController extends AbstractActionController
     }
 
     /**
-     *
-     * {@inheritdoc}
-     *
-     * @see \Zend\Mvc\Controller\AbstractActionController::indexAction()
+     * @return ViewModel
      */
     public function indexAction(): ViewModel
     {
@@ -60,6 +57,10 @@ final class IndexController extends AbstractActionController
 
     private function authenticate(): void
     {
+        // TODO This will be addressed in issue #2
+
+        return;
+
         try {
             $this->commandBus->handle(
                 new AuthenticateCommand(

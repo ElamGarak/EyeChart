@@ -95,11 +95,12 @@ final class AuthenticationRepository
     }
 
     /**
+     * @param VOInterface $vo
      * @return bool
      */
-    public function prune(): bool
+    public function prune(VOInterface $vo): bool
     {
-        return $this->authenticateStorageModel->prune();
+        return $this->authenticateStorageModel->prune($vo);
     }
 
     /**
@@ -119,7 +120,7 @@ final class AuthenticationRepository
         $result = $this->zendAuthentication->authenticate($this->authenticateAdapter);
 
         if ($result->isValid() === false) {
-            $this->logout();
+            $this->logout(); // Required VO is missing, resolve with issue #2
         }
 
         return $result->isValid();
@@ -130,9 +131,15 @@ final class AuthenticationRepository
         $this->authenticateStorageModel->checkSessionStatus();
     }
 
-    public function logout(): void
+    /**
+     * @param VOInterface $vo
+     * @return string[]
+     */
+    public function logout(VOInterface $vo): array
     {
-        $this->authenticateStorageModel->prune();
+        $this->authenticateStorageModel->prune($vo);
+
+        return $this->authenticateStorageModel->getAuthenticateEntity()->getMessages();
     }
 
     /**
@@ -145,9 +152,9 @@ final class AuthenticationRepository
 
         $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
 
-        // TODO
-        //$storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
 
+        // TODO Resolve this with issue #2
         //$this->authenticateStorageModel->write($storageRecord);
         //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
     }
@@ -167,7 +174,7 @@ final class AuthenticationRepository
      */
     public function getTokenSession(VOInterface $tokenVO): array
     {
-        // Stub
+        // Stub TODO Resolve this with issue #2
         return [];
     }
 
@@ -176,7 +183,6 @@ final class AuthenticationRepository
      */
     public function getToken(): string
     {
-        // Stub
-        return '';
+        return $this->authenticateModel->getToken();
     }
 }

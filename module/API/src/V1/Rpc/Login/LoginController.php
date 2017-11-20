@@ -88,9 +88,6 @@ final class LoginController extends AbstractActionController
 
     private function prepareReturnData(): void
     {
-        $this->jsonReturn = [
-            'token'    => $this->token,
-            'messages' => 'Login Successful'
-        ];
+        $this->jsonReturn = [ 'token' => $this->token ];
     }
 }

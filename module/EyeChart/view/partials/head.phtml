@@ -5,10 +5,7 @@
     <meta name="description" content="Eye Chart Login">
     <meta name="author" content="Joshua M Pacheco">
     <?php echo $this->headTitle()->setAutoEscape(false)->setTranslatorEnabled(false); ?>
-    <!-- Bootstrap core CSS-->
-    <link href="<?php echo $this->basePath('assets/SBAdmin/vendor/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
-    <!-- Custom fonts for this template-->
-    <link href="<?php echo $this->basePath('assets/SBAdmin/vendor/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet" type="text/css">
-    <!-- Custom styles for this template-->
-    <link href="<?php echo $this->basePath('assets/SBAdmin/css/sb-admin.css'); ?>" rel="stylesheet">
+    <?php echo $this->partial('partials/BootstrapCoreCSS.phtml'); ?>
+    <?php echo $this->partial('partials/ApplicationCoreCSS.phtml'); ?>
+    <?php echo $this->partial('partials/ViewLevelJS.phtml', [ 'messages' => $this->messages ]); ?>
 </head>

@@ -9,13 +9,21 @@ function Logout() {
     "use strict";
 
     this.initialize = function() {
-        callLogoutApi();
+        bindLogoutElements();
     };
+
+    function bindLogoutElements() {
+        $(".logout").on('click', function () {
+            callLogoutApi();
+        })
+    }
 
     function callLogoutApi() {
         var params = {
             token: TOKEN
         };
+
+        $.openLoaderModal(true);
 
         $.ajax({
             headers:  JSON_HEADER_WITH_AUTH,
@@ -23,8 +31,11 @@ function Logout() {
             type:     "POST",
             dataType: "json",
             data:     JSON.stringify(params),
-            complete:  function () {
-                $.redirect(LOGIN_SEGMENT, { "message" : "You have been logged out" }, "POST");
+            success: function (results) {
+                $.redirect(LOGIN_SEGMENT, { "messages" : results.messages }, "POST");
+            },
+            error:  function (jqXHR, textStatus, errorThrown) {
+                $.redirect(LOGIN_SEGMENT, { "message" : [ errorThrown ] }, "POST");
             }
         });
     }

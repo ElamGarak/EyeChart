@@ -1,0 +1,22 @@
+.hidden {
+    display: none !important;
+    visibility: hidden !important
+}
+
+.bs-callout {
+    padding: 5px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
+.bs-callout-danger {
+    border-left-color: #ce4844;
+}
+
+input.parsley-error {
+    color: #B94A48 !important;
+    background-color: #F2DEDE !important;
+    border: 1px solid #FF0000 !important;
+}
