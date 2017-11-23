@@ -31,14 +31,12 @@ final class AuthenticateAdapterFactory
      */
     public function __invoke(ContainerInterface $controllers): AuthenticateAdapter
     {
-        $adapter = new AuthenticateAdapter(
+        return new AuthenticateAdapter(
             $controllers->get(SessionManager::class),
             $controllers->get(SessionEntity::class),
             $controllers->get(AuthenticateEntity::class),
             $controllers->get(AuthenticateDAO::class),
             $controllers->get(AuthenticateStorageDAO::class)
         );
-
-        return $adapter;
     }
 }
