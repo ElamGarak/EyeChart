@@ -168,7 +168,7 @@ final class AuthenticateStorageModel implements StorageInterface
             throw new SettingNotFoundException("Key 'activeSessionCheck' was not found, check config");
         }
 
-        return $this->environment->get('timeoutWarningThreshold');
+        return $this->environment->get('activeSessionCheck');
     }
 
     /**
