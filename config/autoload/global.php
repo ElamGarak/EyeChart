@@ -24,27 +24,13 @@ return [
             'from'    => ''
         ],
     ],
-    'environments' => [
-        'systems' => [
-
+    'environment' => [
+        'emailOverride' => [
+            'enabled' => false,
+            'recipient' => []
         ],
-        'development' => [
-            'emailOverride' => [
-                'enabled' => true,
-                'recipients' => [],
-            ],
-            'timeoutWarningThreshold' => 5, // Minutes
-            'activeSessionCheck' => true,
-            'passwordOverride' => 'dillydilly',
-        ],
-        'production' => [
-            'email_override' => [
-                'enabled' => false,
-                'recipient' => []
-            ],
-            'timeoutWarningThreshold' => 5, // Minutes
-            'activeSessionCheck' => true,
-        ],
+        'timeoutWarningThreshold' => 5, // Minutes
+        'activeSessionCheck' => true,
     ],
     'noTokenRequired' => [
         'api.rpc.login' => 'Login API Controller',
