@@ -40,14 +40,6 @@ final class AuthenticateService
     }
 
     /**
-     * @return mixed[]
-     */
-    public function getUserData(): array
-    {
-        return $this->authenticationRepository->getEmployeeInformation();
-    }
-
-    /**
      * @param VOInterface $vo
      * @return bool
      */
