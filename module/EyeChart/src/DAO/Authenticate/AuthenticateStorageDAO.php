@@ -37,9 +37,6 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
     /** @var SessionEntity */
     private $sessionEntity;
 
-    /** @var mixed[]  */
-    private $existingStorage = [];
-
     /**
      * AuthenticateStorageService constructor.
      * @param Adapter $adapter
@@ -54,16 +51,17 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
     }
 
     /**
-     * Returns true if and only if storage is empty
+     * Returns true if a session record exists
      *
      * @return bool
-     * @deprecated
      */
     public function isEmpty(): bool
     {
-        $this->existingStorage = $this->read();
-
-        return empty($this->existingStorage);
+        try {
+            return empty($this->read());
+        } catch (MissingSessionException $exception) {
+            return false;
+        }
     }
 
     /**
@@ -144,18 +142,14 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
         }
 
         $delete = $this->sql->delete();
-
         $delete->from(SessionMapper::TABLE);
 
         $where = new Where();
-
         $where->equalTo(SessionMapper::TOKEN, $this->sessionEntity->getToken());
 
         $delete->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($delete);
-
-        $result = $statement->execute();
+        $result = parent::executeStatement($delete);
 
         return $result->isQueryResult();
     }
@@ -178,9 +172,7 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
 
         $insert->into(SessionMapper::TABLE);
 
-        $statement = $this->sql->prepareStatementForSqlObject($insert);
-
-        $result = $statement->execute();
+        $result = parent::executeStatement($insert);
 
         return $result->isQueryResult();
     }
@@ -211,15 +203,6 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
      * @return mixed[]
      * @deprecated
      */
-    public function getEmployeeInformation(): array
-    {
-        return $this->getUserStorage();
-    }
-
-    /**
-     * @return mixed[]
-     * @deprecated
-     */
     public function getUserStorage(): array
     {
         $userSession = $this->read();
@@ -229,14 +212,6 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
         }
 
         return [];
-    }
-
-    /**
-     * @return int
-     */
-    public function getSessionLifeTime(): int
-    {
-        return $this->sessionEntity->getLifetime();
     }
 
     /**
@@ -259,9 +234,7 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
 
         $update->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-
-        $result = $statement->execute();
+        $result = parent::executeStatement($update);
 
         return $result->isQueryResult();
     }

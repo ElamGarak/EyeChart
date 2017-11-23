@@ -42,6 +42,6 @@ class AuthenticateDAO extends AbstractDAO
 
         $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        return (! is_null($result));
+        return (!is_null($result));
     }
 }
