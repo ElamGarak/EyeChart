@@ -97,7 +97,32 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
             throw new MissingSessionException($this->sessionEntity, __METHOD__);
         }
 
-        return $result;
+        return $this->parseDataTypes($result->getArrayCopy());
+    }
+
+    /**
+     * This is not a good solution.  But until we can find a way for the data to return in the proper types, this will
+     * have to do.
+     *
+     * @param mixed[] $record
+     * @return mixed[]
+     */
+    private function parseDataTypes(array $record): array
+    {
+        foreach ($record as $key => $value) {
+            switch (true) {
+                case (strpos($value, '.') === true) :
+                    $record[$key] = (float)$value;
+
+                    break;
+                case (is_numeric($value)) :
+                    $record[$key] = (int)$value;
+
+                default:
+            }
+        }
+
+        return $record;
     }
 
     /**
