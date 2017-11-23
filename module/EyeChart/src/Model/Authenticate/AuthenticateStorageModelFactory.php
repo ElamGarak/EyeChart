@@ -27,17 +27,13 @@ final class AuthenticateStorageModelFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateStorageModel
     {
-        $authenticateStorageDAO = $container->get(AuthenticateStorageDAO::class);
-        $authenticateEntity     = $container->get(AuthenticateEntity::class);
-        $sessionEntity          = $container->get(SessionEntity::class);
-        $config                 = new Config($container->get('Config'));
-        $environments           = $config->get('environments');
+        $config = new Config($container->get('Config'));
 
         return new AuthenticateStorageModel(
-            $authenticateStorageDAO,
-            $authenticateEntity,
-            $sessionEntity,
-            $environments
+            $container->get(AuthenticateStorageDAO::class),
+            $container->get(AuthenticateEntity::class),
+            $container->get(SessionEntity::class),
+            $config->get('environment')
         );
     }
 }
