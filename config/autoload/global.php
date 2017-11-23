@@ -26,11 +26,11 @@ return [
     ],
     'environment' => [
         'emailOverride' => [
-            'enabled' => false,
+            'enabled'   => false,
             'recipient' => []
         ],
         'timeoutWarningThreshold' => 5, // Minutes
-        'activeSessionCheck' => true,
+        'activeSessionCheck'      => true,
     ],
     'noTokenRequired' => [
         'api.rpc.login' => 'Login API Controller',
