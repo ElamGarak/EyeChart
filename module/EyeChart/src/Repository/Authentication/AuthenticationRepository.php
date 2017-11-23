@@ -16,7 +16,6 @@ use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\AuthenticationVO;
-use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
 use Zend\Authentication\AuthenticationServiceInterface;
@@ -110,14 +109,6 @@ final class AuthenticationRepository
     }
 
     /**
-     * @return mixed[]
-     */
-    public function getEmployeeInformation(): array
-    {
-        return $this->authenticateStorageModel->getEmployeeInformation();
-    }
-
-    /**
      * @param VOInterface $vo
      * @return bool
      */
@@ -171,21 +162,11 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param TokenVO $tokenVO
+     * @param VOInterface $tokenVO
      * @return array[]
      */
-    public function getUserSessionByToken(TokenVO $tokenVO): array
+    public function getUserSessionStatus(VOInterface $tokenVO): array
     {
-        return $this->authenticateStorageModel->getUserSessionByToken($tokenVO);
-    }
-
-    /**
-     * @param VOInterface|TokenVO $tokenVO
-     * @return array
-     */
-    public function getTokenSession(VOInterface $tokenVO): array
-    {
-        // Stub TODO Resolve this with issue #2
-        return [];
+        return $this->authenticateStorageModel->getUserSessionStatus($tokenVO);
     }
 }
