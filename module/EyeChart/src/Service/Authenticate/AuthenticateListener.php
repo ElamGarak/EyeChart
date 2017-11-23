@@ -26,24 +26,16 @@ use EyeChart\Exception\UnauthorizedException;
 final class AuthenticateListener implements ListenerAggregateInterface
 {
 
-    /**
-     * @var callable[]
-     */
+    /** @var callable[] */
     private $listeners = [];
 
-    /**
-     * @var AuthenticateService
-     */
+    /** @var AuthenticateService */
     private $authenticateService;
 
-    /**
-     *  @var AuthenticateEntity
-     */
+    /** @var AuthenticateEntity */
     private $authenticateEntity;
 
-    /**
-     * @var Config
-     */
+    /** @var Config */
     private $config;
 
     /**
@@ -51,12 +43,12 @@ final class AuthenticateListener implements ListenerAggregateInterface
      *
      * @param AuthenticateService $authenticateService
      * @param AuthenticateEntity  $authenticateEntity
-     * @param Config              $config
+     * @param Config $config
      */
     public function __construct(
         AuthenticateService $authenticateService,
         AuthenticateEntity  $authenticateEntity,
-        Config              $config
+        Config $config
     ) {
         $this->authenticateService = $authenticateService;
         $this->authenticateEntity  = $authenticateEntity;
