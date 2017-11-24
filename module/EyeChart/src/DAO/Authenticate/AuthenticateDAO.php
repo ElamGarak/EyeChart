@@ -36,12 +36,37 @@ class AuthenticateDAO extends AbstractDAO
 
         $where = new Where();
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::PASSWORD, $vo->getPassword());
+              ->equalTo(AuthenticateMapper::PASSWORD, $vo->getPassword())->and
+              ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);
 
         $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
         return (!is_null($result));
+    }
+
+    /**
+     * @param AuthenticationVO|VOInterface $vo
+     * @return bool
+     */
+    public function isUserActive(VOInterface $vo): bool
+    {
+        $select = parent::getSqlAdapter()->select();
+
+        $select->columns([
+            AuthenticateMapper::IS_ACTIVE,
+        ])->from(AuthenticateMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername());
+
+        $select->where($where);
+
+        $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+
+        $results = $this->parseDataTypes($result);
+
+        return (bool) $results['IsActive'];
     }
 }
