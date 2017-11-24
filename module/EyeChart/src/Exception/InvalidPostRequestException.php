@@ -15,7 +15,7 @@ use Throwable;
  * Class InvalidPostRequestException
  * @package EyeChart\Exception
  */
-class InvalidPostRequestException extends HttpInvalidParamException
+final class InvalidPostRequestException extends HttpInvalidParamException
 {
     protected $message = "Post key does not exist";
 
@@ -25,7 +25,7 @@ class InvalidPostRequestException extends HttpInvalidParamException
      * @param int $code
      * @param Throwable $previous
      */
-    public function __construct(string $key = '', int $code = 500, Throwable $previous)
+    public function __construct(string $key = '', int $code = 500, Throwable $previous = null)
     {
         if (!empty($key)) {
             parent::__construct($this->message, $code, $previous);
