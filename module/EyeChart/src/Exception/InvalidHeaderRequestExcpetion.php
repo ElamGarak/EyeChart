@@ -8,14 +8,14 @@
 
 namespace EyeChart\Exception;
 
-use OutOfBoundsException;
+use HttpHeaderException;
 use Throwable;
 
 /**
  * Class InvalidHeaderRequestException
  * @package EyeChart\Exception
  */
-class InvalidHeaderRequestException extends OutOfBoundsException
+class InvalidHeaderRequestException extends HttpHeaderException
 {
     protected $message = "Header does not exist";
 
