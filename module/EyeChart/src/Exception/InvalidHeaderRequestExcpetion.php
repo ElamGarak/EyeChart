@@ -25,7 +25,7 @@ class InvalidHeaderRequestException extends HttpHeaderException
      * @param int $code
      * @param Throwable $previous
      */
-    public function __construct(string $header = '', int $code = 500, Throwable $previous)
+    public function __construct(string $header = '', int $code = 500, Throwable $previous = null)
     {
         if (!empty($header)) {
             parent::__construct($this->message, $code, $previous);
