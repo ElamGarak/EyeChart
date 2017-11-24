@@ -54,6 +54,14 @@ class SessionEntity extends AbstractEntity
     }
 
     /**
+     * @return bool
+     */
+    public function isSessionId(): bool
+    {
+        return (! empty($this->sessionId));
+    }
+
+    /**
      * @return int
      */
     public function getSessionRecordId(): int
@@ -70,6 +78,14 @@ class SessionEntity extends AbstractEntity
         $this->sessionRecordId = $sessionRecordId;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSessionRecordId(): bool
+    {
+        return ($this->sessionRecordId > 0);
     }
 
     /**
@@ -119,7 +135,8 @@ class SessionEntity extends AbstractEntity
      */
     public function getLifetime(): int
     {
-        return (int) ini_get('session.gc_maxlifetime');
+        //return (int) ini_get('session.gc_maxlifetime');
+        return 100000;
     }
 
     /**
