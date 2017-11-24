@@ -24,8 +24,8 @@ final class AuthenticateStorageServiceFactory
      */
     public function __invoke(ContainerInterface $controllers): AuthenticateStorageService
     {
-        $authenticationRepository = $controllers->get(AuthenticationRepository::class);
-
-        return new AuthenticateStorageService($authenticationRepository);
+        return new AuthenticateStorageService(
+            $controllers->get(AuthenticationRepository::class)
+        );
     }
 }

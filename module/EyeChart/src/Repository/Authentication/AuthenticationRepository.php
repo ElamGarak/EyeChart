@@ -9,12 +9,13 @@ declare(strict_types=1);
 
 namespace EyeChart\Repository\Authentication;
 
+use EyeChart\Entity\SessionEntity;
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\AuthenticationVO;
-use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
 use Zend\Authentication\AuthenticationServiceInterface;
@@ -81,7 +82,7 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param mixed[] $storage
+     * @param SessionEntity[] $storage
      * @return bool
      */
     public function write($storage): bool
@@ -96,39 +97,41 @@ final class AuthenticationRepository
 
     /**
      * @param VOInterface $vo
-     * @return bool
      */
-    public function prune(VOInterface $vo): bool
+    public function prune(VOInterface $vo): void
     {
-        return $this->authenticateStorageModel->prune($vo);
+        $message = AuthenticateMapper::SESSION_ENDED_MESSAGE;
+        if ($this->authenticateStorageModel->clearSessionRecord($vo) === false) {
+            $message = AuthenticateMapper::SESSION_EXPIRED_MESSAGE;
+        }
+
+        $this->authenticateModel->addMessage($message);
     }
 
     /**
-     * @return mixed[]
-     */
-    public function getEmployeeInformation(): array
-    {
-        return $this->authenticateStorageModel->getEmployeeInformation();
-    }
-
-    /**
+     * @param VOInterface $vo
      * @return bool
      */
-    public function authenticateUser(): bool
+    public function authenticateUser(VOInterface $vo): bool
     {
+        $this->authenticateModel->setTokenToAuthenticate($vo);
         $this->zendAuthentication->setStorage($this->authenticateStorageModel);
+
         $result = $this->zendAuthentication->authenticate($this->authenticateAdapter);
 
         if ($result->isValid() === false) {
-            $this->logout(); // Required VO is missing, resolve with issue #2
+            $this->logout($vo);
         }
 
         return $result->isValid();
     }
 
-    public function checkSessionStatus(): void
+    /**
+     * @param VOInterface $vo
+     */
+    public function checkSessionStatus(VOInterface $vo): void
     {
-        $this->authenticateStorageModel->checkSessionStatus();
+        $this->authenticateStorageModel->checkSessionStatus($vo);
     }
 
     /**
@@ -137,52 +140,33 @@ final class AuthenticationRepository
      */
     public function logout(VOInterface $vo): array
     {
-        $this->authenticateStorageModel->prune($vo);
+        $this->authenticateStorageModel->clearSessionRecord($vo);
 
-        return $this->authenticateStorageModel->getAuthenticateEntity()->getMessages();
+        return $this->authenticateModel->getMessages();
     }
 
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
-     * @return void
+     * @return string
      */
-    public function login(VOInterface $authenticationVO): void
+    public function login(VOInterface $authenticationVO): string
     {
         $this->authenticateModel->checkCredentials($authenticationVO);
 
-        $employeeEntity = $this->employeeModel->getEmployeeRecordByUserId($authenticationVO->getUsername());
+        $sessionEntity = $this->authenticateModel->generateSessionEntity($authenticationVO);
 
-        $storageRecord  = $this->authenticateModel->assembleStorageRecord($employeeEntity);
+        $this->authenticateStorageModel->write([ $sessionEntity ]);
+        $this->zendAuthentication->setStorage($this->authenticateStorageModel);
 
-        // TODO Resolve this with issue #2
-        //$this->authenticateStorageModel->write($storageRecord);
-        //$this->zendAuthentication->setStorage($this->authenticateStorageModel);
+        return $sessionEntity->getToken();
     }
 
     /**
-     * @param TokenVO $tokenVO
+     * @param VOInterface $tokenVO
      * @return array[]
      */
-    public function getUserSessionByToken(TokenVO $tokenVO): array
+    public function getUserSessionStatus(VOInterface $tokenVO): array
     {
-        return $this->authenticateStorageModel->getUserSessionByToken($tokenVO);
-    }
-
-    /**
-     * @param VOInterface|TokenVO $tokenVO
-     * @return array
-     */
-    public function getTokenSession(VOInterface $tokenVO): array
-    {
-        // Stub TODO Resolve this with issue #2
-        return [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->authenticateModel->getToken();
+        return $this->authenticateStorageModel->getUserSessionStatus($tokenVO);
     }
 }

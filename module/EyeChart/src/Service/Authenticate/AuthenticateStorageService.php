@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace EyeChart\Service\Authenticate;
 
+use EyeChart\Entity\SessionEntity;
 use EyeChart\Repository\Authentication\AuthenticationRepository;
-use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Storage\StorageInterface;
 
@@ -49,12 +49,12 @@ final class AuthenticateStorageService implements StorageInterface
     }
 
     /**
-     * @param mixed[] $storage
+     * @param SessionEntity[] $sessionEntity
      * @return bool
      */
-    public function write($storage): bool
+    public function write($sessionEntity): bool
     {
-        return $this->authenticationRepository->write($storage);
+        return $this->authenticationRepository->write($sessionEntity);
     }
 
     public function clear(): void
@@ -63,28 +63,11 @@ final class AuthenticateStorageService implements StorageInterface
     }
 
     /**
-     * @param VOInterface $vo
-     * @return bool
-     */
-    public function prune(VOInterface $vo): bool
-    {
-        return $this->authenticationRepository->prune($vo);
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getEmployeeInformation()
-    {
-        return $this->authenticationRepository->getEmployeeInformation();
-    }
-
-    /**
-     * @param VOInterface|TokenVO $tokenVO
+     * @param VOInterface $tokenVO
      * @return array
      */
-    public function getTokenSession(TokenVO $tokenVO): array
+    public function getUserSessionByToken(VOInterface $tokenVO): array
     {
-        return $this->authenticationRepository->getTokenSession($tokenVO);
+        return $this->authenticationRepository->getUserSessionStatus($tokenVO);
     }
 }

@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use Assert\Assertion;
-use EyeChart\Entity\AuthenticateEntity;
+use Exception;
+use EyeChart\DAO\AbstractDAO;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
+use EyeChart\Exception\MissingSessionException;
 use EyeChart\Mappers\SessionMapper;
-use Zend\Authentication\Adapter\DbTable\Exception\RuntimeException;
+use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\VOInterface;
 use Zend\Authentication\Exception\ExceptionInterface;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\Literal;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
@@ -28,16 +29,13 @@ use Zend\Db\Sql\Where;
  * Class AuthenticateStorageDAO
  * @package EyeChart\DAO\Authenticate
  */
-final class AuthenticateStorageDAO implements StorageInterface
+final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 {
     /** @var Sql */
     private $sql;
 
     /** @var SessionEntity */
     private $sessionEntity;
-
-    /** @var mixed[]  */
-    private $existingStorage = [];
 
     /**
      * AuthenticateStorageService constructor.
@@ -46,249 +44,223 @@ final class AuthenticateStorageDAO implements StorageInterface
      */
     public function __construct(Adapter $adapter, SessionEntity $sessionEntity)
     {
+        parent::__construct($adapter);
+
         $this->sql           = new Sql($adapter);
         $this->sessionEntity = $sessionEntity;
     }
 
     /**
-     * Returns true if and only if storage is empty
+     * Returns true if a session record exists
      *
      * @return bool
      */
     public function isEmpty(): bool
     {
-        $this->existingStorage = $this->read();
-
-        return empty($this->existingStorage);
+        try {
+            return empty($this->read());
+        } catch (MissingSessionException $exception) {
+            return false;
+        }
     }
 
     /**
-     * Returns the contents of storage
+     * Return token record from session table
      *
      * @return mixed[]
-     * @throws RuntimeException
+     * @throws MissingSessionException
      */
     public function read(): array
     {
         $select = $this->sql->select();
 
-        //$select->columns([ SessionMapper::DATA ]);
+        $select->columns([
+            SessionMapper::SESSION_RECORD_ID,
+            SessionMapper::PHP_SESSION_ID,
+            SessionMapper::SESSION_USER,
+            SessionMapper::TOKEN,
+            SessionMapper::LIFETIME,
+            SessionMapper::ACCESSED
+        ]);
 
         $select->from(SessionMapper::TABLE);
 
         $where = new Where();
 
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::TOKEN, $this->sessionEntity->getToken());
 
         $select->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = parent::getResultSingleResult($select);
 
-        $result = $statement->execute();
-
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet();
-            $resultSet->initialize($result);
-
-            $row = $resultSet->current();
-
-            if (null != $row) {
-                $storage = $row->getArrayCopy();
-
-                //return json_decode($storage[SessionMapper::DATA], true);
-            }
-
-            return [];
+        if (empty($result)) {
+            throw new MissingSessionException($this->sessionEntity, __METHOD__);
         }
 
-        throw new RuntimeException("Failed to find session record {$this->sessionEntity->getId()} in " . __METHOD__);
+        return $this->parseDataTypes($result->getArrayCopy());
     }
 
     /**
-     * Writes $contents to storage
+     * This is not a good solution.  But until we can find a way for the data to return in the proper types, this will
+     * have to do.
      *
-     * @param  mixed[] $storage
+     * @param mixed[] $record
+     * @return mixed[]
+     */
+    private function parseDataTypes(array $record): array
+    {
+        foreach ($record as $key => $value) {
+            switch (true) {
+                case (strpos($value, '.') === true) :
+                    $record[$key] = (float)$value;
+
+                    break;
+                case (is_numeric($value)) :
+                    $record[$key] = (int)$value;
+
+                default:
+            }
+        }
+
+        return $record;
+    }
+
+    /**
+     * Add token record to session table
+     *
+     * @param  SessionEntity[] $storage
      * @throws ExceptionInterface
      * @return boolean
      */
     public function write($storage): bool
     {
-        // Unable to implement parameter datatype, due to StorageInterface declaration in ZF
-        Assertion::isArray($storage);
+        // ZF StorageInterface for write does not permit type hint so we can check it here
+        Assertion::isArray($storage, 'Session Entity must be in an array');
+        // Now ensure only one session was passed
+        Assertion::eq(count($storage), 1, 'Storage array may only contain one Session Entity');
 
-        if ($this->isEmpty() === true) {
-            return $this->add($storage);
-        }
+        // Now get the session entity and proceed...
+        $sessionEntity = $storage[0];
 
-        return $this->merge($storage);
+        // Make sure this is an actual session entity
+        Assertion::isInstanceOf(
+            $sessionEntity,
+            SessionEntity::class,
+            'Only a session entity may be passed though storage'
+        );
+
+        return $this->add($sessionEntity);
     }
 
     /**
-     * Clears contents from storage
+     * Remove token record from session table
      *
      * @return bool
+     * @throws Exception
      */
     public function clear(): bool
     {
-        $delete = $this->sql->delete();
+        if (empty($this->sessionEntity->getToken())) {
+            throw new Exception(
+                'Session record can not be cleared without a valid token set to the session entity'
+            );
+        }
 
+        $delete = $this->sql->delete();
         $delete->from(SessionMapper::TABLE);
 
         $where = new Where();
-
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
+        $where->equalTo(SessionMapper::TOKEN, $this->sessionEntity->getToken());
 
         $delete->where($where);
 
-        $statement = $this->sql->prepareStatementForSqlObject($delete);
-
-        $result = $statement->execute();
+        $result = parent::executeStatement($delete);
 
         return $result->isQueryResult();
     }
 
     /**
-     * @param mixed[] $storage
+     * @param EntityInterface|SessionEntity $sessionEntity
      * @return bool
      */
-    private function add($storage): bool
+    private function add(EntityInterface $sessionEntity): bool
     {
-        $sessionData = [ $this->sessionEntity->getId() => $storage ];
-
-        $this->sessionEntity->setData(json_encode($sessionData));
-
         $insert = $this->sql->insert();
 
-        $insert->values([
-            SessionMapper::SESSION_ID       => $this->sessionEntity->getId(),
-            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getName(),
-            SessionMapper::PHP_SESS_ID     => $this->sessionEntity->getData(),
-            SessionMapper::MODIFIED => new Literal(time()),
-            SessionMapper::LIFETIME => new Literal($this->sessionEntity->getLifeTime())
+        $insert->values($test = [
+            SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
+            SessionMapper::SESSION_USER   => $sessionEntity->getSessionUser(),
+            SessionMapper::TOKEN          => $sessionEntity->getToken(),
+            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime()),
+            SessionMapper::ACCESSED       => new Literal($this->sessionEntity->getLastActive())
         ]);
 
         $insert->into(SessionMapper::TABLE);
 
-        $statement = $this->sql->prepareStatementForSqlObject($insert);
-
-        $result = $statement->execute();
+        $result = parent::executeStatement($insert);
 
         return $result->isQueryResult();
     }
 
     /**
-     * @param mixed[] $storage
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
      */
-    private function merge($storage): bool
+    public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
-        $sessionData = [ $this->sessionEntity->getId() => $storage ];
+        $this->sessionEntity->setToken($authenticationVO->getToken());
 
-        $this->existingStorage = json_encode(array_merge_recursive($this->existingStorage, $sessionData));
-
-        $this->sessionEntity->setData($this->existingStorage);
-
-        $update = $this->sql->update();
-
-        $update->table(SessionMapper::TABLE);
-
-        $update->set([
-            //SessionMapper::DATA     => $this->sessionEntity->getData(),
-            SessionMapper::MODIFIED => time()
-        ]);
-
-        $where = new Where();
-
-        $where->equalTo(SessionMapper::SESSION_ID, $this->sessionEntity->getId())->and
-              ->equalTo(SessionMapper::PHP_SESS_ID, $this->sessionEntity->getName());
-
-        $update->where($where);
-
-        $statement = $this->sql->prepareStatementForSqlObject($update);
-
-        $result = $statement->execute();
-
-        return $result->isQueryResult();
-    }
-
-    /**
-     * @param AuthenticateEntity|EntityInterface $authenticateEntity
-     * @return bool
-     */
-    public function prune(EntityInterface $authenticateEntity): bool
-    {
-        $currentStorage = $this->read();
-
-        if (array_key_exists($this->sessionEntity->getId(), $currentStorage) === false) {
-            // User session expired at some point and there is nothing to prune
-
-            $authenticateEntity->addMessage('Your session has expired');
-
+        try {
+            // Check to see if user is still logged in with current token
+            $this->read();
+        } catch (MissingSessionException $exception) {
+            // User token was removed prior to the check
             return false;
         }
 
-        $userStorage = $currentStorage[$this->sessionEntity->getId()];
-
-        if (array_key_exists($authenticateEntity->getToken(), $userStorage) === true) {
-            unset($userStorage[$authenticateEntity->getToken()]);
-        }
-
-        if (count($userStorage) != 0) {
-            // User has more than one token in the session, update with token removed and return
-
-            $authenticateEntity->addMessage('You have been logged out of this session');
-
-            return $this->merge($userStorage);
-        }
-
-        // User had only one token in the session, clear them out rather than leave an empty, orphan record
+        // User has an active token, clear it now
         $this->clear();
-
-        $authenticateEntity->addMessage('You have been logged out');
 
         return true;
     }
 
     /**
      * @return mixed[]
-     */
-    public function getEmployeeInformation(): array
-    {
-        return $this->getUserStorage();
-    }
-
-    /**
-     * @return mixed[]
+     * @deprecated
      */
     public function getUserStorage(): array
     {
         $userSession = $this->read();
 
-        if (array_key_exists($this->sessionEntity->getId(), $userSession)) {
-            return $userSession[$this->sessionEntity->getId()];
+        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $userSession)) {
+            return $userSession[$this->sessionEntity->getSessionRecordId()];
         }
 
         return [];
     }
 
     /**
-     * @return int
-     */
-    public function getSessionLifeTime(): int
-    {
-        return $this->sessionEntity->getLifeTime();
-    }
-
-    /**
      * @param string $token
+     * @return bool
      */
-    public function refresh(string $token): void
+    public function refresh(string $token): bool
     {
-        $userStorage                                  = $this->getUserStorage();
-        $userStorage[$token][SessionMapper::MODIFIED] = time();
+        $update = $this->sql->update();
 
-        $this->merge($userStorage);
+        $update->table(SessionMapper::TABLE);
+
+        $update->set([
+            SessionMapper::ACCESSED => time()
+        ]);
+
+        $where = new Where();
+
+        $where->equalTo(SessionMapper::TOKEN, $token);
+
+        $update->where($where);
+
+        $result = parent::executeStatement($update);
+
+        return $result->isQueryResult();
     }
 }

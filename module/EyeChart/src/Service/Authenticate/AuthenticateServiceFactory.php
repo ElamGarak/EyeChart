@@ -24,17 +24,13 @@ class AuthenticateServiceFactory
      * Create and return AuthenticateService
      *
      * @param ContainerInterface $container
-     *
      * @return \EyeChart\Service\Authenticate\AuthenticateService
      */
     public function __invoke(ContainerInterface $container): AuthenticateService
     {
-        $authenticationRepository = $container->get(AuthenticationRepository::class);
-        $zendAuthentication       = new ZendAuthentication();
-
         return new AuthenticateService(
-            $authenticationRepository,
-            $zendAuthentication
+            $container->get(AuthenticationRepository::class),
+            new ZendAuthentication()
         );
     }
 }

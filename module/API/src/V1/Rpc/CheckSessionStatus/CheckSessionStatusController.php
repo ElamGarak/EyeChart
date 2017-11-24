@@ -82,7 +82,7 @@ class CheckSessionStatusController extends AbstractActionController
 
     private function executeService(): void
     {
-        $this->userTokenSession = $this->authenticateStorageService->getTokenSession($this->tokenVO);
+        $this->userTokenSession = $this->authenticateStorageService->getUserSessionByToken($this->tokenVO);
     }
 
     private function prepareReturnData(): void

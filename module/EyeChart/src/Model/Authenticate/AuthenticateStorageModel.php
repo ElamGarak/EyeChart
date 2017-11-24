@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace EyeChart\Model\Authenticate;
 
-use Assert\Assertion;
 use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
+use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\SettingNotFoundException;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\VO\AuthenticationVO;
@@ -33,23 +33,29 @@ final class AuthenticateStorageModel implements StorageInterface
     /** @var AuthenticateEntity */
     private $authenticateEntity;
 
+    /** @var SessionEntity|EntityInterface */
+    private $sessionEntity;
+
     /** @var Config */
-    private $environments;
+    private $environment;
 
     /**
      * AuthenticateStorageModel constructor.
      * @param StorageInterface|AuthenticateStorageDAO $authenticateStorageDAO
      * @param EntityInterface|AuthenticateEntity $authenticateEntity
-     * @param Config $environments
+     * @param EntityInterface|SessionEntity $sessionEntity
+     * @param Config $environment
      */
     public function __construct(
         StorageInterface $authenticateStorageDAO,
         EntityInterface $authenticateEntity,
-        Config $environments
+        EntityInterface $sessionEntity,
+        Config $environment
     ) {
         $this->authenticateStorageDao = $authenticateStorageDAO;
         $this->authenticateEntity     = $authenticateEntity;
-        $this->environments           = $environments;
+        $this->sessionEntity          = $sessionEntity;
+        $this->environment            = $environment;
     }
 
     /**
@@ -69,15 +75,12 @@ final class AuthenticateStorageModel implements StorageInterface
     }
 
     /**
-     * @param mixed[] $storage
+     * @param SessionEntity[] $storage
      * @return bool
      */
     public function write($storage): bool
     {
-        $userData                          = $this->authenticateStorageDao->write($storage);
-        $userData[SessionMapper::MODIFIED] = time();
-
-        return $userData;
+        return $this->authenticateStorageDao->write($storage);
     }
 
     public function clear(): void
@@ -89,107 +92,83 @@ final class AuthenticateStorageModel implements StorageInterface
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
      */
-    public function prune(VOInterface $authenticationVO): bool
+    public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
-        $this->authenticateEntity->setToken($authenticationVO->getToken());
-
-        return $this->authenticateStorageDao->prune($this->authenticateEntity);
+        return $this->authenticateStorageDao->clearSessionRecord($authenticationVO);
     }
 
     /**
-     * @return AuthenticateEntity
+     * @param VOInterface|AuthenticationVO $authenticationVo
      */
-    public function getAuthenticateEntity(): AuthenticateEntity
+    public function checkSessionStatus(VOInterface $authenticationVo): void
     {
-        return $this->authenticateEntity;
-    }
+        $this->sessionEntity->setToken($authenticationVo->getToken());
+        $record = $this->authenticateStorageDao->read();
 
-    /**
-     * @return mixed[]
-     */
-    public function getEmployeeInformation(): array
-    {
-        $storageData = $this->authenticateStorageDao->getEmployeeInformation();
-
-        Assertion::keyExists($storageData, $this->authenticateEntity->getToken(), 'Token was not found.');
-
-        return $storageData[$this->authenticateEntity->getToken()];
-    }
-
-    public function checkSessionStatus(): void
-    {
-        $employeeInformation = $this->getEmployeeInformation();
-
-        $hasExpired = $this->hasTokenExpired($employeeInformation);
-
-        if ($hasExpired === true) {
-            $this->prune(); // TODO This requires a vo passed to it.  Resolve with issue #2
+        if ($this->hasTokenExpired($record) === true) {
+            $this->clearSessionRecord($authenticationVo);
             $this->authenticateEntity->setIsValid(false);
 
             return;
         }
 
-        $this->refresh();
-    }
-
-    public function refresh(): void
-    {
-        $this->authenticateStorageDao->refresh($this->authenticateEntity->getToken());
+        $this->refresh($record[SessionMapper::TOKEN]);
     }
 
     /**
-     * @param TokenVO $tokenVO
+     * @param string $token
+     */
+    public function refresh(string $token): void
+    {
+        $this->authenticateStorageDao->refresh($token);
+    }
+
+    /**
+     * @param VOInterface|TokenVO $tokenVO
      * @return array
      */
-    public function getUserSessionByToken(TokenVO $tokenVO): array
+    public function getUserSessionStatus(VOInterface $tokenVO): array
     {
-        $userStorage = $this->authenticateStorageDao->getUserStorage();
+        $this->sessionEntity->setToken($tokenVO->getToken());
 
-        if (empty($userStorage)) {
-            return [];
-        }
-
-        if (! array_key_exists($tokenVO->getToken(), $userStorage)) {
-            return [];
-        }
-
-        $this->authenticateEntity->setToken($tokenVO->getToken());
-        $employeeInformation = $this->getEmployeeInformation();
-
-        $expirationTime = $employeeInformation[SessionMapper::MODIFIED] + $this->authenticateStorageDao
-                                                                               ->getSessionLifeTime();
+        $sessionRecord = $this->authenticateStorageDao->read();
 
         return [
-            SessionMapper::SYS_TIME  => time(),
-            SessionMapper::MODIFIED    => $employeeInformation[SessionMapper::MODIFIED],
-            SessionMapper::REMAINING   => max($expirationTime - time(), 0),
-            SessionMapper::EXPIRED     => $this->hasTokenExpired($employeeInformation),
-            SessionMapper::THRESHOLD   => $this->getSessionTimeoutThreshold(),
+            SessionMapper::SYS_TIME     => time(),
+            SessionMapper::REMAINING    => $this->getExpirationTime($sessionRecord),
+            SessionMapper::EXPIRED      => $this->hasTokenExpired($sessionRecord),
+            SessionMapper::THRESHOLD    => $this->getSessionTimeoutThreshold(),
             SessionMapper::ACTIVE_CHECK => $this->activeSessionCheck()
         ];
     }
 
     /**
-     * @param mixed[] $employeeInformation
+     * @param array $sessionRecord
+     * @return int
+     */
+    private function getExpirationTime(array $sessionRecord): int
+    {
+        return max(($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time(), 0);
+    }
+
+    /**
+     * @param mixed[] $sessionRecord
      * @return bool
      */
-    private function hasTokenExpired(array $employeeInformation): bool
+    private function hasTokenExpired(array $sessionRecord): bool
     {
-        $remainingSeconds = ($employeeInformation[SessionMapper::MODIFIED] +
-                             $this->authenticateStorageDao->getSessionLifeTime()) - time();
+        $remainingSeconds = ($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time();
 
         return ($remainingSeconds <= 0);
     }
 
     private function activeSessionCheck(): bool
     {
-        $systemEnvironment = $this->getSystemEnvironment();
-
-        if (! $systemEnvironment->get('activeSessionCheck')) {
+        if (! $this->environment->get('activeSessionCheck')) {
             throw new SettingNotFoundException("Key 'activeSessionCheck' was not found, check config");
         }
 
-        return $systemEnvironment->get('timeoutWarningThreshold');
+        return $this->environment->get('activeSessionCheck');
     }
 
     /**
@@ -198,29 +177,10 @@ final class AuthenticateStorageModel implements StorageInterface
      */
     private function getSessionTimeoutThreshold(): int
     {
-        $systemEnvironment = $this->getSystemEnvironment();
-
-        if (! $systemEnvironment->get('timeoutWarningThreshold')) {
+        if (! $this->environment->get('timeoutWarningThreshold')) {
             throw new SettingNotFoundException("Key 'timeoutWarningThreshold' was not found, check config");
         }
 
-        return $systemEnvironment->get('timeoutWarningThreshold');
-    }
-
-    /**
-     * @return Config
-     * @throws SettingNotFoundException
-     */
-    private function getSystemEnvironment(): Config
-    {
-        $system = gethostname();
-
-        $systems = $this->environments->get('systems')->toArray();
-
-        if (! array_key_exists($system, $systems)) {
-            throw new SettingNotFoundException("System {$system} was not found, check config");
-        }
-
-        return $this->environments[$systems[$system]];
+        return $this->environment->get('timeoutWarningThreshold');
     }
 }

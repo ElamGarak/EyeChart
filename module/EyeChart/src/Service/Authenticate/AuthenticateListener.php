@@ -11,6 +11,7 @@ namespace EyeChart\Service\Authenticate;
 
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\AuthenticationVO;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Config\Config;
@@ -25,24 +26,16 @@ use EyeChart\Exception\UnauthorizedException;
 final class AuthenticateListener implements ListenerAggregateInterface
 {
 
-    /**
-     * @var callable[]
-     */
+    /** @var callable[] */
     private $listeners = [];
 
-    /**
-     * @var AuthenticateService
-     */
+    /** @var AuthenticateService */
     private $authenticateService;
 
-    /**
-     *  @var AuthenticateEntity
-     */
+    /** @var AuthenticateEntity */
     private $authenticateEntity;
 
-    /**
-     * @var Config
-     */
+    /** @var Config */
     private $config;
 
     /**
@@ -50,12 +43,12 @@ final class AuthenticateListener implements ListenerAggregateInterface
      *
      * @param AuthenticateService $authenticateService
      * @param AuthenticateEntity  $authenticateEntity
-     * @param Config              $config
+     * @param Config $config
      */
     public function __construct(
         AuthenticateService $authenticateService,
         AuthenticateEntity  $authenticateEntity,
-        Config              $config
+        Config $config
     ) {
         $this->authenticateService = $authenticateService;
         $this->authenticateEntity  = $authenticateEntity;
@@ -160,11 +153,11 @@ final class AuthenticateListener implements ListenerAggregateInterface
         }
 
         if (array_key_exists(AuthenticateMapper::HEADER, $headers)) {
-            $this->authenticateEntity->setToken($headers[AuthenticateMapper::HEADER]);
+            $authenticationVO = AuthenticationVO::build()->setToken($headers[AuthenticateMapper::HEADER]);
 
-            $this->authenticateEntity->setIsValid($this->authenticateService->authenticateUser());
+            $this->authenticateEntity->setIsValid($this->authenticateService->authenticateUser($authenticationVO));
 
-            $this->authenticateService->checkSessionStatus();
+            $this->authenticateService->checkSessionStatus($authenticationVO);
 
             if ($this->authenticateEntity->getIsValid() === true) {
                 return;

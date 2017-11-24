@@ -28,11 +28,10 @@ final class AuthenticateListenerFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateListener
     {
-        $authenticateService = $container->get(AuthenticateService::class);
-        $authenticateEntity  = $container->get(AuthenticateEntity::class);
-
-        $config = new Config($container->get('config'));
-
-        return new AuthenticateListener($authenticateService, $authenticateEntity, $config);
+        return new AuthenticateListener(
+            $container->get(AuthenticateService::class),
+            $container->get(AuthenticateEntity::class),
+            new Config($container->get('config'))
+        );
     }
 }

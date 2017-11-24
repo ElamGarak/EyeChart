@@ -11,6 +11,7 @@ namespace EyeChart\DAO;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\AbstractPreparableSql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 
@@ -43,9 +44,7 @@ class AbstractDAO
         $returnType = ResultSet::TYPE_ARRAYOBJECT,
         $arrayObjectPrototype = null
     ) {
-        $statement = $this->getSqlAdapter()->prepareStatementForSqlObject($select);
-
-        $result = $statement->execute();
+        $result = $this->executeStatement($select);
 
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet = new ResultSet($returnType, $arrayObjectPrototype);
@@ -67,5 +66,16 @@ class AbstractDAO
     protected function getSqlAdapter(): Sql
     {
         return $this->sql;
+    }
+
+    /**
+     * @param AbstractPreparableSql $sql
+     * @return ResultInterface
+     */
+    protected function executeStatement(AbstractPreparableSql $sql): ResultInterface
+    {
+        $statement = $this->getSqlAdapter()->prepareStatementForSqlObject($sql);
+
+        return $statement->execute();
     }
 }

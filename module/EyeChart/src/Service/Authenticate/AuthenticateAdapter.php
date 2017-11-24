@@ -66,8 +66,8 @@ final class AuthenticateAdapter implements AdapterInterface
         $this->sessionManager->start();
 
         $this->sessionEntity = $sessionEntity;
-        $this->sessionEntity->setId($this->sessionManager->getId());
-        $this->sessionEntity->setName($this->sessionManager->getName());
+        $this->sessionEntity->setSessionId($this->sessionManager->getId());
+        $this->sessionEntity->setPhpSessionId($this->sessionManager->getName());
 
         $this->authenticateEntity     = $authenticateEntity;
         $this->authenticateDao        = $authenticateDao;
@@ -85,7 +85,7 @@ final class AuthenticateAdapter implements AdapterInterface
     {
         $this->sessionStorage = $this->authenticateStorageDao->read();
 
-        if (array_key_exists($this->sessionEntity->getId(), $this->sessionStorage) === false) {
+        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $this->sessionStorage) === false) {
             return new Result(
                 Result::FAILURE_IDENTITY_AMBIGUOUS,
                 AuthenticateMapper::TOKEN,
@@ -93,7 +93,7 @@ final class AuthenticateAdapter implements AdapterInterface
             );
         }
 
-        $storage = $this->sessionStorage[$this->sessionEntity->getId()];
+        $storage = $this->sessionStorage[$this->sessionEntity->getSessionRecordId()];
 
         if (array_key_exists($this->authenticateEntity->getToken(), $storage) === false) {
             return new Result(

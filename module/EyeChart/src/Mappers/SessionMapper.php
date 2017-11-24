@@ -19,11 +19,12 @@ final class SessionMapper extends AbstractMapper
     public const TABLE  = 'session';
     public const ALIAS  = 'storage';
 
-    public const SESSION_ID   = 'SessionId';
-    public const PHP_SESS_ID  = 'PHPSessId';
-    public const MODIFIED     = 'Modified';
-    public const SESSION_USER = 'SessionUser';
-    public const LIFETIME     = 'Lifetime';
+    public const SESSION_RECORD_ID = 'SessionId';
+    public const PHP_SESSION_ID    = 'PHPSessionId';
+    public const SESSION_USER      = 'SessionUser';
+    public const TOKEN             = 'Token';
+    public const LIFETIME          = 'Lifetime';
+    public const ACCESSED          = 'AccessTimestamp';
 
     public const MODIFIED_TIME  = 'modifiedTime';
     public const SYS_TIME       = 'systemTime';
