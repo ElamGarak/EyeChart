@@ -78,4 +78,30 @@ class AbstractDAO
 
         return $statement->execute();
     }
+
+
+    /**
+     * This is not a good solution.  But until we can find a way for the data to return in the proper types, this will
+     * have to do.
+     *
+     * @param mixed[] $record
+     * @return mixed[]
+     */
+    protected function parseDataTypes(array $record): array
+    {
+        foreach ($record as $key => $value) {
+            switch (true) {
+                case (strpos($value, '.') === true) :
+                    $record[$key] = (float)$value;
+
+                    break;
+                case (is_numeric($value)) :
+                    $record[$key] = (int)$value;
+
+                default:
+            }
+        }
+
+        return $record;
+    }
 }

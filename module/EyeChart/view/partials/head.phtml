@@ -7,5 +7,10 @@
     <?php echo $this->headTitle()->setAutoEscape(false)->setTranslatorEnabled(false); ?>
     <?php echo $this->partial('partials/BootstrapCoreCSS.phtml'); ?>
     <?php echo $this->partial('partials/ApplicationCoreCSS.phtml'); ?>
-    <?php echo $this->partial('partials/ViewLevelJS.phtml', [ 'messages' => $this->messages ]); ?>
+    <?php echo $this->partial('partials/ViewLevelJS.phtml', [
+        'menuRoute' => $this->menuRoute,
+        'token'     => $this->token,
+        'messages'  => $this->messages
+    ]);
+    ?>
 </head>

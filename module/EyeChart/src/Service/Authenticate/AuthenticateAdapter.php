@@ -15,7 +15,8 @@ use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\Mappers\EmployeeMapper;
+use EyeChart\Mappers\SessionMapper;
+use EyeChart\VO\AuthenticationVO;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 use Zend\Authentication\Storage\StorageInterface;
@@ -33,9 +34,6 @@ final class AuthenticateAdapter implements AdapterInterface
 
     /** @var AuthenticateEntity */
     private $authenticateEntity;
-
-    /** @var StorageInterface */
-    private $sessionStorage;
 
     /** @var AuthenticateDAO  */
     private $authenticateDao;
@@ -83,38 +81,36 @@ final class AuthenticateAdapter implements AdapterInterface
      */
     public function authenticate(): Result
     {
-        $this->sessionStorage = $this->authenticateStorageDao->read();
+        $this->sessionEntity->setToken($this->authenticateEntity->getToken());
 
-        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $this->sessionStorage) === false) {
+        $this->authenticateStorageDao->read();
+
+        if ($this->sessionEntity->isSessionId() === false) {
             return new Result(
                 Result::FAILURE_IDENTITY_AMBIGUOUS,
-                AuthenticateMapper::TOKEN,
-                ['No credentials were found']
+                SessionMapper::SESSION_RECORD_ID,
+                ['PHP Session ID was not found']
             );
         }
 
-        $storage = $this->sessionStorage[$this->sessionEntity->getSessionRecordId()];
-
-        if (array_key_exists($this->authenticateEntity->getToken(), $storage) === false) {
+        if ($this->sessionEntity->isSessionRecordId() === false) {
             return new Result(
                 Result::FAILURE_IDENTITY_NOT_FOUND,
                 AuthenticateMapper::TOKEN,
-                ['Access token was not found']
+                ['Access token record was not found']
             );
         }
 
-        $employeeUserId = $storage[$this->authenticateEntity->getToken()][EmployeeMapper::USER_ID];
+        $authenticateVO = AuthenticationVO::build()->setUsername($this->sessionEntity->getSessionUser());
 
-        $this->authenticateDao->isUserValid($employeeUserId);
-
-        if ($this->authenticateDao->isUserValid($employeeUserId) === false) {
+        if ($this->authenticateDao->isUserActive($authenticateVO) === false) {
             return new Result(
                 Result::FAILURE_CREDENTIAL_INVALID,
                 AuthenticateMapper::TOKEN,
-                ['Credentials are not valid']
+                ['User is not active on this system']
             );
         }
 
-        return new Result(Result::SUCCESS, $storage, ['User is Valid']);
+        return new Result(Result::SUCCESS, $this->sessionEntity->getToken(), ['User is Valid']);
     }
 }
