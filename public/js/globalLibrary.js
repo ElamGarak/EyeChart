@@ -77,8 +77,16 @@ $.prepareSearchPayload = function(params) {
     };
 };
 
-$.logOut = function() {
+/**
+ *
+ * @param {String|Array} message
+ */
+$.logOut = function(message) {
     "use strict";
+
+    if (typeof message === 'string') {
+        var messages = [ message ]
+    }
 
     var params = {
         "token": TOKEN
@@ -91,7 +99,7 @@ $.logOut = function() {
         dataType: "json",
         data: JSON.stringify(params),
         complete: function () {
-            $.redirect(LOGIN_SEGMENT, {}, "POST");
+            $.redirect(LOGIN_SEGMENT, {"messages" : messages}, "POST");
         }
     });
 };
