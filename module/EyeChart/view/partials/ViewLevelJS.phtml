@@ -1,7 +1,8 @@
-<?php echo $this->partial('partials/BootstrapCoreJS.phtml'); ?>
 <?php echo $this->partial('partials/ApplicationCoreJS.phtml', [
     'menuRoute' => $this->menuRoute,
     'token'     => $this->token,
     'messages'  => $this->messages
 ]);
 ?>
+<script src="<?php echo $this->basePath('js/assets/jquery-ui.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('js/sessionHandler.js?v=' . rand(1, 1000)); ?>"></script>

@@ -1,16 +1,12 @@
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Eye Chart Login">
-    <meta name="author" content="Joshua M Pacheco">
-    <?php echo $this->headTitle()->setAutoEscape(false)->setTranslatorEnabled(false); ?>
+    <?php echo $this->partial('partials/meta.phtml'); ?>
     <?php echo $this->partial('partials/BootstrapCoreCSS.phtml'); ?>
     <?php echo $this->partial('partials/ApplicationCoreCSS.phtml'); ?>
+    <?php echo $this->partial('partials/BootstrapCoreJS.phtml'); ?>
     <?php echo $this->partial('partials/ViewLevelJS.phtml', [
         'menuRoute' => $this->menuRoute,
         'token'     => $this->token,
         'messages'  => $this->messages
     ]);
-    ?>
+?>
 </head>
