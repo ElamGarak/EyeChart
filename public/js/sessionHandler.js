@@ -28,12 +28,11 @@ function SessionHandler() {
                 warningThreshold = data.threshold * 60; // Convert to seconds
 
                 if (data.expired === true) {
-                    $.logOut();
+                    $.logOut("You have been logged out due to inactivity");
                 }
-
             },
-            error   : function () {
-                $.logOut();
+            error   : function (jqXHR, textStatus, errorThrown) {
+                $.logOut(errorThrown);
             },
             complete: function (jqXHR) {
                 clearTimeout(sessionCheckHandle);
@@ -78,7 +77,7 @@ function SessionHandler() {
                 'Logout'  : function () {
                     clearTimeout(sessionCheckHandle);
 
-                    $.logOut();
+                    $.logOut("You have been logged out");
                     $(this).dialog("destroy");
                 }
             }
