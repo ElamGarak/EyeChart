@@ -126,24 +126,3 @@ $.faIcon = function(className) {
     return icon;
 };
 
-/**
- *
- * @param {jQuery} self
- * @param {jQuery} html
- * @throws ReferenceError
- */
-$.dialogModalContent = function(self, html) {
-    if (self === undefined || html === undefined) {
-        throw new ReferenceError("Invalid parameters were passed");
-    }
-
-    $("button.ui-dialog-titlebar-close").hide();
-    $(this).html(html);
-
-    $(this).parent()
-           .find('.ui-dialog-titlebar span')
-           .prepend($.faIcon("fa-exclamation-triangle text-danger"));
-
-    $(".ui-widget-overlay").css(DIALOG_OVERLAY);
-};
-

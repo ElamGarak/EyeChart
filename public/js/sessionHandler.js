@@ -58,27 +58,31 @@ function SessionHandler() {
     }
 
     function confirmModal() {
-        if ($("div#sessionEndingModal").length > 0) {
+        if ($("div#sessionModalContainer").length > 0) {
             return;
         }
 
-        $('<div id="sessionEndingModal"></div>').dialog({
-            modal:         true,
-            title:         "Confirm",
-            closeOnEscape: false,
-            open:          function () {
-                $.dialogModalContent($(this), prepareModal())
-            },
-            buttons      : {
-                'Continue': function () {
-                    refreshSession();
-                    $(this).dialog("destroy");
+        $.dialogModalContent({
+            cloneTarget: "defaultModalContainer",
+            targetId:    "sessionModal",
+            containerId: "sessionModalContainer",
+            title:       "Ready to Leave?",
+            message:     "Your session is about to expire in " + SESSION_CHECK_WARNING_THRESHOLD + " minutes.  Do you wish to stay?",
+            buttons:     {
+                stay: {
+                    className: "btn btn-secondary",
+                    callback: function () {
+                        refreshSession();
+                    }
                 },
-                'Logout'  : function () {
-                    clearTimeout(sessionCheckHandle);
+                logout: {
+                    className: "btn btn-primary",
+                    callback: function () {
+                        clearTimeout(sessionCheckHandle);
 
-                    $.logOut("You have been logged out");
-                    $(this).dialog("destroy");
+                        $.openLoaderModal(true);
+                        $.logOut("You have been logged out");
+                    }
                 }
             }
         });
@@ -98,14 +102,6 @@ function SessionHandler() {
                 $.notify(errorThrown, textStatus);
             }
         });
-    }
-
-    /**
-     *
-     * @returns {jQuery}
-     */
-    function prepareModal() {
-        return $("<span></span>").text("Your session is about to end.  Do you wish to continue?").html();
     }
 }
 
