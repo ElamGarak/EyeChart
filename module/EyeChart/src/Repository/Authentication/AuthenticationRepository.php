@@ -11,11 +11,13 @@ namespace EyeChart\Repository\Authentication;
 
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
 use Zend\Authentication\AuthenticationServiceInterface;
@@ -162,11 +164,18 @@ final class AuthenticationRepository
     }
 
     /**
-     * @param VOInterface $tokenVO
+     * @param VOInterface|TokenVO $tokenVO
      * @return array[]
      */
     public function getUserSessionStatus(VOInterface $tokenVO): array
     {
-        return $this->authenticateStorageModel->getUserSessionStatus($tokenVO);
+        $sessionStatus = $this->authenticateStorageModel->getUserSessionStatus($tokenVO);
+
+        if ($sessionStatus[SessionMapper::EXPIRED] === true) {
+            $authenticationVO = AuthenticationVO::build()->setToken($tokenVO->getToken());
+            $this->authenticateStorageModel->clearSessionRecord($authenticationVO);
+        }
+
+        return $sessionStatus;
     }
 }
