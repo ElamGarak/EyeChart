@@ -1,5 +1,5 @@
 composer.phar
-vendor/
+/vendor
 config/autoload/*.local.php
 data/logs/
 data/cache/
