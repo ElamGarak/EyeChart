@@ -3,7 +3,7 @@
 echo $this->doctype();
 ?>
 <html lang="en">
-    <?php echo $this->partial('partials/head.phtml', [
+    <?php echo $this->partial('partials/Head.phtml', [
         'menuRoute' => $this->menuRoute,
         'token'     => $this->token,
         'messages'  => $this->messages
@@ -1068,7 +1068,7 @@ echo $this->doctype();
             <!-- /.container-fluid-->
             <!-- /.content-wrapper-->
 
-            <?php echo $this->partial('partials/footer.phtml'); ?>
+            <?php echo $this->partial('partials/Footer.phtml'); ?>
         </div>
     </body>
 </html>
