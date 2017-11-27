@@ -77,8 +77,16 @@ $.prepareSearchPayload = function(params) {
     };
 };
 
-$.logOut = function() {
+/**
+ *
+ * @param {String|Array} message
+ */
+$.logOut = function(message) {
     "use strict";
+
+    if (typeof message === 'string') {
+        var messages = [ message ]
+    }
 
     var params = {
         "token": TOKEN
@@ -91,7 +99,7 @@ $.logOut = function() {
         dataType: "json",
         data: JSON.stringify(params),
         complete: function () {
-            $.redirect(LOGIN_SEGMENT, {}, "POST");
+            $.redirect(LOGIN_SEGMENT, {"messages" : messages}, "POST");
         }
     });
 };
@@ -116,26 +124,5 @@ $.faIcon = function(className) {
     icon.attr("aria-hidden", true);
 
     return icon;
-};
-
-/**
- *
- * @param {jQuery} self
- * @param {jQuery} html
- * @throws ReferenceError
- */
-$.dialogModalContent = function(self, html) {
-    if (self === undefined || html === undefined) {
-        throw new ReferenceError("Invalid parameters were passed");
-    }
-
-    $("button.ui-dialog-titlebar-close").hide();
-    $(this).html(html);
-
-    $(this).parent()
-           .find('.ui-dialog-titlebar span')
-           .prepend($.faIcon("fa-exclamation-triangle text-danger"));
-
-    $(".ui-widget-overlay").css(DIALOG_OVERLAY);
 };
 
