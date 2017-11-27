@@ -18,7 +18,7 @@ use Zend\Authentication\Storage\StorageInterface;
  * Class AuthenticateStorageService
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateStorageService implements StorageInterface
+class AuthenticateStorageService implements StorageInterface
 {
     /** @var AuthenticationRepository  */
     private $authenticationRepository;
