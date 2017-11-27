@@ -17,7 +17,7 @@ use Zend\Authentication\AuthenticationService as ZendAuthentication;
  * Class AuthenticateService
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateService
+class AuthenticateService
 {
     /** @var AuthenticationRepository */
     private $authenticationRepository;
