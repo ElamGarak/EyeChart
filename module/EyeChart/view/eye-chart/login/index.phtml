@@ -3,10 +3,10 @@
 echo $this->doctype();
 ?>
 <html lang="en">
-    <?php echo $this->partial('partials/login/head.phtml', [ 'messages' => $this->messages ]); ?>
+    <?php echo $this->partial('partials/login/Head.phtml', [ 'messages' => $this->messages ]); ?>
     <body class="bg-dark">
         <script src="<?php echo $this->basePath('js/login.js?v=' . rand(1, 100000)); ?>"></script>
-        <?php echo $this->partial('partials/header.phtml'); ?>
+        <?php echo $this->partial('partials/Header.phtml'); ?>
         <div class="container">
             <div class="card card-login mx-auto mt-5">
                 <div class="card-header">Login</div>
@@ -38,6 +38,6 @@ echo $this->doctype();
                 </div>
             </div>
         </div>
-        <?php echo $this->partial('partials/LoaderModal.phtml'); ?>
+        <?php echo $this->partial('partials/modals/LoaderModal.phtml'); ?>
     </body>
 </html>

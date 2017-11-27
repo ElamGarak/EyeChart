@@ -1,0 +1,13 @@
+<head>
+    <?php echo $this->partial('partials/meta.phtml'); ?>
+    <?php echo $this->partial('partials/CSS/BootstrapCoreCSS.phtml'); ?>
+    <?php echo $this->partial('partials/CSS/ApplicationCoreCSS.phtml'); ?>
+    <?php echo $this->partial('partials/CSS/ViewLevelCSS.phtml'); ?>
+    <?php echo $this->partial('partials/JavaScript/BootstrapCoreJS.phtml'); ?>
+    <?php echo $this->partial('partials/JavaScript/ViewLevelJS.phtml', [
+        'menuRoute' => $this->menuRoute,
+        'token'     => $this->token,
+        'messages'  => $this->messages
+    ]);
+?>
+</head>
