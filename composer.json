@@ -70,7 +70,7 @@
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"DriverManager\\Tests\\" : "tests/EyeChart/Tests/",
+			"EyeChart\\Tests\\" : "tests/EyeChart/Tests/",
 			"API\\Tests\\" : "tests/API/Tests/"
 		}
 	},
