@@ -1,8 +1,10 @@
-/* Start by setting display:none to make this hidden.
-   Then we position it in relation to the viewport window
-   with position:fixed. Width, height, top and left speak
-   speak for themselves. Background we set to 80% white with
-   our animation centered, and no-repeating */
+/**
+ * Created by PhpStorm.
+ * User: Josh Pacheco <joshua.pacheco@gmail.com>
+ * Date: 11/27/2017
+ * (c) 2017
+ */
+
 .loaderModal {
     position:   fixed;
     z-index:    1000;
@@ -16,14 +18,10 @@
     no-repeat;
 }
 
-/* When the body has the loading class, we turn
-   the scrollbar off with overflow:hidden */
 body.loading {
     overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our
-   modal element will be visible */
 body.loading .modal {
     display: block;
 }
