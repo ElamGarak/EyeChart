@@ -135,20 +135,6 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
     }
 
     /**
-     * @return SearchVO
-     */
-    public function capitalizeSearch(): SearchVO
-    {
-        if (! is_null($this->search)) {
-            Assertion::string($this->getSearch(), "Search value must be a string");
-
-            $this->searchCapitalized = strtoupper($this->getSearch());
-        }
-
-        return $this;
-    }
-
-    /**
      * @param int $offset
      * @return SearchVO
      */
@@ -159,6 +145,20 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
             Assertion::greaterOrEqualThan($offset, 0, "Offset must be 0 or greater");
 
             $this->offset = $offset;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return SearchVO
+     */
+    private function capitalizeSearch(): SearchVO
+    {
+        if (! is_null($this->search)) {
+            Assertion::string($this->getSearch(), "Search value must be a string");
+
+            $this->searchCapitalized = strtoupper($this->getSearch());
         }
 
         return $this;
