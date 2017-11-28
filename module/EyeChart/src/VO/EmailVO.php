@@ -45,7 +45,7 @@ final class EmailVO extends AbstractVO
     /**
      * @return string
      */
-    public function getSbject(): string
+    public function getSubject(): string
     {
         return $this->subject;
     }
@@ -60,31 +60,40 @@ final class EmailVO extends AbstractVO
 
     /**
      * @param string $recipient
+     * @return EmailVO
      */
-    public function setRecipient(string $recipient): void
+    public function setRecipient(string $recipient): EmailVO
     {
         Assertion::email($recipient);
 
         $this->recipient = $recipient;
+
+        return $this;
     }
 
     /**
      * @param string $subject
+     * @return EmailVO
      */
-    public function setSubject(string $subject): void
+    public function setSubject(string $subject): EmailVO
     {
         Assertion::minLength($subject, 1);
 
         $this->subject = $subject;
+
+        return $this;
     }
 
     /**
      * @param string $body
+     * @return EmailVO
      */
-    public function setBody(string $body): void
+    public function setBody(string $body): EmailVO
     {
         Assertion::minLength($body, 10);
 
         $this->body = $body;
+
+        return $this;
     }
 }
