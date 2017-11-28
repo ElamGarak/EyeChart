@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Tests\VO;
 
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\AbstractVO;
 use EyeChart\VO\TokenVO;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,7 @@ final class AbstractVOTest extends TestCase
 
     public function testToArray(): void
     {
-        $expectedValue = str_repeat('a', 36);
+        $expectedValue = str_repeat('a', AuthenticateMapper::TOKEN_LENGTH);
 
         $concreteVO = TokenVO::build()->setToken($expectedValue);
         $actual = $concreteVO->toArray();

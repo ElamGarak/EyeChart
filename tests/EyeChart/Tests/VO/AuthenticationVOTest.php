@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Tests\VO;
 
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -31,7 +32,7 @@ final class AuthenticationVOTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$expectedValues['token'] = str_repeat('a', 36);
+        self::$expectedValues['token'] = str_repeat('a', AuthenticateMapper::TOKEN_LENGTH);
 
         self::$subjectVO = AuthenticationVO::build()->setUsername(self::$expectedValues['username'])
                                                     ->setPassword(self::$expectedValues['password'])
@@ -72,8 +73,8 @@ final class AuthenticationVOTest extends TestCase
         return [
             ['setUserName', ''],
             ['setPassword', ''],
-            ['setToken', str_repeat('a', 35)],
-            ['setToken', str_repeat('a', 38)],
+            ['setToken', str_repeat('a', AuthenticateMapper::TOKEN_LENGTH - 1)],
+            ['setToken', str_repeat('a', AuthenticateMapper::TOKEN_LENGTH + 1)],
         ];
     }
 

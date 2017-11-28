@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Tests\VO;
 
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\TokenVO;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -27,7 +28,7 @@ final class TokenVOTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$expectedToken = str_repeat('a', 36);
+        self::$expectedToken = str_repeat('a', AuthenticateMapper::TOKEN_LENGTH);
         self::$subjectVO     = TokenVO::build()->setToken(self::$expectedToken);
     }
 
@@ -55,8 +56,8 @@ final class TokenVOTest extends TestCase
     public function provideInvalidDependenciesForAssertions(): array
     {
         return [
-            [str_repeat('a', 35)],
-            [str_repeat('a', 38)],
+            [str_repeat('a', AuthenticateMapper::TOKEN_LENGTH - 1)],
+            [str_repeat('a', AuthenticateMapper::TOKEN_LENGTH + 1)],
         ];
     }
 

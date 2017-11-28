@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\VO;
 
 use Assert\Assertion;
+use EyeChart\Mappers\AuthenticateMapper;
 
 /**
  * Class TokenVO
@@ -43,7 +44,7 @@ final class TokenVO extends AbstractVO
      */
     public function setToken(string $token): TokenVO
     {
-        Assertion::length($token, 36, 'Invalid token provided');
+        Assertion::length($token, AuthenticateMapper::TOKEN_LENGTH, 'Invalid token provided');
 
         $this->token = $token;
 

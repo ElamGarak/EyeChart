@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Entity;
 
 use Assert\Assertion;
+use EyeChart\Mappers\AuthenticateMapper;
 
 /**
  * Class AuthenticateEntity
@@ -88,7 +89,7 @@ class AuthenticateEntity extends AbstractEntity
     public function setToken(string $token): AuthenticateEntity
     {
         if (trim($token) !== '') {
-            Assertion::length($token, 36, 'Token not provided');
+            Assertion::length($token, AuthenticateMapper::TOKEN_LENGTH, 'Token not provided');
 
             $this->token = $token;
         }

@@ -11,6 +11,7 @@ namespace API\Tests\CheckSessionStatus;
 
 use API\Tests\ApiControllerWithAuthenticationTest;
 use API\V1\Rpc\CheckSessionStatus\CheckSessionStatusController;
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Service\Authenticate\AuthenticateStorageService;
 use EyeChart\VO\TokenVO;
 
@@ -56,7 +57,7 @@ final class CheckSessionStatusControllerTest extends ApiControllerWithAuthentica
         parent::$runTestPayload = self::$runTestPayload;
         parent::$expectedReturn = self::$expectedReturn;
         parent::$expectedPayload = [
-            'token' => str_repeat('a', 36)
+            'token' => str_repeat('a', AuthenticateMapper::TOKEN_LENGTH)
         ];
 
         parent::setUpBeforeClass();
