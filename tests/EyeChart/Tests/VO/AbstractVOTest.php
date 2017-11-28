@@ -35,7 +35,7 @@ final class AbstractVOTest extends TestCase
     {
         $expectedValue = str_repeat('a', 36);
 
-        $concreteVO = new TokenVO($expectedValue);
+        $concreteVO = TokenVO::build()->setToken($expectedValue);
         $actual = $concreteVO->toArray();
 
         $this->assertInternalType('array', $actual);

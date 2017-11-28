@@ -22,13 +22,11 @@ final class TokenVO extends AbstractVO
     protected $token;
 
     /**
-     * TokenVO constructor.
-     *
-     * @param string $token
+     * @return VOInterface|TokenVO
      */
-    public function __construct(string $token)
+    public static function build(): VOInterface
     {
-        $this->setToken($token);
+        return new self;
     }
 
     /**
@@ -41,11 +39,14 @@ final class TokenVO extends AbstractVO
 
     /**
      * @param string $token
+     * @return TokenVO
      */
-    public function setToken(string $token): void
+    public function setToken(string $token): TokenVO
     {
         Assertion::length($token, 36, 'Invalid token provided');
 
         $this->token = $token;
+
+        return $this;
     }
 }

@@ -28,7 +28,7 @@ final class TokenVOTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$expectedToken = str_repeat('a', 36);
-        self::$subjectVO     = new TokenVO(self::$expectedToken);
+        self::$subjectVO     = TokenVO::build()->setToken(self::$expectedToken);
     }
 
     public function testGetToken(): void
@@ -45,7 +45,7 @@ final class TokenVOTest extends TestCase
      */
     public function testSetTokenThrowsAssertionExceptions(string $value): void
     {
-        new TokenVO($value);
+        TokenVO::build()->setToken($value);
     }
 
 
@@ -67,7 +67,7 @@ final class TokenVOTest extends TestCase
      */
     public function testDependencyTypeHintWasSet($value): void
     {
-        new TokenVO($value);
+        TokenVO::build()->setToken($value);
     }
 
     /**
