@@ -34,11 +34,11 @@ class AbstractControllerTest extends TestCase
         MenuMapper::MENU_ROUTE => 'foobar'
     ];
 
+    /** @var string[]  */
+    protected static $expectedPostParams = ['key' => 'foo', 'value' => 'bar'];
+
     /** @var Parameters */
     private static $postParams;
-
-    /** @var string[]  */
-    private static $expectedPostParams = ['key' => 'foo', 'value' => 'bar'];
 
     /** @var Headers */
     private static $headers;
@@ -53,7 +53,7 @@ class AbstractControllerTest extends TestCase
     private static $commandBusFixture;
 
     /** @var AbstractController */
-    private $controller;
+    protected $controller;
 
     public static function setUpBeforeClass(): void
     {
