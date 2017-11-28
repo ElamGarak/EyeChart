@@ -19,7 +19,7 @@ final class TokenVO extends AbstractVO
 {
 
     /** @var string */
-    private $token;
+    protected $token;
 
     /**
      * TokenVO constructor.
@@ -42,7 +42,7 @@ final class TokenVO extends AbstractVO
     /**
      * @param string $token
      */
-    private function setToken(string $token): void
+    public function setToken(string $token): void
     {
         Assertion::length($token, 36, 'Invalid token provided');
 
