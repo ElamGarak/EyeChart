@@ -11,78 +11,39 @@ namespace EyeChart\Tests\VO;
 
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\TokenVO;
-use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * Class TokenVOTest
  * @package EyeChart\Tests\VO
  */
-final class TokenVOTest extends TestCase
+final class TokenVOTest extends VOTest
 {
     /** @var string */
-    private static $expectedToken = '';
+    protected static $subjectVONameSpace = TokenVO::class;
 
-    /** @var TokenVO */
-    private static $subjectVO;
+    /** @var array[]  */
+    protected static $validAssertionValues = [];
+
+    /** @var array[]  */
+    protected static $invalidAssertionValues = [];
 
     public static function setUpBeforeClass(): void
     {
-        self::$expectedToken = str_repeat('a', AuthenticateMapper::TOKEN_LENGTH);
-        self::$subjectVO     = TokenVO::build()->setToken(self::$expectedToken);
-    }
+        parent::$subjectVONameSpace = self::$subjectVONameSpace;
 
-    public function testGetToken(): void
-    {
-        $actual = self::$subjectVO->getToken();
-
-        $this->assertEquals(self::$expectedToken, $actual);
-    }
-
-    /**
-     * @param string $value
-     * @dataProvider provideInvalidDependenciesForAssertions
-     * @expectedException \Assert\InvalidArgumentException
-     */
-    public function testSetTokenThrowsAssertionExceptions(string $value): void
-    {
-        TokenVO::build()->setToken($value);
-    }
-
-
-    /**
-     * @return array[]
-     */
-    public function provideInvalidDependenciesForAssertions(): array
-    {
-        return [
-            [str_repeat('a', AuthenticateMapper::TOKEN_LENGTH - 1)],
-            [str_repeat('a', AuthenticateMapper::TOKEN_LENGTH + 1)],
+        parent::$validAssertionValues = [
+            'token' => [
+                str_repeat('a', AuthenticateMapper::TOKEN_LENGTH)
+            ]
         ];
-    }
 
-    /**
-     * @param mixed $value
-     * @dataProvider provideInvalidDependencies
-     * @expectedException \TypeError
-     */
-    public function testDependencyTypeHintWasSet($value): void
-    {
-        TokenVO::build()->setToken($value);
-    }
-
-    /**
-     * @return array[]
-     */
-    public function provideInvalidDependencies(): array
-    {
-        return [
-            [null],
-            [1],
-            [new stdClass()],
-            [[]],
-            [1.1],
-            [true]
+        parent::$invalidAssertionValues = [
+            'token' => [
+                str_repeat('a', AuthenticateMapper::TOKEN_LENGTH + 1),
+                str_repeat('a', AuthenticateMapper::TOKEN_LENGTH - 1)
+            ]
         ];
+
+        parent::setUpBeforeClass();
     }
 }
