@@ -8,14 +8,14 @@
 
 namespace EyeChart\Exception;
 
-use HttpInvalidParamException;
+use OutOfBoundsException;
 use Throwable;
 
 /**
  * Class InvalidPostRequestException
  * @package EyeChart\Exception
  */
-final class InvalidPostRequestException extends HttpInvalidParamException
+final class InvalidPostRequestException extends OutOfBoundsException
 {
     protected $message = "Post key does not exist";
 
