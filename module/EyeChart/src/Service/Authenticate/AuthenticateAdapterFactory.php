@@ -28,6 +28,7 @@ final class AuthenticateAdapterFactory
      *
      * @param ContainerInterface $controllers
      * @return AuthenticateAdapter
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $controllers): AuthenticateAdapter
     {

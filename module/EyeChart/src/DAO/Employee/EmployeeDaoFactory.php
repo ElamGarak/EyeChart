@@ -20,6 +20,7 @@ final class EmployeeDaoFactory
     /**
      * @param ContainerInterface $container
      * @return EmployeeDao
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): EmployeeDao
     {

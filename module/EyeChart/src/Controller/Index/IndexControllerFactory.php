@@ -21,6 +21,7 @@ class IndexControllerFactory
     /**
      * @param ContainerInterface $container
      * @return IndexController
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): IndexController
     {

@@ -18,6 +18,7 @@ use Zend\Mail\Transport\SmtpOptions;
 /**
  * Class EmailModelFactory
  * @package EmployeeSelfSign\Model\Email
+ * @codeCoverageIgnore
  */
 final class EmailModelFactory
 {

@@ -19,6 +19,7 @@ use Zend\Authentication\AuthenticationService;
 /**
  * Class AuthenticationRepositoryFactory
  * @package EyeChart\Repository\Authentication
+ * @codeCoverageIgnore
  */
 final class AuthenticationRepositoryFactory
 {

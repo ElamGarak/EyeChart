@@ -21,6 +21,7 @@ final class AuthenticateStorageDAOFactory
     /**
      * @param ContainerInterface $container
      * @return AuthenticateStorageDAO
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): AuthenticateStorageDAO
     {
