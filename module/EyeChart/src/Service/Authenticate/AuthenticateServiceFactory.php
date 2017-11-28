@@ -25,6 +25,7 @@ class AuthenticateServiceFactory
      *
      * @param ContainerInterface $container
      * @return \EyeChart\Service\Authenticate\AuthenticateService
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): AuthenticateService
     {

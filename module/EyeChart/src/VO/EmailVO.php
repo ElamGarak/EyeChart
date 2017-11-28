@@ -17,34 +17,27 @@ use Assert\Assertion;
  */
 final class EmailVO extends AbstractVO
 {
+    /** @var string */
+    protected $recipient;
 
     /** @var string */
-    private $recipient;
+    protected $subject;
 
     /** @var string */
-    private $subject;
-
-    /** @var string */
-    private $body;
+    protected $body;
 
     /**
-     * EmailVO constructor.
-     *
-     * @param string $recipient
-     * @param string $subject
-     * @param string $body
+     * @return VOInterface|EmailVO
      */
-    public function __construct($recipient, $subject, $body)
+    public static function build(): VOInterface
     {
-        $this->setRecipient($recipient);
-        $this->setSubject($subject);
-        $this->setBody($body);
+        return new self;
     }
 
     /**
      * @return string
      */
-    public function recipient(): string
+    public function getRecipient(): string
     {
         return $this->recipient;
     }
@@ -52,7 +45,7 @@ final class EmailVO extends AbstractVO
     /**
      * @return string
      */
-    public function subject(): string
+    public function getSubject(): string
     {
         return $this->subject;
     }
@@ -60,38 +53,47 @@ final class EmailVO extends AbstractVO
     /**
      * @return string
      */
-    public function body(): string
+    public function getBody(): string
     {
         return $this->body;
     }
 
     /**
      * @param string $recipient
+     * @return EmailVO
      */
-    private function setRecipient(string $recipient): void
+    public function setRecipient(string $recipient): EmailVO
     {
         Assertion::email($recipient);
 
         $this->recipient = $recipient;
+
+        return $this;
     }
 
     /**
      * @param string $subject
+     * @return EmailVO
      */
-    public function setSubject(string $subject): void
+    public function setSubject(string $subject): EmailVO
     {
         Assertion::minLength($subject, 1);
 
         $this->subject = $subject;
+
+        return $this;
     }
 
     /**
      * @param string $body
+     * @return EmailVO
      */
-    public function setBody(string $body): void
+    public function setBody(string $body): EmailVO
     {
         Assertion::minLength($body, 10);
 
         $this->body = $body;
+
+        return $this;
     }
 }

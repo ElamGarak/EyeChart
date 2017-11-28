@@ -22,6 +22,7 @@ class AbstractVO implements VOInterface
 {
     /**
      * @return VOInterface
+     * @codeCoverageIgnore
      */
     public static function build(): VOInterface
     {

@@ -34,18 +34,11 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
     protected $offset;
 
     /**
-     * SearchVO constructor.
-     * @param int $limit
-     * @param array[] $order
-     * @param string $search
-     * @param int $offset
+     * @return VOInterface|SearchVO
      */
-    public function __construct($limit, $order, $search, $offset)
+    public static function build(): VOInterface
     {
-        $this->setLimit($limit);
-        $this->setOrder($order);
-        $this->setSearch($search);
-        $this->setOffset($offset);
+        return new self;
     }
 
     /**
@@ -90,8 +83,9 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
 
     /**
      * @param int $limit
+     * @return SearchVO
      */
-    private function setLimit($limit): void
+    public function setLimit($limit): SearchVO
     {
         if (! is_null($limit)) {
             Assertion::integer($limit, "Limit must be an integer");
@@ -99,12 +93,15 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
 
             $this->limit = $limit;
         }
+
+        return $this;
     }
 
     /**
-     * @param array $order
+     * @param \stdClass[] $order
+     * @return SearchVO
      */
-    private function setOrder($order): void
+    public function setOrder($order): SearchVO
     {
         if (! is_null($order)) {
             Assertion::isArray($order, "Order must be an array");
@@ -116,12 +113,15 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
 
             $this->order = $order;
         }
+
+        return $this;
     }
 
     /**
      * @param string $search
+     * @return SearchVO
      */
-    private function setSearch($search): void
+    public function setSearch($search): SearchVO
     {
         if (! is_null($search)) {
             Assertion::string($search, "Search value must be a string");
@@ -130,21 +130,15 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
 
             $this->capitalizeSearch();
         }
-    }
 
-    private function capitalizeSearch(): void
-    {
-        if (! is_null($this->search)) {
-            Assertion::string($this->getSearch(), "Search value must be a string");
-
-            $this->searchCapitalized = strtoupper($this->getSearch());
-        }
+        return $this;
     }
 
     /**
      * @param int $offset
+     * @return SearchVO
      */
-    private function setOffset($offset): void
+    public function setOffset($offset): SearchVO
     {
         if (! is_null($offset)) {
             Assertion::integer($offset, "Offset must be an integer");
@@ -152,5 +146,21 @@ final class SearchVO extends AbstractVO implements VOSearchInterface
 
             $this->offset = $offset;
         }
+
+        return $this;
+    }
+
+    /**
+     * @return SearchVO
+     */
+    private function capitalizeSearch(): SearchVO
+    {
+        if (! is_null($this->search)) {
+            Assertion::string($this->getSearch(), "Search value must be a string");
+
+            $this->searchCapitalized = strtoupper($this->getSearch());
+        }
+
+        return $this;
     }
 }

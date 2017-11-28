@@ -17,6 +17,7 @@ class AbstractMapper implements MapperInterface
 {
     /**
      * @return self
+     * @codeCoverageIgnore
      */
     public static function build(): self
     {
@@ -25,6 +26,7 @@ class AbstractMapper implements MapperInterface
 
     /**
      * @return mixed[]
+     * @codeCoverageIgnore
      */
     public function getConstants(): array
     {

@@ -17,6 +17,7 @@ use Psr\Container\ContainerInterface;
 /**
  * Class AuthenticateModelFactory
  * @package EyeChart\Model\Authenticate
+ * @codeCoverageIgnore
  */
 final class AuthenticateModelFactory
 {

@@ -22,6 +22,7 @@ final class EmailServiceFactory
     /**
      * @param ContainerInterface $container
      * @return EmailService
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): EmailService
     {

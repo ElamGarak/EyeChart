@@ -16,6 +16,7 @@ use Psr\Container\ContainerInterface;
 /**
  * Class EmployeeModelFactory
  * @package EyeChart\Model\Email
+ * @codeCoverageIgnore
  */
 final class EmployeeModelFactory
 {

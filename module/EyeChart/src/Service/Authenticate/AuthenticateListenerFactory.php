@@ -25,6 +25,7 @@ final class AuthenticateListenerFactory
      *
      * @param ContainerInterface $container
      * @return AuthenticateListener
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): AuthenticateListener
     {

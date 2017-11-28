@@ -77,7 +77,7 @@ class CheckSessionStatusController extends AbstractActionController
 
     private function prepareServiceData(): void
     {
-        $this->tokenVO = new TokenVO($this->inputData->token);
+        $this->tokenVO = TokenVO::build()->setToken($this->inputData->token);
     }
 
     private function executeService(): void

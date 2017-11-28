@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="./tests/EyeChart/Tests/bootstrap.php">
     <testsuites>
-        <testsuite name="Eye API Chart Tests">
+        <testsuite name="API Tests">
             <directory>./tests/API/Tests</directory>
+        </testsuite>
+        <testsuite name="Framework Tests">
+            <directory>./tests/EyeChart/Tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
             <directory suffix=".php">./module/API/src/V1/Rpc</directory>
+            <directory suffix=".php">./module/EyeChart/src</directory>
             <exclude>
+                <directory suffix=".php">./module/EyeChart/src/Mappers/*</directory>
                 <file>./module/EyeChart/src/Module.php</file>
                 <file>./module/API/src/Module.php</file>
             </exclude>

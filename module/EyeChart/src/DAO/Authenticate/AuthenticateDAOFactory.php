@@ -20,6 +20,7 @@ final class AuthenticateDAOFactory
     /**
      * @param ContainerInterface $container
      * @return AuthenticateDAO
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): AuthenticateDAO
     {

@@ -21,6 +21,7 @@ final class AuthenticateStorageServiceFactory
     /**
      * @param ContainerInterface $controllers
      * @return AuthenticateStorageService
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $controllers): AuthenticateStorageService
     {

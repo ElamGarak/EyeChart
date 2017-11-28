@@ -18,6 +18,7 @@ use Zend\Config\Config;
 /**
  * Class AuthenticateStorageModelFactory
  * @package EyeChart\Model\Authenticate
+ * @codeCoverageIgnore
  */
 final class AuthenticateStorageModelFactory
 {
