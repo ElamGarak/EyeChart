@@ -24,6 +24,7 @@ final class InvalidHeaderRequestException extends OutOfBoundsException
      * @param string $header
      * @param int $code
      * @param Throwable $previous
+     * @codeCoverageIgnore
      */
     public function __construct(string $header = '', int $code = 500, Throwable $previous = null)
     {

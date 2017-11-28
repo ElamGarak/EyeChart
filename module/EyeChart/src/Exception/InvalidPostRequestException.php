@@ -24,6 +24,7 @@ final class InvalidPostRequestException extends OutOfBoundsException
      * @param string $key
      * @param int $code
      * @param Throwable $previous
+     * @codeCoverageIgnore
      */
     public function __construct(string $key = '', int $code = 500, Throwable $previous = null)
     {
