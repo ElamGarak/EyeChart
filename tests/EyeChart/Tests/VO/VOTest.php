@@ -54,13 +54,6 @@ class VOTest extends TestCase
         self::setDefaultTokenAssertionValues();
     }
 
-//    public static function tearDownAfterClass(): void
-//    {
-//        self::$subjectVONameSpace     = TokenVO::class;
-//        self::$validAssertionValues   = [];
-//        self::$invalidAssertionValues = [];
-//    }
-
     public function setUp(): void
     {
         parent::setUp();
