@@ -17,34 +17,27 @@ use Assert\Assertion;
  */
 final class EmailVO extends AbstractVO
 {
+    /** @var string */
+    protected $recipient;
 
     /** @var string */
-    private $recipient;
+    protected $subject;
 
     /** @var string */
-    private $subject;
-
-    /** @var string */
-    private $body;
+    protected $body;
 
     /**
-     * EmailVO constructor.
-     *
-     * @param string $recipient
-     * @param string $subject
-     * @param string $body
+     * @return VOInterface|EmailVO
      */
-    public function __construct($recipient, $subject, $body)
+    public static function build(): VOInterface
     {
-        $this->setRecipient($recipient);
-        $this->setSubject($subject);
-        $this->setBody($body);
+        return new self;
     }
 
     /**
      * @return string
      */
-    public function recipient(): string
+    public function getRecipient(): string
     {
         return $this->recipient;
     }
@@ -52,7 +45,7 @@ final class EmailVO extends AbstractVO
     /**
      * @return string
      */
-    public function subject(): string
+    public function getSbject(): string
     {
         return $this->subject;
     }
@@ -60,7 +53,7 @@ final class EmailVO extends AbstractVO
     /**
      * @return string
      */
-    public function body(): string
+    public function getBody(): string
     {
         return $this->body;
     }
@@ -68,7 +61,7 @@ final class EmailVO extends AbstractVO
     /**
      * @param string $recipient
      */
-    private function setRecipient(string $recipient): void
+    public function setRecipient(string $recipient): void
     {
         Assertion::email($recipient);
 
