@@ -12,7 +12,8 @@ namespace EyeChart\Tests\Fixtures;
 use EyeChart\Command\Commands\AuthenticateCommand;
 use League\Tactician\CommandBus;
 use PHPUnit\Framework\TestCase;
-use Zend\Mvc\Controller\Plugin\Redirect;
+use PHPUnit_Framework_MockObject_MockObject;
+use Zend\Http\Request;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\MvcEvent;
 use Zend\Router\RouteMatch;
@@ -26,10 +27,10 @@ use Zend\View\Model\ViewModel;
  */
 final class CommandBusAuthenticationFixture extends TestCase
 {
-    /** @var  CommandBus|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var  CommandBus|PHPUnit_Framework_MockObject_MockObject */
     private $mockedCommandBus;
 
-    /** @var MvcEvent|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var MvcEvent|PHPUnit_Framework_MockObject_MockObject */
     private $mockedMvcEvent;
 
     /**
@@ -49,6 +50,10 @@ final class CommandBusAuthenticationFixture extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->mockedMvcEvent->expects($this->any())
+            ->method('getRequest')
+            ->willReturn(new Request());
+
         $this->mockedCommandBus->expects($this->any())
             ->method('handle')
             ->with(new AuthenticateCommand($this->mockedMvcEvent));
@@ -56,8 +61,7 @@ final class CommandBusAuthenticationFixture extends TestCase
 
     /**
      * Returns mocked command bus with simulated authentication event
-     *
-     * @return CommandBus|\PHPUnit_Framework_MockObject_MockObject
+     * @return CommandBus|PHPUnit_Framework_MockObject_MockObject
      */
     public function getCommandBus(): CommandBus
     {
@@ -66,8 +70,7 @@ final class CommandBusAuthenticationFixture extends TestCase
 
     /**
      * Returns mocked event which can then be injected into the subject under test
-     *
-     * @return MvcEvent|\PHPUnit_Framework_MockObject_MockObject
+     * @return MvcEvent|PHPUnit_Framework_MockObject_MockObject
      */
     public function getEvent(): MvcEvent
     {
@@ -101,27 +104,18 @@ final class CommandBusAuthenticationFixture extends TestCase
     }
 
     /**
-     * @param string $expected
-     * @return PluginManager|\PHPUnit_Framework_MockObject_MockObject
+     * @param mixed $plugin
+     * @return PluginManager|PHPUnit_Framework_MockObject_MockObject
      */
-    public function getMockRedirectToRouteUponException(string $expected = 'foo')
+    public function getMockedPluginManager($plugin): PHPUnit_Framework_MockObject_MockObject
     {
-        $mockedRedirect = $this->getMockBuilder(Redirect::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $mockedRedirect->expects($this->once())
-            ->method('toRoute')
-            ->with('login')
-            ->willThrowException(new \Exception($expected));
-
         $pluginManager = $this->getMockBuilder(PluginManager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $pluginManager->expects($this->any())
             ->method('get')
-            ->willReturn($mockedRedirect);
+            ->willReturn($plugin);
 
         return $pluginManager;
     }

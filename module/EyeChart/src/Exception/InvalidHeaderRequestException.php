@@ -8,14 +8,14 @@
 
 namespace EyeChart\Exception;
 
-use HttpHeaderException;
+use OutOfBoundsException;
 use Throwable;
 
 /**
  * Class InvalidHeaderRequestException
  * @package EyeChart\Exception
  */
-class InvalidHeaderRequestException extends HttpHeaderException
+final class InvalidHeaderRequestException extends OutOfBoundsException
 {
     protected $message = "Header does not exist";
 
@@ -24,6 +24,7 @@ class InvalidHeaderRequestException extends HttpHeaderException
      * @param string $header
      * @param int $code
      * @param Throwable $previous
+     * @codeCoverageIgnore
      */
     public function __construct(string $header = '', int $code = 500, Throwable $previous = null)
     {

@@ -13,9 +13,7 @@ use EyeChart\Command\Commands\AuthenticateCommand;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Exception\InvalidHeaderRequestException;
 use EyeChart\Exception\InvalidPostRequestException;
-use HttpInvalidParamException;
 use League\Tactician\CommandBus;
-use OutOfBoundsException;
 use Zend\Http\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\RequestInterface;
@@ -98,14 +96,15 @@ class AbstractController extends AbstractActionController implements ControllerI
     /**
      * @param string $key
      * @return mixed
-     * @throws HttpInvalidParamException
+     * @throws InvalidPostRequestException
      */
-    public function getPostValue(string $key) {
-        try {
-            return $this->extractPosts()[$key];
-        } catch (OutOfBoundsException $exception) {
+    public function getPostValue(string $key)
+    {
+        if (!array_key_exists($key, $this->extractPosts())) {
             throw new InvalidPostRequestException($key);
         }
+
+        return $this->extractPosts()[$key];
     }
 
     /**
@@ -113,11 +112,12 @@ class AbstractController extends AbstractActionController implements ControllerI
      * @return mixed
      * @throws InvalidHeaderRequestException
      */
-    public function getHeaderValue(string $key) {
-        try {
-            return $this->extractHeaders()[$key];
-        } catch (OutOfBoundsException $exception) {
+    public function getHeaderValue(string $key)
+    {
+        if (!array_key_exists($key, $this->extractHeaders())) {
             throw new InvalidHeaderRequestException($key);
         }
+
+        return $this->extractHeaders()[$key];
     }
 }
