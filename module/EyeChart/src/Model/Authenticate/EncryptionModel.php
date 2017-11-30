@@ -65,7 +65,7 @@ final class EncryptionModel
     public function setCipher(string $cipher): void
     {
         Assertion::notBlank($cipher, 'No cipher was passed');
-        Assertion::inArray($cipher, openssl_get_cipher_methods(), 'Invalid or unrecognized cyper was passed');
+        Assertion::inArray($cipher, openssl_get_cipher_methods(), 'Invalid or unrecognized cypher was passed');
 
         $this->cipher = $cipher;
 
