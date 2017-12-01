@@ -63,10 +63,7 @@ final class AuthenticateAdapter implements AdapterInterface
         $this->sessionManager = $sessionManager;
         $this->sessionManager->start();
 
-        $this->sessionEntity = $sessionEntity;
-        $this->sessionEntity->setSessionId($this->sessionManager->getId());
-        $this->sessionEntity->setPhpSessionId($this->sessionManager->getName());
-
+        $this->sessionEntity          = $sessionEntity;
         $this->authenticateEntity     = $authenticateEntity;
         $this->authenticateDao        = $authenticateDao;
         $this->authenticateStorageDao = $authenticateStorageDao;
@@ -81,23 +78,25 @@ final class AuthenticateAdapter implements AdapterInterface
      */
     public function authenticate(): Result
     {
-        $this->sessionEntity->setToken($this->authenticateEntity->getToken());
-
-        $this->authenticateStorageDao->read();
-
         if ($this->sessionEntity->isSessionId() === false) {
             return new Result(
                 Result::FAILURE_IDENTITY_AMBIGUOUS,
                 SessionMapper::SESSION_RECORD_ID,
-                ['PHP Session ID was not found']
+                [SessionMapper::MESSAGE_SESSION_NOT_FOUND]
             );
         }
+
+        $this->sessionEntity->setSessionId($this->sessionManager->getId());
+        $this->sessionEntity->setToken($this->authenticateEntity->getToken());
+        $this->sessionEntity->setPhpSessionId($this->sessionManager->getName());
+
+        $this->authenticateStorageDao->read();
 
         if ($this->sessionEntity->isSessionRecordId() === false) {
             return new Result(
                 Result::FAILURE_IDENTITY_NOT_FOUND,
                 AuthenticateMapper::TOKEN,
-                ['Access token record was not found']
+                [AuthenticateMapper::MESSAGE_ACCESS_TOKEN_RECORD_NOT_FOUND]
             );
         }
 
