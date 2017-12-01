@@ -45,12 +45,16 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param string $sessionId
+     *
+     * @return SessionEntity
      */
-    public function setSessionId(string $sessionId)
+    public function setSessionId(string $sessionId): SessionEntity
     {
         Assertion::maxLength($sessionId, 32);
 
         $this->sessionId = $sessionId;
+
+        return $this;
     }
 
     /**
