@@ -26,7 +26,7 @@ use Zend\Authentication\AuthenticationServiceInterface;
  * Class AuthenticationRepository
  * @package EyeChart\Repository\Authentication
  */
-final class AuthenticationRepository
+class AuthenticationRepository
 {
 
     /** @var AuthenticateModel */
