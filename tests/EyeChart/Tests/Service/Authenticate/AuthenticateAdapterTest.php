@@ -53,14 +53,14 @@ class AuthenticateAdapterTest extends TestCase
 
     public function setUp(): void
     {
-        $this->mockedSessionManager = $this->getMock(SessionManager::class);
+        $this->mockedSessionManager = $this->getMockByNameSpace(SessionManager::class);
 
         $this->mockedSessionManager->expects($this->once())
             ->method('start');
 
-        $this->mockedAuthenticateDao = $this->getMock(AuthenticateDAO::class);
+        $this->mockedAuthenticateDao = $this->getMockByNameSpace(AuthenticateDAO::class);
 
-        $this->mockedAuthenticateStorageDao = $this->getMock(AuthenticateStorageDAO::class);
+        $this->mockedAuthenticateStorageDao = $this->getMockByNameSpace(AuthenticateStorageDAO::class);
 
         self::$authenticateEntity->setToken(str_repeat('a', AuthenticateMapper::TOKEN_LENGTH));
 
@@ -187,7 +187,7 @@ class AuthenticateAdapterTest extends TestCase
      * @param string $nameSpace
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    private function getMock(string $nameSpace): PHPUnit_Framework_MockObject_MockObject
+    private function getMockByNameSpace(string $nameSpace): PHPUnit_Framework_MockObject_MockObject
     {
         return $this->getMockBuilder($nameSpace)
             ->disableOriginalConstructor()
