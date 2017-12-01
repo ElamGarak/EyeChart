@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
- * User: pachjo <joshua.pacheco@gmail.com>
+ * User: Joshua M Pacheco <joshua.pacheco@gmail.com>
  * Date: 12/1/2017
  * (c) Eye Chart
  */
