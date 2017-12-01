@@ -29,6 +29,9 @@ final class AuthenticateMapper extends AbstractMapper
     public const IS_VALID     = 'isValid';
     public const HEADER       = 'X-Authentication';
 
-    public const SESSION_EXPIRED_MESSAGE = 'Your session has expired';
-    public const SESSION_ENDED_MESSAGE   = 'Your session has ended';
+    public const SESSION_EXPIRED_MESSAGE               = 'Your session has expired';
+    public const SESSION_ENDED_MESSAGE                 = 'Your session has ended';
+    public const MESSAGE_ACCESS_TOKEN_RECORD_NOT_FOUND = 'Access token record was not found';
+    public const MESSAGE_USER_NOT_ACTIVE               = 'User is not active on this system';
+    public const MESSAGE_USER_IS_VALID                 = 'User is Valid';
 }
