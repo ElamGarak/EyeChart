@@ -77,6 +77,17 @@ final class AuthenticateListener implements ListenerAggregateInterface
     }
 
     /**
+     * This is a test helper
+     *
+     * @return callable[]
+     * @codeCoverageIgnore
+     */
+    public function getListeners(): array
+    {
+        return $this->listeners;
+    }
+
+    /**
      * @param MvcEvent $mvcEvent
      * @throws UnauthorizedException
      */
