@@ -51,6 +51,15 @@ final class AuthenticateModel
 
     /**
      * @param VOInterface $authenticationVO
+     * @return string
+     */
+    public function getByteCode(VOInterface $authenticationVO): string
+    {
+        return $this->authenticateDAO->getByteCode($authenticationVO);
+    }
+
+    /**
+     * @param VOInterface $authenticationVO
      * @throws UnableToAuthenticateException
      */
     public function checkCredentials(VOInterface $authenticationVO): void
