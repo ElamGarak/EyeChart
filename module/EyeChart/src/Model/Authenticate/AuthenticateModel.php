@@ -51,11 +51,11 @@ final class AuthenticateModel
 
     /**
      * @param VOInterface $authenticationVO
-     * @return string
+     * @return string[]
      */
-    public function getByteCode(VOInterface $authenticationVO): string
+    public function getByteCodeAndTag(VOInterface $authenticationVO): array
     {
-        return $this->authenticateDAO->getByteCode($authenticationVO);
+        return $this->authenticateDAO->getByteCodeAndTag($authenticationVO);
     }
 
     /**

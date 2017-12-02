@@ -25,14 +25,15 @@ class AuthenticateDAO extends AbstractDAO
 {
     /**
      * @param VOInterface|AuthenticationVO $vo
-     * @return string
+     * @return string[]
      */
-    public function getByteCode(VOInterface $vo): string
+    public function getByteCodeAndTag(VOInterface $vo): array
     {
         $select = parent::getSqlAdapter()->select();
 
         $select->columns([
             AuthenticateMapper::BYTE_CODE,
+            AuthenticateMapper::TAG
         ])->from(AuthenticateMapper::TABLE);
 
         $where = new Where();
@@ -41,13 +42,13 @@ class AuthenticateDAO extends AbstractDAO
 
         $select->where($where);
 
-        $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+        $results = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        if (empty($result)) {
+        if (empty($results)) {
             throw new NoResultsFoundException();
         }
 
-        return $result[AuthenticateMapper::BYTE_CODE];
+        return $results;
     }
 
     /**
@@ -66,6 +67,7 @@ class AuthenticateDAO extends AbstractDAO
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
               ->equalTo(AuthenticateMapper::BYTE_CODE, $vo->getByteCode())->and
               ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getCredentials())->and
+              ->equalTo(AuthenticateMapper::TAG, $vo->getTag())->and
               ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);

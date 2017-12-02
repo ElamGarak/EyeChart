@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace EyeChart\Repository\Authentication;
 
 use EyeChart\Entity\SessionEntity;
+use EyeChart\Exception\NoResultsFoundException;
+use EyeChart\Exception\UnableToAuthenticateException;
+use EyeChart\Exception\UnauthorizedException;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
@@ -157,10 +160,26 @@ class AuthenticationRepository
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return string
+     * @throws UnauthorizedException
      */
     public function login(VOInterface $authenticationVO): string
     {
-        $this->authenticateModel->checkCredentials($authenticationVO);
+        try {
+            $results = $this->authenticateModel->getByteCodeAndTag($authenticationVO);
+            $authenticationVO->setByteCode($results[AuthenticateMapper::BYTE_CODE]);
+            $authenticationVO->setTag($results[AuthenticateMapper::TAG]);
+
+            $this->encryptionModel->setBytes($authenticationVO->getByteCode());
+            $this->encryptionModel->setTag($authenticationVO->getTag());
+            $credentials = $this->encryptionModel->encrypt($authenticationVO->getPassword(), $authenticationVO->getUsername());
+            $authenticationVO->setCredentials($credentials);
+
+            $this->authenticateModel->checkCredentials($authenticationVO);
+        } catch (NoResultsFoundException $exception) {
+            throw new UnauthorizedException('You are not authorized to access this application');
+        } catch (UnableToAuthenticateException $exception) {
+            throw new UnauthorizedException($exception->getMessage(), $exception->getCode());
+        }
 
         $sessionEntity = $this->authenticateModel->generateSessionEntity($authenticationVO);
 
