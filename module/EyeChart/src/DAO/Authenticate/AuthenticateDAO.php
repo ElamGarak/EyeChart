@@ -64,7 +64,8 @@ class AuthenticateDAO extends AbstractDAO
 
         $where = new Where();
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::PASSWORD, $vo->getPassword())->and
+              ->equalTo(AuthenticateMapper::BYTE_CODE, $vo->getByteCode())->and
+              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getCredentials())->and
               ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);
