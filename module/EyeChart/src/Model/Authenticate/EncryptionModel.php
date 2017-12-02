@@ -38,25 +38,23 @@ final class EncryptionModel
     }
 
     /**
-     * @param string $data
+     * @param string $dataToEncrypt
      * @param string $key
      * @return string
      */
-    public function encrypt(string $data, string $key): string
+    public function encrypt(string $dataToEncrypt, string $key): string
     {
-        return openssl_encrypt($data, $this->cipher, $key, OPENSSL_RAW_DATA, $this->bytes, $this->tag);
+        return openssl_encrypt($dataToEncrypt, $this->cipher, $key, OPENSSL_RAW_DATA, $this->getBytes(), $this->tag);
     }
 
     /**
+     * @param string $dataToDecrypt
      * @param string $key
      * @return string
      */
-    public function decrypt(string $key): string
+    public function decrypt(string $dataToDecrypt, string $key): string
     {
-        // TODO Pull this from the DB
-        $encryptedCredentials = $this->encrypt('password', 'username');
-
-        return openssl_decrypt($encryptedCredentials, $this->cipher, $key, OPENSSL_RAW_DATA, $this->bytes, $this->tag);
+        return openssl_decrypt($dataToDecrypt, $this->cipher, $key, OPENSSL_RAW_DATA, $this->getBytes(), $this->tag);
     }
 
     /**
@@ -68,8 +66,34 @@ final class EncryptionModel
         Assertion::inArray($cipher, openssl_get_cipher_methods(), 'Invalid or unrecognized cypher was passed');
 
         $this->cipher = $cipher;
+    }
 
-        $ivLength    = openssl_cipher_iv_length($this->cipher);
-        $this->bytes = openssl_random_pseudo_bytes($ivLength);
+
+    public function setBytes(string $bytes): void
+    {
+        Assertion::notBlank($bytes, 'No blank bytes value may be passed');
+
+        $this->bytes = $bytes;
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function setTag(string $tag): void
+    {
+        $this->tag = $tag;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBytes(): string
+    {
+        if (empty($this->bytes)) {
+            $ivLength    = openssl_cipher_iv_length($this->cipher);
+            $this->bytes = openssl_random_pseudo_bytes($ivLength);
+        }
+
+        return $this->bytes;
     }
 }
