@@ -29,7 +29,7 @@ use Zend\Db\Sql\Where;
  * Class AuthenticateStorageDAO
  * @package EyeChart\DAO\Authenticate
  */
-final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
+class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 {
     /** @var Sql */
     private $sql;

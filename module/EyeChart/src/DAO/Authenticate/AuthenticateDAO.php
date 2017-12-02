@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use EyeChart\DAO\AbstractDAO;
+use EyeChart\Exception\NoResultsFoundException;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
@@ -22,6 +23,34 @@ use Zend\Db\Sql\Where;
  */
 class AuthenticateDAO extends AbstractDAO
 {
+    /**
+     * @param VOInterface|AuthenticationVO $vo
+     * @return string[]
+     */
+    public function getByteCodeAndTag(VOInterface $vo): array
+    {
+        $select = parent::getSqlAdapter()->select();
+
+        $select->columns([
+            AuthenticateMapper::BYTE_CODE,
+            AuthenticateMapper::TAG
+        ])->from(AuthenticateMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
+              ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
+
+        $select->where($where);
+
+        $results = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+
+        if (empty($results)) {
+            throw new NoResultsFoundException();
+        }
+
+        return $results;
+    }
+
     /**
      * @param AuthenticationVO|VOInterface $vo
      * @return bool
@@ -36,7 +65,9 @@ class AuthenticateDAO extends AbstractDAO
 
         $where = new Where();
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::PASSWORD, $vo->getPassword())->and
+              ->equalTo(AuthenticateMapper::BYTE_CODE, $vo->getByteCode())->and
+              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getCredentials())->and
+              ->equalTo(AuthenticateMapper::TAG, $vo->getTag())->and
               ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);
@@ -67,6 +98,6 @@ class AuthenticateDAO extends AbstractDAO
 
         $results = $this->parseDataTypes($result);
 
-        return (bool) $results['IsActive'];
+        return (bool) $results[AuthenticateMapper::IS_ACTIVE];
     }
 }

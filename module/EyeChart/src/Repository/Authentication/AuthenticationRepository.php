@@ -10,10 +10,14 @@ declare(strict_types=1);
 namespace EyeChart\Repository\Authentication;
 
 use EyeChart\Entity\SessionEntity;
+use EyeChart\Exception\NoResultsFoundException;
+use EyeChart\Exception\UnableToAuthenticateException;
+use EyeChart\Exception\UnauthorizedException;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
+use EyeChart\Model\Authenticate\EncryptionModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\AuthenticationVO;
@@ -26,7 +30,7 @@ use Zend\Authentication\AuthenticationServiceInterface;
  * Class AuthenticationRepository
  * @package EyeChart\Repository\Authentication
  */
-final class AuthenticationRepository
+class AuthenticationRepository
 {
 
     /** @var AuthenticateModel */
@@ -34,6 +38,9 @@ final class AuthenticationRepository
 
     /** @var AuthenticateStorageModel */
     private $authenticateStorageModel;
+
+    /** @var EncryptionModel */
+    private $encryptionModel;
 
     /** @var AuthenticateAdapter */
     private $authenticateAdapter;
@@ -49,6 +56,7 @@ final class AuthenticationRepository
      *
      * @param AuthenticateModel $authenticateModel
      * @param AuthenticateStorageModel $authenticateStorageModel
+     * @param EncryptionModel $encryptionModel
      * @param AuthenticateAdapter $authenticateAdapter
      * @param EmployeeModel $employeeModel
      * @param AuthenticationServiceInterface|ZendAuthentication $zendAuthentication
@@ -56,12 +64,14 @@ final class AuthenticationRepository
     public function __construct(
         AuthenticateModel $authenticateModel,
         AuthenticateStorageModel $authenticateStorageModel,
+        EncryptionModel $encryptionModel,
         AuthenticateAdapter $authenticateAdapter,
         EmployeeModel $employeeModel,
         AuthenticationServiceInterface $zendAuthentication
     ) {
         $this->authenticateModel        = $authenticateModel;
         $this->authenticateStorageModel = $authenticateStorageModel;
+        $this->encryptionModel          = $encryptionModel;
         $this->authenticateAdapter      = $authenticateAdapter;
         $this->zendAuthentication       = $zendAuthentication;
         $this->employeeModel            = $employeeModel;
@@ -150,10 +160,26 @@ final class AuthenticationRepository
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return string
+     * @throws UnauthorizedException
      */
     public function login(VOInterface $authenticationVO): string
     {
-        $this->authenticateModel->checkCredentials($authenticationVO);
+        try {
+            $results = $this->authenticateModel->getByteCodeAndTag($authenticationVO);
+            $authenticationVO->setByteCode($results[AuthenticateMapper::BYTE_CODE]);
+            $authenticationVO->setTag($results[AuthenticateMapper::TAG]);
+
+            $this->encryptionModel->setBytes($authenticationVO->getByteCode());
+            $this->encryptionModel->setTag($authenticationVO->getTag());
+            $credentials = $this->encryptionModel->encrypt($authenticationVO->getPassword(), $authenticationVO->getUsername());
+            $authenticationVO->setCredentials($credentials);
+
+            $this->authenticateModel->checkCredentials($authenticationVO);
+        } catch (NoResultsFoundException $exception) {
+            throw new UnauthorizedException('You are not authorized to access this application');
+        } catch (UnableToAuthenticateException $exception) {
+            throw new UnauthorizedException($exception->getMessage(), $exception->getCode());
+        }
 
         $sessionEntity = $this->authenticateModel->generateSessionEntity($authenticationVO);
 
