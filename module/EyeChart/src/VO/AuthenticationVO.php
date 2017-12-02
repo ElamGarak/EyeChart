@@ -25,6 +25,12 @@ final class AuthenticationVO extends AbstractVO
     protected $password = '';
 
     /** @var string */
+    protected $credentials = '';
+
+    /** @var string */
+    protected $byteCode = '';
+
+    /** @var string */
     protected $token = '';
 
     /**
@@ -49,6 +55,22 @@ final class AuthenticationVO extends AbstractVO
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCredentials(): string
+    {
+        return $this->credentials;
+    }
+
+    /**
+     * @return string
+     */
+    public function getByteCode(): string
+    {
+        return $this->byteCode;
     }
 
     /**
@@ -81,6 +103,32 @@ final class AuthenticationVO extends AbstractVO
         Assertion::notEmpty($password, "Password was not provided");
 
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @param string $credentials
+     * @return AuthenticationVO
+     */
+    public function setCredentials(string $credentials): AuthenticationVO
+    {
+        Assertion::notEmpty($credentials, "Credentials may not be empty");
+
+        $this->credentials = $credentials;
+
+        return $this;
+    }
+
+    /**
+     * @param string $byteCode
+     * @return AuthenticationVO
+     */
+    public function setByteCode(string $byteCode): AuthenticationVO
+    {
+        Assertion::notEmpty($byteCode, "Byte code may not be empty");
+
+        $this->byteCode = $byteCode;
 
         return $this;
     }
