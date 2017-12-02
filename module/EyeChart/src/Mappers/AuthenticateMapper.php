@@ -20,6 +20,9 @@ final class AuthenticateMapper extends AbstractMapper
 
     public const USER_IDENTITY_ID = 'UserIdentityId';
     public const USER_NAME        = 'UserName';
+    public const CREDENTIALS      = 'Credentials';
+    public const BYTE_CODE        = 'ByteCode';
+    public const TAG              = 'Tag';
     public const PASSWORD         = 'Password';
     public const IS_ACTIVE        = 'IsActive';
 
