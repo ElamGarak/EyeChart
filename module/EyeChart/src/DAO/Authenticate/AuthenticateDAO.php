@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use EyeChart\DAO\AbstractDAO;
+use EyeChart\Exception\NoResultsFoundException;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\AuthenticationVO;
 use EyeChart\VO\VOInterface;
@@ -22,6 +23,33 @@ use Zend\Db\Sql\Where;
  */
 class AuthenticateDAO extends AbstractDAO
 {
+    /**
+     * @param VOInterface|AuthenticationVO $vo
+     * @return string
+     */
+    public function getByteCode(VOInterface $vo): string
+    {
+        $select = parent::getSqlAdapter()->select();
+
+        $select->columns([
+            AuthenticateMapper::BYTE_CODE,
+        ])->from(AuthenticateMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
+              ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
+
+        $select->where($where);
+
+        $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
+
+        if (empty($result)) {
+            throw new NoResultsFoundException();
+        }
+
+        return $result[AuthenticateMapper::BYTE_CODE];
+    }
+
     /**
      * @param AuthenticationVO|VOInterface $vo
      * @return bool
@@ -67,6 +95,6 @@ class AuthenticateDAO extends AbstractDAO
 
         $results = $this->parseDataTypes($result);
 
-        return (bool) $results['IsActive'];
+        return (bool) $results[AuthenticateMapper::IS_ACTIVE];
     }
 }
