@@ -22,6 +22,7 @@ final class EncryptionModelFactory
     /**
      * @param ContainerInterface $container
      * @return EncryptionModel
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): EncryptionModel
     {
