@@ -14,6 +14,7 @@ use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
+use EyeChart\Model\Authenticate\EncryptionModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\AuthenticationVO;
@@ -35,6 +36,9 @@ class AuthenticationRepository
     /** @var AuthenticateStorageModel */
     private $authenticateStorageModel;
 
+    /** @var EncryptionModel */
+    private $encryptionModel;
+
     /** @var AuthenticateAdapter */
     private $authenticateAdapter;
 
@@ -49,6 +53,7 @@ class AuthenticationRepository
      *
      * @param AuthenticateModel $authenticateModel
      * @param AuthenticateStorageModel $authenticateStorageModel
+     * @param EncryptionModel $encryptionModel
      * @param AuthenticateAdapter $authenticateAdapter
      * @param EmployeeModel $employeeModel
      * @param AuthenticationServiceInterface|ZendAuthentication $zendAuthentication
@@ -56,12 +61,14 @@ class AuthenticationRepository
     public function __construct(
         AuthenticateModel $authenticateModel,
         AuthenticateStorageModel $authenticateStorageModel,
+        EncryptionModel $encryptionModel,
         AuthenticateAdapter $authenticateAdapter,
         EmployeeModel $employeeModel,
         AuthenticationServiceInterface $zendAuthentication
     ) {
         $this->authenticateModel        = $authenticateModel;
         $this->authenticateStorageModel = $authenticateStorageModel;
+        $this->encryptionModel          = $encryptionModel;
         $this->authenticateAdapter      = $authenticateAdapter;
         $this->zendAuthentication       = $zendAuthentication;
         $this->employeeModel            = $employeeModel;
