@@ -31,6 +31,9 @@ final class AuthenticationVO extends AbstractVO
     protected $byteCode = '';
 
     /** @var string */
+    protected $tag = '';
+
+    /** @var string */
     protected $token = '';
 
     /**
@@ -71,6 +74,14 @@ final class AuthenticationVO extends AbstractVO
     public function getByteCode(): string
     {
         return $this->byteCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTag(): string
+    {
+        return $this->tag;
     }
 
     /**
@@ -129,6 +140,19 @@ final class AuthenticationVO extends AbstractVO
         Assertion::notEmpty($byteCode, "Byte code may not be empty");
 
         $this->byteCode = $byteCode;
+
+        return $this;
+    }
+
+    /**
+     * @param string $tag
+     * @return AuthenticationVO
+     */
+    public function setTag(string $tag): AuthenticationVO
+    {
+        Assertion::notEmpty($tag, "Tag may not be empty");
+
+        $this->tag = $tag;
 
         return $this;
     }
