@@ -32,9 +32,6 @@ return [
         'timeoutWarningThreshold' => 5, // Minutes
         'activeSessionCheck'      => true,
     ],
-    'authentication' => [
-        'cipher' => 'aes-256-gcm'
-    ],
     'noTokenRequired' => [
         'api.rpc.login' => 'Login API Controller',
         'zf-apigility/api/module/rpc-service' => 'Apigility RPC update',
