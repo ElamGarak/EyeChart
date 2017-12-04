@@ -10,90 +10,54 @@ declare(strict_types=1);
 
 namespace EyeChart\Model\Authenticate;
 
-use Assert\Assertion;
-use Zend\Config\Config;
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
+use Defuse\Crypto\KeyProtectedByPassword;
 
 /**
  * Class EncryptionModel
  * @package EyeChart\Model\Authenticate
+ *
+ * TODO
+ *  1) Rename this class, its no longer used for encryption and instaed will be used as a glorified password valididy checker
+ *  2) Capture valid exceptions and rethrow using what has been created
+ *  3) Rewrite unit test (No need to slam this hard, just test my logic)
+ *  4) Continue stitching this into the application
  */
 final class EncryptionModel
 {
-    /** @var string */
-    private $cipher;
-
-    /** @var string */
-    private $bytes;
-
-    /** @var string */
-    private $tag = '';
-
     /**
-     * Encryption constructor.
-     * @param Config $config
+     * @param string $stringToEncode
+     * @return string
+     * @throws EnvironmentIsBrokenException
      */
-    public function __construct(Config $config)
+    public function getEncoded(string $stringToEncode): string
     {
-        $this->setCipher($config->get('cipher'));
+        $protectedKey = KeyProtectedByPassword::createRandomPasswordProtectedKey($stringToEncode);
+
+        return $protectedKey->saveToAsciiSafeString();
     }
 
     /**
-     * @param string $dataToEncrypt
      * @param string $key
+     * @param string $protectedString
      * @return string
+     * @throws BadFormatException
+     * @throws EnvironmentIsBrokenException
+     * @throws WrongKeyOrModifiedCiphertextException
      */
-    public function encrypt(string $dataToEncrypt, string $key): string
+    public function getDecoded(string $key, string $protectedString): string
     {
-        return openssl_encrypt($dataToEncrypt, $this->cipher, $key, OPENSSL_RAW_DATA, $this->getBytes(), $this->tag);
+        $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($protectedString);
+        $userKey      = $protectedKey->unlockKey($key);
+
+        return $userKey->saveToAsciiSafeString();
     }
 
-    /**
-     * @param string $dataToDecrypt
-     * @param string $key
-     * @return string
-     */
-    public function decrypt(string $dataToDecrypt, string $key): string
+    public function checkPassCodeValidity(string $storedCode, string $inputCode)
     {
-        return openssl_decrypt($dataToDecrypt, $this->cipher, $key, OPENSSL_RAW_DATA, $this->getBytes(), $this->tag);
-    }
-
-    /**
-     * @param string $cipher
-     */
-    public function setCipher(string $cipher): void
-    {
-        Assertion::notBlank($cipher, 'No cipher was passed');
-        Assertion::inArray($cipher, openssl_get_cipher_methods(), 'Invalid or unrecognized cypher was passed');
-
-        $this->cipher = $cipher;
-    }
-
-
-    public function setBytes(string $bytes): void
-    {
-        Assertion::notBlank($bytes, 'No blank bytes value may be passed');
-
-        $this->bytes = $bytes;
-    }
-
-    /**
-     * @param string $tag
-     */
-    public function setTag(string $tag): void
-    {
-        $this->tag = $tag;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBytes(): string
-    {
-        if (empty($this->bytes)) {
-            $ivLength    = openssl_cipher_iv_length($this->cipher);
-            $this->bytes = openssl_random_pseudo_bytes($ivLength);
-        }
-
-        return $this->bytes;
+        $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($storedCode);
+        $userKey      = $protectedKey->unlockKey($inputCode);
     }
 }
