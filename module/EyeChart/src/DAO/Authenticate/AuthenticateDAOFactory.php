@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use Psr\Container\ContainerInterface;
+use Zend\Db\Sql\Sql;
 
 /**
  * Class AuthenticateDAOFactory
@@ -24,8 +25,9 @@ final class AuthenticateDAOFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateDAO
     {
-        $adapter = $container->get('db');
+        /** @var Sql $sql */
+        $sql = new Sql($container->get('db'));
 
-        return new AuthenticateDAO($adapter);
+        return new AuthenticateDAO($sql);
     }
 }
