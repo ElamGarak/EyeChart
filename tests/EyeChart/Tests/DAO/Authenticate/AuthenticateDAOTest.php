@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Tests\Model\Authenticate;
 
 use EyeChart\DAO\Authenticate\AuthenticateDAO;
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\Authentication\CredentialsVO;
 use PHPUnit\Framework\TestCase;
@@ -124,5 +125,45 @@ class AuthenticateDAOTest extends TestCase
                            ->willReturn(null);
 
         $this->dao->checkCredentials(self::$vo);
+    }
+
+    /**
+     * @param int  $active
+     * @param bool $expected
+     * @dataProvider provideActiveStatuses
+     */
+    public function testIsUserActive(int $active, bool $expected): void
+    {
+        $this->mockedResult->expects($this->any())
+                           ->method('current')
+                           ->willReturn([AuthenticateMapper::IS_ACTIVE => (string) $active]);
+
+        $result = $this->dao->isUserActive(self::$vo);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @return array[]
+     */
+    public function provideActiveStatuses(): array
+    {
+        return [
+            [1, true],
+            [0, false]
+        ];
+    }
+
+    public function testGetUserStoredCredentials(): void
+    {
+        $expected = [AuthenticateMapper::CREDENTIALS => uniqid()];
+
+        $this->mockedResult->expects($this->any())
+                           ->method('current')
+                           ->willReturn($expected);
+
+        $result = $this->dao->getUsersStoredCredentials(self::$vo);
+
+        $this->assertEquals($expected, $result);
     }
 }
