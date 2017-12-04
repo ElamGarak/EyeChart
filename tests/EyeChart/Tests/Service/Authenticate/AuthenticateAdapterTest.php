@@ -17,7 +17,7 @@ use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Zend\Authentication\Result;

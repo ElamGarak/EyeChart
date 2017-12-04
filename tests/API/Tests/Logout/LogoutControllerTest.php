@@ -12,7 +12,7 @@ namespace API\Tests\Logout;
 use API\Tests\ApiControllerWithAuthenticationTest;
 use API\V1\Rpc\Logout\LogoutController;
 use EyeChart\Service\Authenticate\AuthenticateService;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 
 /**
  * Class LogoutControllerTest

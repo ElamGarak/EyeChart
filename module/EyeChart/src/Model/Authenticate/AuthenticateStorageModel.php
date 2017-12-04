@@ -15,7 +15,7 @@ use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\SettingNotFoundException;
 use EyeChart\Mappers\SessionMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Storage\StorageInterface;
