@@ -21,8 +21,6 @@ final class AuthenticateMapper extends AbstractMapper
     public const USER_IDENTITY_ID = 'UserIdentityId';
     public const USER_NAME        = 'UserName';
     public const CREDENTIALS      = 'Credentials';
-    public const BYTE_CODE        = 'ByteCode';
-    public const TAG              = 'Tag';
     public const PASSWORD         = 'Password';
     public const IS_ACTIVE        = 'IsActive';
 
@@ -31,6 +29,9 @@ final class AuthenticateMapper extends AbstractMapper
     public const MESSAGES     = 'messages';
     public const IS_VALID     = 'isValid';
     public const HEADER       = 'X-Authentication';
+
+    public const DERIVED_CREDENTIALS = 'derivedCredentials';
+    public const STORED_CREDENTIALS  = 'storedCredentials';
 
     public const SESSION_EXPIRED_MESSAGE               = 'Your session has expired';
     public const SESSION_ENDED_MESSAGE                 = 'Your session has ended';

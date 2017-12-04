@@ -9,12 +9,19 @@ declare(strict_types=1);
 
 namespace EyeChart\Model\Authenticate;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\KeyProtectedByPassword;
 use EyeChart\DAO\Authenticate\AuthenticateDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\UnableToAuthenticateException;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\Exception\UserCredentialsDoNotMatchException;
+use EyeChart\Exception\UserCredentialsInvalidException;
+use EyeChart\Exception\UserNotActiveException;
+use EyeChart\Exception\UserNotFoundException;
+use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -50,27 +57,31 @@ final class AuthenticateModel
     }
 
     /**
-     * @param VOInterface $authenticationVO
-     * @return string[]
-     */
-    public function getByteCodeAndTag(VOInterface $authenticationVO): array
-    {
-        return $this->authenticateDAO->getByteCodeAndTag($authenticationVO);
-    }
-
-    /**
-     * @param VOInterface $authenticationVO
+     * @param VOInterface|AuthenticationVO $authenticationVO
      * @throws UnableToAuthenticateException
+     * @throws UserCredentialsInvalidException
      */
     public function checkCredentials(VOInterface $authenticationVO): void
     {
-        if ($this->authenticateDAO->checkCredentials($authenticationVO) === false) {
-            throw new UnableToAuthenticateException($authenticationVO);
-        };
+        $derivedCredentials = $authenticationVO->getCredentials()[AuthenticateMapper::DERIVED_CREDENTIALS];
+        $storedCredentials  = $authenticationVO->getCredentials()[AuthenticateMapper::STORED_CREDENTIALS];
 
-        $this->authenticateEntity
-             ->setIsValid(true)
-             ->initializeByVO($authenticationVO);
+        if ($storedCredentials !== $derivedCredentials) {
+            throw new UserCredentialsInvalidException();
+        }
+
+        try {
+            $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($storedCredentials);
+            $protectedKey->unlockKey($derivedCredentials);
+
+            $this->authenticateDAO->checkCredentials($authenticationVO);
+
+            $this->authenticateEntity->setIsValid(true)->initializeByVO($authenticationVO);
+        } catch (CryptoException $exception) {
+            throw new UnableToAuthenticateException($authenticationVO);
+        } catch (UserCredentialsDoNotMatchException $exception) {
+            throw new UnableToAuthenticateException($authenticationVO);
+        }
     }
 
     /**
@@ -107,5 +118,51 @@ final class AuthenticateModel
     public function getMessages(): array
     {
         return $this->authenticateEntity->getMessages();
+    }
+
+    /**
+     * @param VOInterface|AuthenticationVO $authenticationVO
+     * @return string
+     * @throws UserNotFoundException
+     * @throws UserNotActiveException
+     */
+    public function getUsersStoredCredentials(VOInterface $authenticationVO): string
+    {
+        $results = $this->authenticateDAO->getUsersStoredCredentials($authenticationVO);
+
+        if (!array_key_exists(AuthenticateMapper::CREDENTIALS, $results)) {
+            throw new UserNotFoundException($authenticationVO->getUsername());
+        }
+
+        if ($results[AuthenticateMapper::IS_ACTIVE] === 0) {
+            throw new UserNotActiveException($authenticationVO->getUsername());
+        }
+
+        return $results[AuthenticateMapper::CREDENTIALS];
+    }
+
+
+    /**
+     * @param string $stringToEncode
+     * @return string
+     */
+    public function getEncoded(string $stringToEncode): string
+    {
+        $protectedKey = KeyProtectedByPassword::createRandomPasswordProtectedKey($stringToEncode);
+
+        return $protectedKey->saveToAsciiSafeString();
+    }
+
+    /**
+     * @param string $key
+     * @param string $protectedString
+     * @return string
+     */
+    public function getDecoded(string $key, string $protectedString): string
+    {
+        $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($protectedString);
+        $userKey      = $protectedKey->unlockKey($key);
+
+        return $userKey->saveToAsciiSafeString();
     }
 }
