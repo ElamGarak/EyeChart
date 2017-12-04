@@ -29,8 +29,11 @@ final class AuthenticationVO extends AbstractVO
     /** @var string */
     protected $token = '';
 
-    /** @var CredentialsVO[] */
-    protected $credentials = [];
+    /** @var CredentialsVO */
+    protected $derivedCredentials;
+
+    /** @var CredentialsVO */
+    protected $storedCredentials;
 
     /**
      * @return VOInterface|AuthenticationVO
@@ -57,11 +60,19 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
-     * @return CredentialsVO[]
+     * @return CredentialsVO
      */
-    public function getCredentials(): array
+    public function getDerivedCredentials(): CredentialsVO
     {
-        return $this->credentials;
+        return $this->derivedCredentials;
+    }
+
+    /**
+     * @return CredentialsVO
+     */
+    public function getStoredCredentials(): CredentialsVO
+    {
+        return $this->storedCredentials;
     }
 
     /**
@@ -114,13 +125,23 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
-     * @param string $credentials
-     * @param string $key
+     * @param CredentialsVO $derivedCredentials
      * @return AuthenticationVO
      */
-    public function addCredentials(string $credentials, string $key): AuthenticationVO
+    public function setDerivedCredentials(CredentialsVO $derivedCredentials): AuthenticationVO
     {
-        $this->credentials[$key] = CredentialsVO::build()->setCredentials($credentials);
+        $this->derivedCredentials = $derivedCredentials;
+
+        return $this;
+    }
+
+    /**
+     * @param CredentialsVO $storedCredentials
+     * @return AuthenticationVO
+     */
+    public function setStoredCredentials(CredentialsVO $storedCredentials): AuthenticationVO
+    {
+        $this->storedCredentials = $storedCredentials;
 
         return $this;
     }

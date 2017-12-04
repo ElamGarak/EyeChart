@@ -20,6 +20,7 @@ use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\Authentication\AuthenticationVO;
+use EyeChart\VO\Authentication\CredentialsVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
@@ -159,13 +160,15 @@ class AuthenticationRepository
     {
         try {
             $derivedCredentials = $this->authenticateModel->getEncoded($authenticationVO->getPassword());
-            $authenticationVO->addCredentials($derivedCredentials, AuthenticateMapper::DERIVED_CREDENTIALS);
+            $credentials = CredentialsVO::build()->setCredentials($derivedCredentials);
+            $authenticationVO->setDerivedCredentials($credentials);
 
             $storedCredentials = $this->authenticateModel->getUsersStoredCredentials(
-                $authenticationVO->getCredentials()[AuthenticateMapper::DERIVED_CREDENTIALS]
+                $authenticationVO->getDerivedCredentials()
             );
 
-            $authenticationVO->addCredentials($storedCredentials, AuthenticateMapper::STORED_CREDENTIALS);
+            $credentials = CredentialsVO::build()->setCredentials($storedCredentials);
+            $authenticationVO->setStoredCredentials($credentials);
 
             $this->authenticateModel->checkCredentials($authenticationVO);
         } catch (NoResultsFoundException $exception) {

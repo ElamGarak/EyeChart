@@ -19,7 +19,7 @@ use Zend\Db\Sql\Where;
 
 /**
  * Class AuthenticateDAO
- * @package EyeChart\DAL\DAO\Authenticate
+ * @package EyeChart\DAO\Authenticate
  */
 class AuthenticateDAO extends AbstractDAO
 {
@@ -37,7 +37,7 @@ class AuthenticateDAO extends AbstractDAO
 
         $where = new Where();
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getCredentials())->and
+              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getDerivedCredentials()->getCredentials())->and
               ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);

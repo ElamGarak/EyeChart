@@ -63,8 +63,8 @@ final class AuthenticateModel
      */
     public function checkCredentials(VOInterface $authenticationVO): void
     {
-        $derivedCredentials = $authenticationVO->getCredentials()[AuthenticateMapper::DERIVED_CREDENTIALS];
-        $storedCredentials  = $authenticationVO->getCredentials()[AuthenticateMapper::STORED_CREDENTIALS];
+        $derivedCredentials = $authenticationVO->getDerivedCredentials()->getCredentials();
+        $storedCredentials  = $authenticationVO->getStoredCredentials()->getCredentials();
 
         if ($storedCredentials !== $derivedCredentials) {
             throw new UserCredentialsInvalidException();
