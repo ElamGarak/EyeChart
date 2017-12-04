@@ -44,7 +44,7 @@ class AuthenticateDAO extends AbstractDAO
 
         $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        if (!is_null($result)) {
+        if (is_null($result)) {
             throw new UserCredentialsDoNotMatchException();
         }
     }
