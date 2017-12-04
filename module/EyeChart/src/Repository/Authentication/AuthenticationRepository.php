@@ -17,10 +17,9 @@ use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
-use EyeChart\Model\Authenticate\EncryptionModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
@@ -39,9 +38,6 @@ class AuthenticationRepository
     /** @var AuthenticateStorageModel */
     private $authenticateStorageModel;
 
-    /** @var EncryptionModel */
-    private $encryptionModel;
-
     /** @var AuthenticateAdapter */
     private $authenticateAdapter;
 
@@ -56,7 +52,6 @@ class AuthenticationRepository
      *
      * @param AuthenticateModel $authenticateModel
      * @param AuthenticateStorageModel $authenticateStorageModel
-     * @param EncryptionModel $encryptionModel
      * @param AuthenticateAdapter $authenticateAdapter
      * @param EmployeeModel $employeeModel
      * @param AuthenticationServiceInterface|ZendAuthentication $zendAuthentication
@@ -64,14 +59,12 @@ class AuthenticationRepository
     public function __construct(
         AuthenticateModel $authenticateModel,
         AuthenticateStorageModel $authenticateStorageModel,
-        EncryptionModel $encryptionModel,
         AuthenticateAdapter $authenticateAdapter,
         EmployeeModel $employeeModel,
         AuthenticationServiceInterface $zendAuthentication
     ) {
         $this->authenticateModel        = $authenticateModel;
         $this->authenticateStorageModel = $authenticateStorageModel;
-        $this->encryptionModel          = $encryptionModel;
         $this->authenticateAdapter      = $authenticateAdapter;
         $this->zendAuthentication       = $zendAuthentication;
         $this->employeeModel            = $employeeModel;
@@ -165,14 +158,14 @@ class AuthenticationRepository
     public function login(VOInterface $authenticationVO): string
     {
         try {
-            $results = $this->authenticateModel->getByteCodeAndTag($authenticationVO);
-            $authenticationVO->setByteCode($results[AuthenticateMapper::BYTE_CODE]);
-            $authenticationVO->setTag($results[AuthenticateMapper::TAG]);
+            $derivedCredentials = $this->authenticateModel->getEncoded($authenticationVO->getPassword());
+            $authenticationVO->addCredentials($derivedCredentials, AuthenticateMapper::DERIVED_CREDENTIALS);
 
-            $this->encryptionModel->setBytes($authenticationVO->getByteCode());
-            $this->encryptionModel->setTag($authenticationVO->getTag());
-            $credentials = $this->encryptionModel->encrypt($authenticationVO->getPassword(), $authenticationVO->getUsername());
-            $authenticationVO->setCredentials($credentials);
+            $storedCredentials = $this->authenticateModel->getUsersStoredCredentials(
+                $authenticationVO->getCredentials()[AuthenticateMapper::DERIVED_CREDENTIALS]
+            );
+
+            $authenticationVO->addCredentials($storedCredentials, AuthenticateMapper::STORED_CREDENTIALS);
 
             $this->authenticateModel->checkCredentials($authenticationVO);
         } catch (NoResultsFoundException $exception) {
