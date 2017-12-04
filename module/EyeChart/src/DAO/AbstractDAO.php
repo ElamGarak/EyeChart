@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 namespace EyeChart\DAO;
-use Zend\Db\Adapter\Adapter;
+
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\AbstractPreparableSql;
@@ -26,11 +26,11 @@ class AbstractDAO
 
     /**
      * AuthenticateDAO constructor.
-     * @param Adapter $adapter
+     * @param Sql $sql
      */
-    public function __construct(Adapter $adapter)
+    public function __construct(Sql $sql)
     {
-        $this->sql = new Sql($adapter);
+        $this->sql = $sql;
     }
 
     /**

@@ -20,7 +20,6 @@ use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Exception\ExceptionInterface;
 use Zend\Authentication\Storage\StorageInterface;
-use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Predicate\Literal;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
@@ -39,14 +38,13 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 
     /**
      * AuthenticateStorageService constructor.
-     * @param Adapter $adapter
+     * @param Sql $sql
      * @param SessionEntity $sessionEntity
      */
-    public function __construct(Adapter $adapter, SessionEntity $sessionEntity)
+    public function __construct(Sql $sql, SessionEntity $sessionEntity)
     {
-        parent::__construct($adapter);
+        parent::__construct($sql);
 
-        $this->sql           = new Sql($adapter);
         $this->sessionEntity = $sessionEntity;
     }
 
