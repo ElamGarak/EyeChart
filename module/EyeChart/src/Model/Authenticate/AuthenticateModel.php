@@ -72,11 +72,11 @@ final class AuthenticateModel
 
         try {
             $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($storedCredentials);
-            $protectedKey->unlockKey($derivedCredentials);
+            $protectedKey->unlockKey($authenticationVO->getPassword());
 
             $this->authenticateDAO->checkCredentials($authenticationVO);
 
-            $this->authenticateEntity->setIsValid(true)->initializeByVO($authenticationVO);
+            $this->authenticateEntity->setIsValid(true);
         } catch (CryptoException $exception) {
             throw new UnableToAuthenticateException($authenticationVO);
         } catch (UserCredentialsDoNotMatchException $exception) {
