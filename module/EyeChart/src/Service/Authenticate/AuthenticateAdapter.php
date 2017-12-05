@@ -26,7 +26,7 @@ use Zend\Session\SessionManager;
  * Class AuthenticateAdapter
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateAdapter implements AdapterInterface
+class AuthenticateAdapter implements AdapterInterface
 {
 
     /** @var SessionManager */

@@ -29,7 +29,7 @@ use Ramsey\Uuid\Uuid;
  * Class AuthenticateModel
  * @package EyeChart\Model\Authenticate
  */
-final class AuthenticateModel
+class AuthenticateModel
 {
     /** @var AuthenticateDAO */
     private $authenticateDAO;

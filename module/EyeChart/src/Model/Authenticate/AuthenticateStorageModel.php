@@ -25,7 +25,7 @@ use Zend\Config\Config;
  * Class AuthenticateStorageModel
  * @package EyeChart\Model\Authenticate
  */
-final class AuthenticateStorageModel implements StorageInterface
+class AuthenticateStorageModel implements StorageInterface
 {
     /** @var AuthenticateStorageDAO */
     private $authenticateStorageDao;
