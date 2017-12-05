@@ -61,8 +61,8 @@ class AuthenticationRepository
         AuthenticateModel $authenticateModel,
         AuthenticateStorageModel $authenticateStorageModel,
         AuthenticateAdapter $authenticateAdapter,
-        EmployeeModel $employeeModel,
-        AuthenticationServiceInterface $zendAuthentication
+        AuthenticationServiceInterface $zendAuthentication,
+        EmployeeModel $employeeModel
     ) {
         $this->authenticateModel        = $authenticateModel;
         $this->authenticateStorageModel = $authenticateStorageModel;
@@ -73,6 +73,7 @@ class AuthenticationRepository
 
     /**
      * @return bool
+     * @codeCoverageIgnore
      */
     public function isEmpty(): bool
     {
@@ -80,7 +81,8 @@ class AuthenticationRepository
     }
 
     /**
-     * @return \mixed[]
+     * @return mixed[]
+     * @codeCoverageIgnore
      */
     public function read(): array
     {
@@ -90,12 +92,16 @@ class AuthenticationRepository
     /**
      * @param SessionEntity[] $storage
      * @return bool
+     * @codeCoverageIgnore
      */
     public function write($storage): bool
     {
         return $this->authenticateStorageModel->write($storage);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function clear(): void
     {
         $this->authenticateStorageModel->clear();
@@ -134,6 +140,7 @@ class AuthenticationRepository
 
     /**
      * @param VOInterface $vo
+     * @codeCoverageIgnore
      */
     public function checkSessionStatus(VOInterface $vo): void
     {
@@ -143,6 +150,7 @@ class AuthenticationRepository
     /**
      * @param VOInterface $vo
      * @return string[]
+     * @codeCoverageIgnore
      */
     public function logout(VOInterface $vo): array
     {
