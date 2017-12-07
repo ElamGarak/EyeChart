@@ -30,16 +30,6 @@ return array(
                     ),
                 ),
             ),
-            'api.rpc.edit-application-type' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/api/editApplicationType',
-                    'defaults' => array(
-                        'controller' => 'API\\V1\\Rpc\\EditApplicationType\\Controller',
-                        'action' => 'editApplicationType',
-                    ),
-                ),
-            ),
             'api.rpc.check-session-status' => array(
                 'type' => 'Segment',
                 'options' => array(
