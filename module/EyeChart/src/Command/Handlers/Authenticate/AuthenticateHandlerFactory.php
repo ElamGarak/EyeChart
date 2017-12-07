@@ -21,6 +21,7 @@ class AuthenticateHandlerFactory
     /**
      * @param ContainerInterface $container
      * @return AuthenticateHandler
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container)
     {
