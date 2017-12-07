@@ -83,6 +83,7 @@ class AuthenticateDAO extends AbstractDAO
 
         $select->columns([
             AuthenticateMapper::CREDENTIALS,
+            AuthenticateMapper::IS_ACTIVE,
         ])->from(AuthenticateMapper::TABLE);
 
         $where = new Where();
