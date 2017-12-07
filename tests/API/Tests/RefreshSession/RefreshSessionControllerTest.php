@@ -12,8 +12,10 @@ namespace API\Tests\RefreshSession;
 use API\V1\Rpc\RefreshSession\RefreshSessionController;
 use EyeChart\Command\Commands\AuthenticateCommand;
 use EyeChart\Command\Commands\SessionRefreshCommand;
+use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Service\Authenticate\AuthenticateStorageService;
 use EyeChart\Tests\Fixtures\CommandBusAuthenticationFixture;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use League\Tactician\CommandBus;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -37,7 +39,9 @@ class RefreshSessionControllerTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$commandBusFixture = new CommandBusAuthenticationFixture();
-        self::$expectedPayload   = [];
+        self::$expectedPayload   = [
+            AuthenticateMapper::TOKEN => str_repeat('a', AuthenticateMapper::TOKEN_LENGTH)
+        ];
     }
 
     public function setUp(): void
@@ -60,7 +64,13 @@ class RefreshSessionControllerTest extends TestCase
 
         $mockedCommandBus->expects($this->at(1))
                          ->method('handle')
-                         ->with(new SessionRefreshCommand());
+                         ->with(
+                             new SessionRefreshCommand(
+                                 AuthenticationVO::build()->setToken(
+                                     self::$expectedPayload[AuthenticateMapper::TOKEN]
+                                 )
+                             )
+                         );
 
         $controller = new RefreshSessionController(
             $this->mockedService,
@@ -69,7 +79,6 @@ class RefreshSessionControllerTest extends TestCase
 
         $controller->getRequest()->setContent(json_encode(self::$expectedPayload));
         $controller->setEvent(self::$commandBusFixture->getEvent());
-
 
         $result = $controller->refreshSessionAction();
 
