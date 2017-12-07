@@ -171,9 +171,7 @@ class AuthenticationRepository
             $credentials = CredentialsVO::build()->setCredentials($derivedCredentials);
             $authenticationVO->setDerivedCredentials($credentials);
 
-            $storedCredentials = $this->authenticateModel->getUsersStoredCredentials(
-                $authenticationVO->getDerivedCredentials()
-            );
+            $storedCredentials = $this->authenticateModel->getUsersStoredCredentials($authenticationVO);
 
             $credentials = CredentialsVO::build()->setCredentials($storedCredentials);
             $authenticationVO->setStoredCredentials($credentials);
