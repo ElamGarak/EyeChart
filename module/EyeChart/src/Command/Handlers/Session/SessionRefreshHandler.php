@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Command\Handlers\Session;
 
 use EyeChart\Command\Commands\SessionRefreshCommand;
-use EyeChart\Entity\Authenticate\AuthenticateEntity;
+use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 
 /**
@@ -44,6 +44,6 @@ final class SessionRefreshHandler
      */
     public function handle(SessionRefreshCommand $command): void
     {
-        $this->authenticateStorageModel->refresh();
+        $this->authenticateStorageModel->refresh($command->getAuthenticationVO()->getToken());
     }
 }
