@@ -30,9 +30,6 @@ use Zend\Db\Sql\Where;
  */
 class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 {
-    /** @var Sql */
-    private $sql;
-
     /** @var SessionEntity */
     private $sessionEntity;
 
@@ -70,7 +67,7 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
      */
     public function read(): array
     {
-        $select = $this->sql->select();
+        $select = parent::getSqlAdapter()->select();
 
         $select->columns([
             SessionMapper::SESSION_RECORD_ID,
@@ -145,7 +142,7 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
             );
         }
 
-        $delete = $this->sql->delete();
+        $delete = parent::getSqlAdapter()->delete();
         $delete->from(SessionMapper::TABLE);
 
         $where = new Where();
@@ -164,7 +161,7 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
      */
     private function add(EntityInterface $sessionEntity): bool
     {
-        $insert = $this->sql->insert();
+        $insert = parent::getSqlAdapter()->insert();
 
         $insert->values($test = [
             SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
@@ -224,7 +221,7 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
      */
     public function refresh(string $token): bool
     {
-        $update = $this->sql->update();
+        $update = parent::getSqlAdapter()->update();
 
         $update->table(SessionMapper::TABLE);
 
