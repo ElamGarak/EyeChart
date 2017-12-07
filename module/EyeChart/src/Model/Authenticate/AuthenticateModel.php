@@ -63,18 +63,11 @@ class AuthenticateModel
      */
     public function checkCredentials(VOInterface $authenticationVO): void
     {
-        $derivedCredentials = $authenticationVO->getDerivedCredentials()->getCredentials();
-        $storedCredentials  = $authenticationVO->getStoredCredentials()->getCredentials();
-
-        if ($storedCredentials !== $derivedCredentials) {
-            throw new UserCredentialsInvalidException();
-        }
-
         try {
-            $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString($storedCredentials);
+            $protectedKey = KeyProtectedByPassword::loadFromAsciiSafeString(
+                $authenticationVO->getDerivedCredentials()->getCredentials()
+            );
             $protectedKey->unlockKey($authenticationVO->getPassword());
-
-            $this->authenticateDAO->checkCredentials($authenticationVO);
 
             $this->authenticateEntity->setIsValid(true);
         } catch (CryptoException $exception) {
@@ -128,6 +121,7 @@ class AuthenticateModel
      */
     public function getUsersStoredCredentials(VOInterface $authenticationVO): string
     {
+
         $results = $this->authenticateDAO->getUsersStoredCredentials($authenticationVO);
 
         if (!array_key_exists(AuthenticateMapper::CREDENTIALS, $results)) {
