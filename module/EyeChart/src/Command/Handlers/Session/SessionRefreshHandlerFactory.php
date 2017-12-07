@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Command\Handlers\Session;
 
-use EyeChart\Entity\Authenticate\AuthenticateEntity;
+use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use Psr\Container\ContainerInterface;
 
@@ -22,6 +22,7 @@ final class SessionRefreshHandlerFactory
     /**
      * @param ContainerInterface $container
      * @return SessionRefreshHandler
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): SessionRefreshHandler
     {
