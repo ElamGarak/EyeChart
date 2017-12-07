@@ -16,7 +16,6 @@ use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\UnableToAuthenticateException;
-use EyeChart\Exception\UserCredentialsDoNotMatchException;
 use EyeChart\Exception\UserCredentialsInvalidException;
 use EyeChart\Exception\UserNotActiveException;
 use EyeChart\Exception\UserNotFoundException;
