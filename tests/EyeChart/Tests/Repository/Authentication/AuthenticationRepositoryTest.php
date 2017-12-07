@@ -145,12 +145,8 @@ class AuthenticationRepositoryTest extends TestCase
         $vo->setDerivedCredentials(CredentialsVO::build()->setCredentials(self::$validCode));
         $this->mockedAuthenticateModel->expects($this->once())
             ->method('getUsersStoredCredentials')
-            ->with($vo->getDerivedCredentials())
+            ->with($vo)
             ->willReturn(self::$validCode);
-
-        $this->mockedAuthenticateModel->expects($this->once())
-            ->method('checkCredentials')
-            ->with($vo);
 
         $sessionEntity = new SessionEntity();
         $sessionEntity->setToken(str_repeat('a', AuthenticateMapper::TOKEN_LENGTH));

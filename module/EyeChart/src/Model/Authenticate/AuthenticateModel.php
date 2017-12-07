@@ -72,8 +72,6 @@ class AuthenticateModel
             $this->authenticateEntity->setIsValid(true);
         } catch (CryptoException $exception) {
             throw new UnableToAuthenticateException($authenticationVO);
-        } catch (UserCredentialsDoNotMatchException $exception) {
-            throw new UnableToAuthenticateException($authenticationVO);
         }
     }
 

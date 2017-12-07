@@ -12,7 +12,6 @@ namespace API\Tests\Model\Authenticate;
 use EyeChart\DAO\Authenticate\AuthenticateDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\SessionEntity;
-use EyeChart\Exception\UserCredentialsDoNotMatchException;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\VO\Authentication\AuthenticationVO;
@@ -66,22 +65,6 @@ final class AuthenticateModelTest extends TestCase
     }
 
     /**
-     * @expectedException \EyeChart\Exception\UserCredentialsInvalidException
-     */
-    public function testCheckCredentialsThrowsUserCredentialsInvalidException(): void
-    {
-        $vo = AuthenticationVO::build()->setDerivedCredentials(
-            CredentialsVO::build()->setCredentials(str_repeat('1', 512))
-        );
-
-        $vo->setStoredCredentials(
-            CredentialsVO::build()->setCredentials(str_repeat('2', 512))
-        );
-
-        $this->model->checkCredentials($vo);
-    }
-
-    /**
      * @expectedException \EyeChart\Exception\UnableToAuthenticateException
      */
     public function testCheckCredentialsThrowsUnableToAuthenticateExceptionOnCryptoException(): void
@@ -97,28 +80,6 @@ final class AuthenticateModelTest extends TestCase
         $this->model->checkCredentials($vo);
     }
 
-    /**
-     * @expectedException \EyeChart\Exception\UnableToAuthenticateException
-     */
-    public function testCheckCredentialsThrowsUnableToAuthenticateExceptionOnUserCredentialsDoNotMatchException(): void
-    {
-        $vo = AuthenticationVO::build()->setDerivedCredentials(
-            CredentialsVO::build()->setCredentials(self::$validCode)
-        );
-
-        $vo->setStoredCredentials(
-            CredentialsVO::build()->setCredentials(self::$validCode)
-        );
-
-        $vo->setPassword('foo');
-
-        $this->mockedDao->expects($this->once())
-             ->method('checkCredentials')
-             ->willThrowException(new UserCredentialsDoNotMatchException());
-
-        $this->model->checkCredentials($vo);
-    }
-
     public function testCheckCredentialsSetsAuthenticateEntityEntityTrue(): void
     {
         $vo = AuthenticationVO::build()->setDerivedCredentials(
@@ -130,9 +91,6 @@ final class AuthenticateModelTest extends TestCase
         );
 
         $vo->setPassword('foo');
-
-        $this->mockedDao->expects($this->once())
-            ->method('checkCredentials');
 
         $this->model->checkCredentials($vo);
 
