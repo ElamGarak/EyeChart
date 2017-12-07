@@ -147,6 +147,9 @@ return array(
         'API\\V1\\Rpc\\Login\\Controller' => array(
             'input_filter' => 'API\\V1\\Rpc\\Login\\Validator',
         ),
+        'API\\V1\\Rpc\\RefreshSession\\Controller' => array(
+            'input_filter' => 'API\\V1\\Rpc\\RefreshSession\\Validator',
+        ),
     ),
     'input_filter_specs' => array(
         'API\\V1\\Rpc\\CheckSessionStatus\\Validator' => array(
@@ -175,6 +178,16 @@ return array(
                 'filters' => array(),
                 'name' => 'password',
                 'error_message' => 'Password was not provided',
+            ),
+        ),
+        'API\\V1\\Rpc\\RefreshSession\\Validator' => array(
+            0 => array(
+                'required' => true,
+                'validators' => array(),
+                'filters' => array(),
+                'name' => 'token',
+                'field_type' => 'string',
+                'error_message' => 'Token was not provided',
             ),
         ),
     ),
