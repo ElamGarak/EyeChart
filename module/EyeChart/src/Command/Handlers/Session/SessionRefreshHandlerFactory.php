@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace EyeChart\Command\Handlers\Session;
 
-use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use Psr\Container\ContainerInterface;
 
@@ -26,9 +25,8 @@ final class SessionRefreshHandlerFactory
      */
     public function __invoke(ContainerInterface $container): SessionRefreshHandler
     {
-        $model  = $container->get(AuthenticateStorageModel::class);
-        $entity = $container->get(AuthenticateEntity::class);
-
-        return new SessionRefreshHandler($model, $entity);
+        return new SessionRefreshHandler(
+            $container->get(AuthenticateStorageModel::class)
+        );
     }
 }

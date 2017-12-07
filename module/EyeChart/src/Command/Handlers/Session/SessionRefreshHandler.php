@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace EyeChart\Command\Handlers\Session;
 
 use EyeChart\Command\Commands\SessionRefreshCommand;
-use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 
 /**
@@ -22,21 +21,14 @@ final class SessionRefreshHandler
     /** @var AuthenticateStorageModel */
     private $authenticateStorageModel;
 
-    /** @var AuthenticateEntity */
-    private $authenticateEntity;
-
     /**
      * SessionRefreshHandler constructor.
      *
      * @param AuthenticateStorageModel $authenticateStorageModel
-     * @param AuthenticateEntity $authenticateEntity
      */
-    public function __construct(
-        AuthenticateStorageModel $authenticateStorageModel,
-        AuthenticateEntity $authenticateEntity
-    ) {
+    public function __construct(AuthenticateStorageModel $authenticateStorageModel)
+    {
         $this->authenticateStorageModel = $authenticateStorageModel;
-        $this->authenticateEntity       = $authenticateEntity;
     }
 
     /**
