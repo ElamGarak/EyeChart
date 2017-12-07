@@ -36,8 +36,8 @@ final class AuthenticationRepositoryFactory
             $container->get(AuthenticateModel::class),
             $container->get(AuthenticateStorageModel::class),
             $container->get(AuthenticateAdapter::class),
-            $container->get(EmployeeModel::class),
-            new AuthenticationService()
+            new AuthenticationService(),
+            $container->get(EmployeeModel::class)
         );
     }
 }
