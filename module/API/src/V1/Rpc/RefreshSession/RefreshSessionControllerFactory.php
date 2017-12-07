@@ -22,6 +22,7 @@ class RefreshSessionControllerFactory
     /**
      * @param ContainerInterface $container
      * @return RefreshSessionController
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): RefreshSessionController
     {

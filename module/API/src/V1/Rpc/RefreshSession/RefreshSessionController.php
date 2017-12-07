@@ -85,6 +85,9 @@ class RefreshSessionController extends AbstractActionController
         $this->inputData = json_decode($this->getRequest()->getContent());
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function prepareCommandData(): void
     {
         // Stub
