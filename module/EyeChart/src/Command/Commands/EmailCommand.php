@@ -31,6 +31,7 @@ final class EmailCommand extends AbstractCommand
 
     /**
      * @return EmailVO
+     * @codeCoverageIgnore
      */
     public function getEmailVO(): EmailVO
     {
