@@ -31,6 +31,7 @@ class AuthenticateCommand extends AbstractCommand
 
     /**
      * @return MvcEvent
+     * @codeCoverageIgnore
      */
     public function getEvent(): MvcEvent
     {

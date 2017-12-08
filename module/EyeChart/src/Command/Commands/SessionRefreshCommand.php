@@ -9,17 +9,32 @@ declare(strict_types=1);
 
 namespace EyeChart\Command\Commands;
 
+use EyeChart\VO\Authentication\AuthenticationVO;
+use EyeChart\VO\VOInterface;
+
 /**
  * Class SessionRefreshCommand
  * @package EyeChart\Command\Commands
  */
 final class SessionRefreshCommand extends AbstractCommand
 {
+    /** @var VOInterface|AuthenticationVO */
+    private $authenticationVO;
+
     /**
      * SessionRefreshCommand constructor.
+     * @param VOInterface $authenticationVO
      */
-    public function __construct()
+    public function __construct(VOInterface $authenticationVO)
     {
-        // Stub
+        $this->authenticationVO = $authenticationVO;
+    }
+
+    /**
+     * @return AuthenticationVO
+     */
+    public function getAuthenticationVO(): AuthenticationVO
+    {
+        return $this->authenticationVO;
     }
 }

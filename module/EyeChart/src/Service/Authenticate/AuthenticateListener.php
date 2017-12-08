@@ -11,7 +11,7 @@ namespace EyeChart\Service\Authenticate;
 
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Config\Config;
@@ -23,7 +23,7 @@ use EyeChart\Exception\UnauthorizedException;
  * Class AuthenticateListener
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateListener implements ListenerAggregateInterface
+class AuthenticateListener implements ListenerAggregateInterface
 {
 
     /** @var callable[] */

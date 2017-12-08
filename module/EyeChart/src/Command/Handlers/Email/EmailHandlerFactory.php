@@ -21,6 +21,7 @@ final class EmailHandlerFactory
     /**
      * @param ContainerInterface $container
      * @return EmailHandler
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): EmailHandler
     {

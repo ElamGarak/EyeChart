@@ -20,7 +20,7 @@ use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Exception\ExceptionInterface;
 use Zend\Authentication\Storage\StorageInterface;
-use Zend\Db\Sql\Predicate\Literal;
+use Zend\Db\Sql\Literal;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -94,6 +94,10 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 
         $results = $this->parseDataTypes($result->getArrayCopy());
 
+        if (empty($results)) {
+            return [];
+        }
+
         $this->sessionEntity->setSessionRecordId($results[SessionMapper::SESSION_RECORD_ID])
                             ->setSessionUser($results[SessionMapper::SESSION_USER])
                             ->setLastActive($results[SessionMapper::ACCESSED]);
@@ -163,12 +167,12 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
     {
         $insert = parent::getSqlAdapter()->insert();
 
-        $insert->values($test = [
+        $insert->values([
             SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
             SessionMapper::SESSION_USER   => $sessionEntity->getSessionUser(),
             SessionMapper::TOKEN          => $sessionEntity->getToken(),
-            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime()),
-            SessionMapper::ACCESSED       => new Literal($this->sessionEntity->getLastActive())
+            SessionMapper::LIFETIME       => new Literal($sessionEntity->getLifetime()),
+            SessionMapper::ACCESSED       => new Literal($sessionEntity->getLastActive())
         ]);
 
         $insert->into(SessionMapper::TABLE);
