@@ -13,6 +13,7 @@ use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\NoResultsFoundException;
 use EyeChart\Exception\UnableToAuthenticateException;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\Mappers\SessionMapper;
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use EyeChart\Model\Employee\EmployeeModel;
@@ -20,9 +21,11 @@ use EyeChart\Repository\Authentication\AuthenticationRepository;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\Authentication\CredentialsVO;
+use EyeChart\VO\TokenVO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use Zend\Authentication\AuthenticationService as ZendAuthentication;
+use Zend\Authentication\Result;
 
 /**
  * Class AuthenticationRepositoryTest
@@ -93,14 +96,30 @@ class AuthenticationRepositoryTest extends TestCase
         );
     }
 
-    public function testPruneClearsSessionRecord(): void
+    public function testPruneSessionEndedMessageIfClearsSessionSucceeds(): void
     {
-        $this->markTestIncomplete();
+        $vo = new AuthenticationVO();
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+            ->method('clearSessionRecord')
+            ->with()
+            ->willReturn(true);
+
+        $this->mockedAuthenticateModel->addMessage(AuthenticateMapper::SESSION_ENDED_MESSAGE);
+
+        $this->repository->prune($vo);
     }
 
-    public function testPruneDefaultsMessageIfClearSessionFails(): void
+    public function testPruneSessionExpiredMessageIfClearSessionFails(): void
     {
-        $this->markTestIncomplete();
+        $vo = new AuthenticationVO();
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+                                      ->method('clearSessionRecord')
+                                      ->with(new AuthenticationVO())
+                                      ->willReturn(false);
+
+        $this->mockedAuthenticateModel->addMessage(AuthenticateMapper::SESSION_EXPIRED_MESSAGE);
+
+        $this->repository->prune($vo);
     }
 
     /**
@@ -169,13 +188,95 @@ class AuthenticationRepositoryTest extends TestCase
         $this->assertEquals($sessionEntity->getToken(), $actual);
     }
 
+    public function testAuthenticateUserReturnsValidIfResultIsValid(): void
+    {
+        $vo = AuthenticationVO::build();
+
+        $this->mockedAuthenticateModel->expects($this->once())
+                                      ->method('setTokenToAuthenticate')
+                                      ->with($vo);
+
+        $this->mockedZendAuthenticationService->expects($this->once())
+                                              ->method('setStorage')
+                                              ->with($this->mockedAuthenticateStorageModel);
+
+        $result = new Result(1, 'foo');
+
+        $this->mockedZendAuthenticationService->expects($this->once())
+                                              ->method('authenticate')
+                                              ->with($this->mockedAuthenticateAdapter)
+                                              ->willReturn($result);
+
+        $result = $this->repository->authenticateUser($vo);
+
+        $this->assertTrue($result);
+    }
+
+    public function testAuthenticateUserReturnsInValidIfResultIsInValid(): void
+    {
+        $vo = AuthenticationVO::build();
+
+        $this->mockedAuthenticateModel->expects($this->once())
+                                      ->method('setTokenToAuthenticate')
+                                      ->with($vo);
+
+        $this->mockedZendAuthenticationService->expects($this->once())
+                                              ->method('setStorage')
+                                              ->with($this->mockedAuthenticateStorageModel);
+
+        $result = new Result(0, 'foo');
+
+        $this->mockedZendAuthenticationService->expects($this->once())
+                                              ->method('authenticate')
+                                              ->with($this->mockedAuthenticateAdapter)
+                                              ->willReturn($result);
+
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+                                      ->method('clearSessionRecord')
+                                      ->with($vo);
+
+        $this->mockedAuthenticateModel->expects($this->once())
+                                      ->method('getMessages')
+                                      ->willReturn([]);
+
+        $result = $this->repository->authenticateUser($vo);
+
+        $this->assertFalse($result);
+    }
+
     public function testGetUserSessionStatusClearsUponExpired(): void
     {
-        $this->markTestIncomplete();
+        $vo = TokenVO::build()->setToken(str_repeat('a', AuthenticateMapper::TOKEN_LENGTH));
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+                                             ->method('getUserSessionStatus')
+                                             ->with($vo)
+                                             ->willReturn([
+                                                 SessionMapper::EXPIRED => true
+                                             ]);
+
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+                                             ->method('clearSessionRecord');
+
+        $results = $this->repository->getUserSessionStatus($vo);
+
+        $this->assertTrue($results[SessionMapper::EXPIRED]);
     }
 
     public function testGetUserSessionStatusDoesNotClearSessionIfStillActive(): void
     {
-        $this->markTestIncomplete();
+        $vo = TokenVO::build()->setToken(str_repeat('a', AuthenticateMapper::TOKEN_LENGTH));
+        $this->mockedAuthenticateStorageModel->expects($this->once())
+                                             ->method('getUserSessionStatus')
+                                             ->with($vo)
+                                             ->willReturn([
+                                                 SessionMapper::EXPIRED => false
+                                             ]);
+
+        $this->mockedAuthenticateStorageModel->expects($this->never())
+                                             ->method('clearSessionRecord');
+
+        $results = $this->repository->getUserSessionStatus($vo);
+
+        $this->assertFalse($results[SessionMapper::EXPIRED]);
     }
 }
