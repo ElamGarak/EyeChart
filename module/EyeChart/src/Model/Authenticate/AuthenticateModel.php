@@ -88,6 +88,7 @@ class AuthenticateModel
 
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
+     * @codeCoverageIgnore
      */
     public function setTokenToAuthenticate(VOInterface $authenticationVO): void
     {
@@ -96,6 +97,7 @@ class AuthenticateModel
 
     /**
      * @param string $message
+     * @codeCoverageIgnore
      */
     public function addMessage(string $message): void
     {
@@ -104,6 +106,7 @@ class AuthenticateModel
 
     /**
      * @return string[]
+     * @codeCoverageIgnore
      */
     public function getMessages(): array
     {
@@ -136,6 +139,7 @@ class AuthenticateModel
     /**
      * @param string $stringToEncode
      * @return string
+     * @codeCoverageIgnore
      */
     public function getEncoded(string $stringToEncode): string
     {
@@ -148,6 +152,7 @@ class AuthenticateModel
      * @param string $key
      * @param string $protectedString
      * @return string
+     * @codeCoverageIgnore
      */
     public function getDecoded(string $key, string $protectedString): string
     {
