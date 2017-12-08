@@ -21,10 +21,14 @@ use PHPUnit_Framework_MockObject_MockObject;
 use stdClass;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Adapter\Driver\StatementInterface;
+use Zend\Db\Sql\AbstractPreparableSql;
+use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Literal;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Where;
 
 /**
  * Class AuthenticateStorageDAOTest
@@ -44,6 +48,12 @@ class AuthenticateStorageDAOTest extends TestCase
     /** @var Insert|PHPUnit_Framework_MockObject_MockObject */
     private $mockedInsert;
 
+    /** @var Update|PHPUnit_Framework_MockObject_MockObject */
+    private $mockedUpdate;
+
+    /** @var Delete|PHPUnit_Framework_MockObject_MockObject */
+    private $mockedDelete;
+
     /** @var Sql|PHPUnit_Framework_MockObject_MockObject */
     private $mockedSql;
 
@@ -56,9 +66,13 @@ class AuthenticateStorageDAOTest extends TestCase
     /** @var SessionEntity */
     private static $sessionEntity;
 
+    /** @var string */
+    private static $token = '';
+
     public static function setUpBeforeClass(): void
     {
         self::$sessionEntity = new SessionEntity();
+        self::$token         = str_repeat('a', AuthenticateMapper::TOKEN_LENGTH);
 
         $credentialsVO = new CredentialsVO();
 
@@ -106,6 +120,10 @@ class AuthenticateStorageDAOTest extends TestCase
 
         $this->mockedInsert = $this->getMockBuilder(Insert::class)->disableOriginalConstructor()->getMock();
 
+        $this->mockedUpdate = $this->getMockBuilder(Update::class)->disableOriginalConstructor()->getMock();
+
+        $this->mockedDelete = $this->getMockBuilder(Delete::class)->disableOriginalConstructor()->getMock();
+
         $this->mockedSql = $this->getMockBuilder(Sql::class)->disableOriginalConstructor()->getMock();
 
         $this->mockedSql->expects($this->any())
@@ -116,13 +134,19 @@ class AuthenticateStorageDAOTest extends TestCase
                         ->method('insert')
                         ->willReturn($this->mockedInsert);
 
+        $this->mockedSql->expects($this->any())
+                        ->method('update')
+                        ->willReturn($this->mockedUpdate);
+
+        $this->mockedSql->expects($this->any())
+                        ->method('delete')
+                        ->willReturn($this->mockedDelete);
 
         $this->dao = new AuthenticateStorageDAO($this->mockedSql, self::$sessionEntity);
     }
 
     public function testIsEmptyReturnsFalseOnException(): void
     {
-
         $this->mockedSelect->expects($this->any())
                            ->method('columns')
                            ->willThrowException(new MissingSessionException(self::$sessionEntity, __FUNCTION__));
@@ -199,6 +223,23 @@ class AuthenticateStorageDAOTest extends TestCase
         $this->assertEquals($expected[SessionMapper::ACCESSED], self::$sessionEntity->getLastActive());
     }
 
+    /**
+     * @expectedException \EyeChart\Exception\MissingSessionException
+     */
+    public function testReadThrowsMissingSessionException(): void
+    {
+        $this->mockedStatement->expects($this->any())
+                              ->method('execute')
+                              ->willReturn($this->mockedResult);
+
+        $this->mockedSql->expects($this->any())
+                        ->method('prepareStatementForSqlObject')
+                        ->with($this->mockedSelect)
+                        ->willReturn($this->mockedStatement);
+
+        $this->dao->read();
+    }
+
     public function testReadDoesNotSetSessionValuesIfNoResultsAreReturned(): void
     {
         self::$sessionEntity = new SessionEntity();
@@ -229,18 +270,14 @@ class AuthenticateStorageDAOTest extends TestCase
      */
     public function testWriteThrowsAssertionErrorIfStorageIsNotAnArray($invalidStorage): void
     {
-        /** @noinspection PhpParamsInspection */
         $this->dao->write($invalidStorage);
     }
 
-    /**
-     * @covers AuthenticateStorageDAO::add
-     */
     public function testWriteAssertsAdd(): void
     {
         self::$sessionEntity->setSessionId('foo')
                             ->setSessionUser('bar')
-                            ->setToken(str_repeat('a', AuthenticateMapper::TOKEN_LENGTH))
+                            ->setToken(self::$token)
                             ->setLastActive(123);
 
         $this->mockedInsert->expects($this->once())
@@ -264,6 +301,121 @@ class AuthenticateStorageDAOTest extends TestCase
                         ->willReturn($this->mockedStatement);
 
         $result = $this->dao->write([self::$sessionEntity]);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testClearThrowsExceptionOnEmptyToken(): void
+    {
+        $dao = new AuthenticateStorageDAO($this->mockedSql, new SessionEntity());
+
+        $this->mockedDelete->expects($this->never())
+                           ->method('from')
+                           ->with(SessionMapper::TABLE);
+
+        $dao->clear();
+    }
+
+    public function testClearAssertsDelete(): void
+    {
+        self::$sessionEntity->setToken(self::$token);
+
+        $this->mockedDelete->expects($this->once())
+                           ->method('from')
+                           ->with(SessionMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(SessionMapper::TOKEN, self::$sessionEntity->getToken());
+
+        $this->mockedDelete->expects($this->once())
+                           ->method('where')
+                           ->with($where);
+
+        $this->mockedSql->expects($this->any())
+                        ->method('prepareStatementForSqlObject')
+                        ->with($this->mockedDelete)
+                        ->willReturn($this->mockedStatement);
+
+        $result = $this->dao->clear();
+
+        $this->assertTrue($result);
+    }
+
+    public function testClearSessionRecordClearsRecord(): void
+    {
+        self::$sessionEntity->setToken(self::$token);
+
+        $this->mockedResult->expects($this->any())
+                           ->method('current')
+                           ->willReturn([]);
+
+        $this->mockedDelete->expects($this->once())
+                           ->method('from')
+                           ->with(SessionMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(SessionMapper::TOKEN, self::$sessionEntity->getToken());
+
+        $this->mockedDelete->expects($this->once())
+                           ->method('where')
+                           ->with($where);
+
+        $this->mockedSql->expects($this->any())
+                        ->method('prepareStatementForSqlObject')
+                        ->willReturnCallback(function(/** @noinspection PhpUnusedParameterInspection */
+                            AbstractPreparableSql $param) {
+                            return $this->mockedStatement;
+                        });
+
+        self::$vo->setToken(self::$sessionEntity->getToken());
+
+        $result = $this->dao->clearSessionRecord(self::$vo);
+
+        $this->assertTrue($result);
+    }
+
+    public function testClearSessionRecordReturnsFalseIfUserIsNotLoggedOn(): void
+    {
+        $this->mockedSelect->expects($this->any())
+                           ->method('columns')
+                           ->willThrowException(new MissingSessionException(self::$sessionEntity, __FUNCTION__));
+
+        $this->mockedDelete->expects($this->never())
+                           ->method('from');
+
+        $result = $this->dao->clearSessionRecord(self::$vo);
+
+        $this->assertFalse($result);
+    }
+
+    public function testRefreshUpdatesTokenAccessTime(): void
+    {
+        $this->mockedUpdate->expects($this->once())
+                           ->method('table')
+                           ->with(SessionMapper::TABLE);
+
+        $this->mockedUpdate->expects($this->once())
+                           ->method('set');
+
+        $where = new Where();
+
+        $where->equalTo(SessionMapper::TOKEN, self::$token);
+
+        $this->mockedUpdate->expects($this->once())
+                           ->method('where')
+                           ->with($where);
+
+        $this->mockedSql->expects($this->any())
+                        ->method('prepareStatementForSqlObject')
+                        ->willReturnCallback(function(/** @noinspection PhpUnusedParameterInspection */
+                            AbstractPreparableSql $param) {
+                            return $this->mockedStatement;
+                        });
+
+        $result = $this->dao->refresh(self::$token);
 
         $this->assertTrue($result);
     }
