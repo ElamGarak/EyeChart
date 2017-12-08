@@ -205,21 +205,6 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
     }
 
     /**
-     * @return mixed[]
-     * @deprecated
-     */
-    public function getUserStorage(): array
-    {
-        $userSession = $this->read();
-
-        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $userSession)) {
-            return $userSession[$this->sessionEntity->getSessionRecordId()];
-        }
-
-        return [];
-    }
-
-    /**
      * @param string $token
      * @return bool
      */
