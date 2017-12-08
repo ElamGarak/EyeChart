@@ -11,11 +11,11 @@ declare(strict_types=1);
 namespace API\Tests;
 
 use API\V1\Rpc\Login\LoginController;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\Service\Authenticate\AuthenticateService;
 use EyeChart\Tests\Fixtures\CommandBusAuthenticationFixture;
 use EyeChart\Tests\Fixtures\ValueTesting\EntityValuesFixture;
 use EyeChart\Tests\Fixtures\ValueTesting\VOValuesFixture;
-use EyeChart\VO\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use ReflectionClass;

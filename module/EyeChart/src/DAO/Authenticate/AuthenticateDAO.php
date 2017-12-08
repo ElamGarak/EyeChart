@@ -10,52 +10,24 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Authenticate;
 
 use EyeChart\DAO\AbstractDAO;
-use EyeChart\Exception\NoResultsFoundException;
+use EyeChart\Exception\UserCredentialsDoNotMatchException;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Where;
 
 /**
  * Class AuthenticateDAO
- * @package EyeChart\DAL\DAO\Authenticate
+ * @package EyeChart\DAO\Authenticate
  */
 class AuthenticateDAO extends AbstractDAO
 {
     /**
-     * @param VOInterface|AuthenticationVO $vo
-     * @return string[]
-     */
-    public function getByteCodeAndTag(VOInterface $vo): array
-    {
-        $select = parent::getSqlAdapter()->select();
-
-        $select->columns([
-            AuthenticateMapper::BYTE_CODE,
-            AuthenticateMapper::TAG
-        ])->from(AuthenticateMapper::TABLE);
-
-        $where = new Where();
-        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
-
-        $select->where($where);
-
-        $results = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
-
-        if (empty($results)) {
-            throw new NoResultsFoundException();
-        }
-
-        return $results;
-    }
-
-    /**
      * @param AuthenticationVO|VOInterface $vo
-     * @return bool
+     * @throws UserCredentialsDoNotMatchException
      */
-    public function checkCredentials(VOInterface $vo): bool
+    public function checkCredentials(VOInterface $vo)
     {
         $select = parent::getSqlAdapter()->select();
 
@@ -65,16 +37,16 @@ class AuthenticateDAO extends AbstractDAO
 
         $where = new Where();
         $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername())->and
-              ->equalTo(AuthenticateMapper::BYTE_CODE, $vo->getByteCode())->and
-              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getCredentials())->and
-              ->equalTo(AuthenticateMapper::TAG, $vo->getTag())->and
+              ->equalTo(AuthenticateMapper::CREDENTIALS, $vo->getDerivedCredentials()->getCredentials())->and
               ->equalTo(AuthenticateMapper::IS_ACTIVE, true);
 
         $select->where($where);
 
         $result = parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
 
-        return (!is_null($result));
+        if (is_null($result)) {
+            throw new UserCredentialsDoNotMatchException();
+        }
     }
 
     /**
@@ -99,5 +71,26 @@ class AuthenticateDAO extends AbstractDAO
         $results = $this->parseDataTypes($result);
 
         return (bool) $results[AuthenticateMapper::IS_ACTIVE];
+    }
+
+    /**
+     * @param VOInterface|AuthenticationVO $vo
+     * @return mixed[]
+     */
+    public function getUsersStoredCredentials(VOInterface $vo): array
+    {
+        $select = parent::getSqlAdapter()->select();
+
+        $select->columns([
+            AuthenticateMapper::CREDENTIALS,
+            AuthenticateMapper::IS_ACTIVE,
+        ])->from(AuthenticateMapper::TABLE);
+
+        $where = new Where();
+        $where->equalTo(AuthenticateMapper::USER_NAME, $vo->getUsername());
+
+        $select->where($where);
+
+        return parent::getResultSingleResult($select, ResultSet::TYPE_ARRAY);
     }
 }

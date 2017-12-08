@@ -16,7 +16,7 @@ use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
 use EyeChart\Mappers\SessionMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 use Zend\Authentication\Storage\StorageInterface;
@@ -26,7 +26,7 @@ use Zend\Session\SessionManager;
  * Class AuthenticateAdapter
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateAdapter implements AdapterInterface
+class AuthenticateAdapter implements AdapterInterface
 {
 
     /** @var SessionManager */

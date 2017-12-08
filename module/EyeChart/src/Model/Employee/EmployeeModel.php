@@ -16,7 +16,7 @@ use EyeChart\Entity\EmployeeEntity;
  * Class EmployeeModel
  * @package EyeChart\Model\Employee
  */
-final class EmployeeModel
+class EmployeeModel
 {
     /** @var EmployeeDao */
     private $employeeDao;

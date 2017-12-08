@@ -7,14 +7,16 @@ declare(strict_types=1);
  * (c) 2017
  */
 
-namespace EyeChart\VO;
+namespace EyeChart\VO\Authentication;
 
 use Assert\Assertion;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\AbstractVO;
+use EyeChart\VO\VOInterface;
 
 /**
  * Class AuthenticationVO
- * @package EyeChart\VO
+ * @package EyeChart\VO\Authentication\
  */
 final class AuthenticationVO extends AbstractVO
 {
@@ -25,16 +27,13 @@ final class AuthenticationVO extends AbstractVO
     protected $password = '';
 
     /** @var string */
-    protected $credentials = '';
-
-    /** @var string */
-    protected $byteCode = '';
-
-    /** @var string */
-    protected $tag = '';
-
-    /** @var string */
     protected $token = '';
+
+    /** @var CredentialsVO */
+    protected $derivedCredentials;
+
+    /** @var CredentialsVO */
+    protected $storedCredentials;
 
     /**
      * @return VOInterface|AuthenticationVO
@@ -61,27 +60,19 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
-     * @return string
+     * @return CredentialsVO
      */
-    public function getCredentials(): string
+    public function getDerivedCredentials(): CredentialsVO
     {
-        return $this->credentials;
+        return $this->derivedCredentials;
     }
 
     /**
-     * @return string
+     * @return CredentialsVO
      */
-    public function getByteCode(): string
+    public function getStoredCredentials(): CredentialsVO
     {
-        return $this->byteCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTag(): string
-    {
-        return $this->tag;
+        return $this->storedCredentials;
     }
 
     /**
@@ -119,45 +110,6 @@ final class AuthenticationVO extends AbstractVO
     }
 
     /**
-     * @param string $credentials
-     * @return AuthenticationVO
-     */
-    public function setCredentials(string $credentials): AuthenticationVO
-    {
-        Assertion::notEmpty($credentials, "Credentials may not be empty");
-
-        $this->credentials = $credentials;
-
-        return $this;
-    }
-
-    /**
-     * @param string $byteCode
-     * @return AuthenticationVO
-     */
-    public function setByteCode(string $byteCode): AuthenticationVO
-    {
-        Assertion::notEmpty($byteCode, "Byte code may not be empty");
-
-        $this->byteCode = $byteCode;
-
-        return $this;
-    }
-
-    /**
-     * @param string $tag
-     * @return AuthenticationVO
-     */
-    public function setTag(string $tag): AuthenticationVO
-    {
-        Assertion::notEmpty($tag, "Tag may not be empty");
-
-        $this->tag = $tag;
-
-        return $this;
-    }
-
-    /**
      * @param string $token
      * @return AuthenticationVO
      */
@@ -168,6 +120,28 @@ final class AuthenticationVO extends AbstractVO
         }
 
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @param CredentialsVO $derivedCredentials
+     * @return AuthenticationVO
+     */
+    public function setDerivedCredentials(CredentialsVO $derivedCredentials): AuthenticationVO
+    {
+        $this->derivedCredentials = $derivedCredentials;
+
+        return $this;
+    }
+
+    /**
+     * @param CredentialsVO $storedCredentials
+     * @return AuthenticationVO
+     */
+    public function setStoredCredentials(CredentialsVO $storedCredentials): AuthenticationVO
+    {
+        $this->storedCredentials = $storedCredentials;
 
         return $this;
     }

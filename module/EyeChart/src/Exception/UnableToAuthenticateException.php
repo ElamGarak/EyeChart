@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Exception;
 
 use Exception;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Throwable;
 

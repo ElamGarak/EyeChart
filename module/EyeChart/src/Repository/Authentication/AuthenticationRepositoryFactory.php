@@ -11,7 +11,6 @@ namespace EyeChart\Repository\Authentication;
 
 use EyeChart\Model\Authenticate\AuthenticateModel;
 use EyeChart\Model\Authenticate\AuthenticateStorageModel;
-use EyeChart\Model\Authenticate\EncryptionModel;
 use EyeChart\Model\Employee\EmployeeModel;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use Psr\Container\ContainerInterface;
@@ -36,10 +35,9 @@ final class AuthenticationRepositoryFactory
         return new AuthenticationRepository(
             $container->get(AuthenticateModel::class),
             $container->get(AuthenticateStorageModel::class),
-            $container->get(EncryptionModel::class),
             $container->get(AuthenticateAdapter::class),
-            $container->get(EmployeeModel::class),
-            new AuthenticationService()
+            new AuthenticationService(),
+            $container->get(EmployeeModel::class)
         );
     }
 }

@@ -12,7 +12,7 @@ namespace EyeChart\Tests\Service;
 
 use EyeChart\Repository\Authentication\AuthenticationRepository;
 use EyeChart\Service\Authenticate\AuthenticateService;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_Matcher_InvokedCount;
 use PHPUnit_Framework_MockObject_MockObject;
