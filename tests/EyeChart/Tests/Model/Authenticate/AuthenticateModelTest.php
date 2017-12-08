@@ -97,6 +97,19 @@ final class AuthenticateModelTest extends TestCase
         $this->assertTrue($this->authenticateEntity->getIsValid());
     }
 
+    public function testGenerateSessionEntityReturnsHydratedSessionEntity(): void
+    {
+        $vo = AuthenticationVO::build()->setUsername('foo');
+
+        $actual = $this->model->generateSessionEntity($vo);
+
+        $this->assertInstanceOf(SessionEntity::class, $actual);
+        $this->assertEquals(AuthenticateMapper::TOKEN_LENGTH, strlen($actual->getToken()));
+        $this->assertEquals($vo->getUsername(), $actual->getSessionUser());
+        $this->assertInternalType('int', $actual->getLastActive());
+        $this->assertEquals(date('Y-m-d'), date('Y-m-d', $actual->getLastActive()));
+    }
+
     /**
      * @expectedException \EyeChart\Exception\UserNotFoundException
      */
