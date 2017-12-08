@@ -97,7 +97,6 @@ class AuthenticateStorageModel implements StorageInterface
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
-     * @codeCoverageIgnore
      */
     public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
@@ -124,7 +123,6 @@ class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @param string $token
-     * @codeCoverageIgnore
      */
     public function refresh(string $token): void
     {
@@ -156,7 +154,7 @@ class AuthenticateStorageModel implements StorageInterface
      */
     private function getExpirationTime(array $sessionRecord): int
     {
-        return max(($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time(), 0);
+        return (int) max(($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time(), 0);
     }
 
     /**
@@ -170,6 +168,10 @@ class AuthenticateStorageModel implements StorageInterface
         return ($remainingSeconds <= 0);
     }
 
+    /**
+     * @return bool
+     * @throws SettingNotFoundException
+     */
     private function activeSessionCheck(): bool
     {
         if (! $this->environment->get('activeSessionCheck')) {
