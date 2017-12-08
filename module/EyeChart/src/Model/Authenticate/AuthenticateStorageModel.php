@@ -60,6 +60,7 @@ class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @return bool
+     * @codeCoverageIgnore
      */
     public function isEmpty(): bool
     {
@@ -68,6 +69,7 @@ class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @return \mixed[]
+     * @codeCoverageIgnore
      */
     public function read(): array
     {
@@ -77,12 +79,16 @@ class AuthenticateStorageModel implements StorageInterface
     /**
      * @param SessionEntity[] $storage
      * @return bool
+     * @codeCoverageIgnore
      */
     public function write($storage): bool
     {
         return $this->authenticateStorageDao->write($storage);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function clear(): void
     {
         $this->authenticateStorageDao->clear();
@@ -91,6 +97,7 @@ class AuthenticateStorageModel implements StorageInterface
     /**
      * @param VOInterface|AuthenticationVO $authenticationVO
      * @return bool
+     * @codeCoverageIgnore
      */
     public function clearSessionRecord(VOInterface $authenticationVO): bool
     {
@@ -117,6 +124,7 @@ class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @param string $token
+     * @codeCoverageIgnore
      */
     public function refresh(string $token): void
     {
