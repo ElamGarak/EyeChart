@@ -150,7 +150,6 @@ class AuthenticationRepository
     /**
      * @param VOInterface $vo
      * @return string[]
-     * @codeCoverageIgnore
      */
     public function logout(VOInterface $vo): array
     {
