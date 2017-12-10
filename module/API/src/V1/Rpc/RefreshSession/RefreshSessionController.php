@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Created by Apigility.
  * Date: 10/13/2017
  * (c) 2017
  */
+
 namespace API\V1\Rpc\RefreshSession;
 
 use EyeChart\Command\Commands\AuthenticateCommand;

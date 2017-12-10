@@ -95,6 +95,7 @@ return array(
             'API\\V1\\Rpc\\Login\\Controller' => 'Json',
             'API\\V1\\Rpc\\Logout\\Controller' => 'Json',
             'API\\V1\\Rpc\\CheckSessionStatus\\Controller' => 'Json',
+            'API\\V1\\Rpc\\RefreshSession\\Controller' => 'Json',
         ),
         'accept_whitelist' => array(
             'API\\V1\\Rpc\\Login\\Controller' => array(
@@ -127,11 +128,11 @@ return array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
             ),
-            'API\\V1\\Rpc\\RefreshSession\\Controller' => array(
+            'API\\V1\\Rpc\\GetFuelCard\\Controller' => array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
             ),
-            'API\\V1\\Rpc\\GetFuelCard\\Controller' => array(
+            'API\\V1\\Rpc\\RefreshSession\\Controller' => array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
             ),
@@ -186,8 +187,9 @@ return array(
                 'validators' => array(),
                 'filters' => array(),
                 'name' => 'token',
+                'description' => 'Token',
+                'error_message' => 'Token required',
                 'field_type' => 'string',
-                'error_message' => 'Token was not provided',
             ),
         ),
     ),
