@@ -15,7 +15,7 @@ var LOGIN_SEGMENT = BASE_PATH + "/login";
 var INDEX_SEGMENT = BASE_PATH + "/";
 
 var SESSION_CHECK_WARNING_THRESHOLD = 5; // Default of 5 minutes
-var SESSION_CHECK_TIMEOUT_FREQUENCY = 5; // Default 30 seconds,
+var SESSION_CHECK_TIMEOUT_FREQUENCY = 30; // Default 30 seconds,
 
 
 var JSON_HEADER = {
