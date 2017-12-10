@@ -15,7 +15,6 @@ use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\Mappers\SessionMapper;
 use EyeChart\Service\Authenticate\AuthenticateAdapter;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
@@ -73,15 +72,6 @@ class AuthenticateAdapterTest extends TestCase
             $this->mockedAuthenticateDao,
             $this->mockedAuthenticateStorageDao
         );
-    }
-
-    public function testAuthenticateThrowsAmbiguousFailure(): void
-    {
-        $result = $this->adapter->authenticate();
-
-        $this->assertEquals($result->getCode(), Result::FAILURE_IDENTITY_AMBIGUOUS);
-        $this->assertEquals($result->getIdentity(), SessionMapper::SESSION_RECORD_ID);
-        $this->assertEquals($result->getMessages(), [SessionMapper::MESSAGE_SESSION_NOT_FOUND]);
     }
 
     /**
@@ -153,18 +143,13 @@ class AuthenticateAdapterTest extends TestCase
 
     public function testAuthenticate(): void
     {
-        $expectedSessionId   = uniqid('id');
         $expectedSessionName = uniqid('name');
-
-        $this->mockedSessionManager->expects($this->once())
-            ->method('getId')
-            ->willReturn($expectedSessionId);
 
         $this->mockedSessionManager->expects($this->once())
             ->method('getName')
             ->willReturn($expectedSessionName);
 
-        self::$sessionEntity->setSessionId($expectedSessionId)
+        self::$sessionEntity->setSessionUser('foo')
             ->setPhpSessionId($expectedSessionName)
             ->setSessionRecordId(1);
 

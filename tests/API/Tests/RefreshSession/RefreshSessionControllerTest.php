@@ -13,7 +13,6 @@ use API\V1\Rpc\RefreshSession\RefreshSessionController;
 use EyeChart\Command\Commands\AuthenticateCommand;
 use EyeChart\Command\Commands\SessionRefreshCommand;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\Service\Authenticate\AuthenticateStorageService;
 use EyeChart\Tests\Fixtures\CommandBusAuthenticationFixture;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use League\Tactician\CommandBus;
@@ -27,9 +26,6 @@ use ZF\ApiProblem\ApiProblemResponse;
  */
 class RefreshSessionControllerTest extends TestCase
 {
-    /** @var AuthenticateStorageService|PHPUnit_Framework_MockObject_MockObject */
-    private $mockedService;
-
     /** @var CommandBusAuthenticationFixture */
     private static $commandBusFixture;
 
@@ -44,14 +40,7 @@ class RefreshSessionControllerTest extends TestCase
         ];
     }
 
-    public function setUp(): void
-    {
-        $this->mockedService = $this->getMockBuilder(AuthenticateStorageService::class)
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-    }
-
-    public function testRelationshipAutocompleteAction(): void
+    public function testRefreshSessionAction(): void
     {
         /** @var CommandBus|PHPUnit_Framework_MockObject_MockObject $mockedCommandBus */
         $mockedCommandBus = $this->getMockBuilder(CommandBus::class)
@@ -72,10 +61,7 @@ class RefreshSessionControllerTest extends TestCase
                              )
                          );
 
-        $controller = new RefreshSessionController(
-            $this->mockedService,
-            $mockedCommandBus
-        );
+        $controller = new RefreshSessionController($mockedCommandBus);
 
         $controller->getRequest()->setContent(json_encode(self::$expectedPayload));
         $controller->setEvent(self::$commandBusFixture->getEvent());
@@ -96,10 +82,7 @@ class RefreshSessionControllerTest extends TestCase
                          ->method('handle')
                          ->willThrowException(new \Exception('I before e except after g'));
 
-        $controller = new RefreshSessionController(
-            $this->mockedService,
-            $mockedCommandBus
-        );
+        $controller = new RefreshSessionController($mockedCommandBus);
 
         $controller->getRequest()->setContent(json_encode(self::$expectedPayload));
         $controller->setEvent(self::$commandBusFixture->getEvent());

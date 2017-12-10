@@ -15,7 +15,6 @@ use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\Mappers\SessionMapper;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
@@ -78,15 +77,6 @@ class AuthenticateAdapter implements AdapterInterface
      */
     public function authenticate(): Result
     {
-        if ($this->sessionEntity->isSessionId() === false) {
-            return new Result(
-                Result::FAILURE_IDENTITY_AMBIGUOUS,
-                SessionMapper::SESSION_RECORD_ID,
-                [SessionMapper::MESSAGE_SESSION_NOT_FOUND]
-            );
-        }
-
-        $this->sessionEntity->setSessionId($this->sessionManager->getId());
         $this->sessionEntity->setToken($this->authenticateEntity->getToken());
         $this->sessionEntity->setPhpSessionId($this->sessionManager->getName());
 
