@@ -15,7 +15,7 @@ var LOGIN_SEGMENT = BASE_PATH + "/login";
 var INDEX_SEGMENT = BASE_PATH + "/";
 
 var SESSION_CHECK_WARNING_THRESHOLD = 5; // Default of 5 minutes
-var SESSION_CHECK_TIMEOUT_FREQUENCY = 30; // Default 30 seconds,
+var SESSION_CHECK_TIMEOUT_FREQUENCY = 5; // Default 30 seconds,
 
 
 var JSON_HEADER = {
@@ -23,20 +23,9 @@ var JSON_HEADER = {
     "Content-Type": "application/json"
 };
 
-var JSON_HEADER_WITH_AUTH = $.merge(JSON_HEADER, { "X-Authentication": TOKEN });
+var JSON_HEADER_WITH_AUTH = $.extend({}, JSON_HEADER, { "X-Authentication": TOKEN });
 
 var NOTY_LAYOUT_CONFIG = {
     layout:  "bottomLeft",
     timeout: 5000
-};
-
-var EASY_MODAL_CONFIG = {
-    top:     200,
-    overlay: 0.2
-};
-
-var DIALOG_OVERLAY = {
-    opacity:         0.65,
-    filter:          "Alpha(Opacity=65)",
-    backgroundColor: "black"
 };
