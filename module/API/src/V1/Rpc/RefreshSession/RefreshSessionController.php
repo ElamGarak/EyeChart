@@ -10,7 +10,6 @@ namespace API\V1\Rpc\RefreshSession;
 
 use EyeChart\Command\Commands\AuthenticateCommand;
 use EyeChart\Command\Commands\SessionRefreshCommand;
-use EyeChart\Service\Authenticate\AuthenticateStorageService;
 use EyeChart\VO\Authentication\AuthenticationVO;
 use League\Tactician\CommandBus;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -24,9 +23,6 @@ use ZF\ContentNegotiation\ViewModel;
  */
 class RefreshSessionController extends AbstractActionController
 {
-    /** @var AuthenticateStorageService */
-    private $authenticateStorageService;
-
     /** @var CommandBus */
     private $commandBus;
 
@@ -41,13 +37,11 @@ class RefreshSessionController extends AbstractActionController
 
     /**
      * RefreshSessionController constructor.
-     * @param AuthenticateStorageService $authenticateStorageService
      * @param CommandBus $commandBus
      */
-    public function __construct(AuthenticateStorageService $authenticateStorageService, CommandBus $commandBus)
+    public function __construct(CommandBus $commandBus)
     {
-        $this->authenticateStorageService = $authenticateStorageService;
-        $this->commandBus                 = $commandBus;
+        $this->commandBus = $commandBus;
     }
 
     /**
