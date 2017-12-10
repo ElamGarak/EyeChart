@@ -48,7 +48,6 @@ return [
             // Models
             Model\Authenticate\AuthenticateModel::class                     => Model\Authenticate\AuthenticateModelFactory::class,
             Model\Authenticate\AuthenticateStorageModel::class              => Model\Authenticate\AuthenticateStorageModelFactory::class,
-            Model\Authenticate\EncryptionModel::class                       => Model\Authenticate\EncryptionModelFactory::class,
             Model\Email\EmailModel::class                                   => Model\Email\EmailModelFactory::class,
             Model\Employee\EmployeeModel::class                             => Model\Employee\EmployeeModelFactory::class,
 
