@@ -19,7 +19,7 @@ use ZF\ContentNegotiation\ViewModel;
  * Class PurgeSessionsController
  * @package API\V1\Rpc\PurgeSessions
  */
-class PurgeSessionsController extends AbstractActionController
+final class PurgeSessionsController extends AbstractActionController
 {
     /** @var CommandBus */
     private $commandBus;

@@ -15,7 +15,7 @@ use Psr\Container\ContainerInterface;
  * Class PurgeSessionsControllerFactory
  * @package API\V1\Rpc\PurgeSessions
  */
-class PurgeSessionsControllerFactory
+final class PurgeSessionsControllerFactory
 {
     /**
      * @param ContainerInterface $container

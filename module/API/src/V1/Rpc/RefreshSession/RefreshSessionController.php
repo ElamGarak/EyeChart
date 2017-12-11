@@ -21,7 +21,7 @@ use ZF\ContentNegotiation\ViewModel;
  * Class RefreshSessionController
  * @package API\V1\Rpc\RefreshSession
  */
-class RefreshSessionController extends AbstractActionController
+final class RefreshSessionController extends AbstractActionController
 {
     /** @var CommandBus */
     private $commandBus;
