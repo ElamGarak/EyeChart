@@ -101,7 +101,8 @@ return [
         'handler-map' => [
             Command\Commands\AuthenticateCommand::class                     => Command\Handlers\Authenticate\AuthenticateHandler::class,
             Command\Commands\EmailCommand::class                            => Command\Handlers\Email\EmailHandler::class,
-            Command\Commands\SessionRefreshCommand::class                   => Command\Handlers\Session\SessionRefreshHandler::class
+            Command\Commands\SessionRefreshCommand::class                   => Command\Handlers\Session\SessionRefreshHandler::class,
+            Command\Commands\PurgeSessionCommand::class                     => Command\Handlers\Session\PurgeSessionHandlerFactory::class
         ],
     ],
 ];
