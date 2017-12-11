@@ -37,9 +37,9 @@ return [
         'zf-apigility/api/module/rpc-service' => 'Apigility RPC update',
     ],
     // Session configuration
-    'session_config' => [
-        'cookie_lifetime' => 60*60*1,
-        'gc_maxlifetime'  => 60*60*12,
+    'sessionConfig' => [
+        'cookieLifetime' => 60*60*1,
+        'gcMaxlifetime'  => 60*60*12,
     ],
     // Session storage configuration.
     'session_storage' => [

@@ -10,6 +10,7 @@ namespace API\V1\Rpc\PurgeSessions;
 
 use EyeChart\Command\Commands\PurgeSessionCommand;
 use League\Tactician\CommandBus;
+use Zend\Config\Config;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
@@ -24,16 +25,24 @@ final class PurgeSessionsController extends AbstractActionController
     /** @var CommandBus */
     private $commandBus;
 
+    /** @var Config */
+    private $sessionConfig;
+
+    /** @var mixed[] */
+    private $sessionConfigurations;
+
     /** @var array */
     private $jsonReturn = [];
 
     /**
      * PurgeSessionsController constructor.
      * @param CommandBus $commandBus
+     * @param Config $sessionConfig
      */
-    public function __construct(CommandBus $commandBus)
+    public function __construct(CommandBus $commandBus, Config $sessionConfig)
     {
-        $this->commandBus = $commandBus;
+        $this->commandBus    = $commandBus;
+        $this->sessionConfig = $sessionConfig;
     }
 
     /**
@@ -43,6 +52,7 @@ final class PurgeSessionsController extends AbstractActionController
     {
         try {
             $this->executeCommand();
+            $this->prepareCommandData();
             $this->prepareReturnData();
         } catch (\Exception $exception) {
             return new ApiProblemResponse(
@@ -58,10 +68,18 @@ final class PurgeSessionsController extends AbstractActionController
         return new ViewModel($this->jsonReturn);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
+    private function prepareCommandData(): void
+    {
+        $this->sessionConfigurations = $this->sessionConfig->toArray();
+    }
+
     private function executeCommand(): void
     {
         $this->commandBus->handle(
-            new PurgeSessionCommand()
+            new PurgeSessionCommand($this->sessionConfigurations)
         );
     }
 

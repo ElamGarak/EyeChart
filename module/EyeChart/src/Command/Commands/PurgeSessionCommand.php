@@ -15,11 +15,23 @@ namespace EyeChart\Command\Commands;
  */
 class PurgeSessionCommand extends AbstractCommand
 {
+    /** @var mixed[]  */
+    private $sessionConfig = [];
+
     /**
      * PurgeSessionHandler constructor.
+     * @param mixed[] $sessionConfig
      */
-    public function __construct()
+    public function __construct(array $sessionConfig)
     {
-        // Stub
+        $this->sessionConfig = $sessionConfig;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getSessionConfig(): array
+    {
+        return $this->sessionConfig;
     }
 }

@@ -10,6 +10,7 @@ namespace API\V1\Rpc\PurgeSessions;
 
 use League\Tactician\CommandBus;
 use Psr\Container\ContainerInterface;
+use Zend\Config\Config;
 
 /**
  * Class PurgeSessionsControllerFactory
@@ -25,7 +26,8 @@ final class PurgeSessionsControllerFactory
     public function __invoke(ContainerInterface $container): PurgeSessionsController
     {
         $commandBus = $container->get(CommandBus::class);
+        $config     = new Config($container->get('config'));
 
-        return new PurgeSessionsController($commandBus);
+        return new PurgeSessionsController($commandBus, $config->get('sessionConfig'));
     }
 }
