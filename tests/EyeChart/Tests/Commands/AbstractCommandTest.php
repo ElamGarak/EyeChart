@@ -9,7 +9,8 @@ declare(strict_types=1);
 
 namespace EyeChart\Tests\Command\Commands;
 
-use EyeChart\Command\Commands\AbstractCommand;
+use EyeChart\Command\Commands\SessionRefreshCommand;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,7 +24,7 @@ class AbstractCommandTest extends TestCase
      */
     public function testMagicSetterOverrideThrowsException(): void
     {
-        $sut = new AbstractCommand();
+        $sut = new SessionRefreshCommand(AuthenticationVO::build());
 
         /** @noinspection PhpUndefinedFieldInspection */
         $sut->foo = 'bar';
