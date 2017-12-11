@@ -6,6 +6,7 @@ return array(
             'API\\V1\\Rpc\\Logout\\Controller' => 'API\\V1\\Rpc\\Logout\\LogoutControllerFactory',
             'API\\V1\\Rpc\\CheckSessionStatus\\Controller' => 'API\\V1\\Rpc\\CheckSessionStatus\\CheckSessionStatusControllerFactory',
             'API\\V1\\Rpc\\RefreshSession\\Controller' => 'API\\V1\\Rpc\\RefreshSession\\RefreshSessionControllerFactory',
+            'API\\V1\\Rpc\\PurgeSessions\\Controller' => 'API\\V1\\Rpc\\PurgeSessions\\PurgeSessionsControllerFactory',
         ),
     ),
     'router' => array(
@@ -60,6 +61,16 @@ return array(
                     ),
                 ),
             ),
+            'api.rpc.purge-sessions' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/api/purgeSession',
+                    'defaults' => array(
+                        'controller' => 'API\\V1\\Rpc\\PurgeSessions\\Controller',
+                        'action' => 'purgeSessions',
+                    ),
+                ),
+            ),
         ),
     ),
     'zf-versioning' => array(
@@ -68,6 +79,7 @@ return array(
             1 => 'api.rpc.logout',
             2 => 'api.rpc.check-session-status',
             3 => 'api.rpc.refresh-session',
+            4 => 'api.rpc.purge-sessions',
         ),
     ),
     'zf-rpc' => array(
@@ -99,12 +111,20 @@ return array(
             ),
             'route_name' => 'api.rpc.refresh-session',
         ),
+        'API\\V1\\Rpc\\PurgeSessions\\Controller' => array(
+            'service_name' => 'PurgeSessions',
+            'http_methods' => array(
+                0 => 'POST',
+            ),
+            'route_name' => 'api.rpc.purge-sessions',
+        ),
     ),
     'zf-content-negotiation' => array(
         'controllers' => array(
             'API\\V1\\Rpc\\Login\\Controller' => 'Json',
             'API\\V1\\Rpc\\Logout\\Controller' => 'Json',
             'API\\V1\\Rpc\\CheckSessionStatus\\Controller' => 'Json',
+            'API\\V1\\Rpc\\PurgeSessions\\Controller' => 'Json',
         ),
         'accept_whitelist' => array(
             'API\\V1\\Rpc\\Login\\Controller' => array(
@@ -127,6 +147,11 @@ return array(
                 1 => 'application/json',
                 2 => 'application/*+json',
             ),
+            'API\\V1\\Rpc\\PurgeSessions\\Controller' => array(
+                0 => 'application/vnd.api.v1+json',
+                1 => 'application/json',
+                2 => 'application/*+json',
+            ),
         ),
         'content_type_whitelist' => array(
             'API\\V1\\Rpc\\Login\\Controller' => array(
@@ -142,6 +167,10 @@ return array(
                 1 => 'application/json',
             ),
             'API\\V1\\Rpc\\GetFuelCard\\Controller' => array(
+                0 => 'application/vnd.api.v1+json',
+                1 => 'application/json',
+            ),
+            'API\\V1\\Rpc\\PurgeSessions\\Controller' => array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
             ),
