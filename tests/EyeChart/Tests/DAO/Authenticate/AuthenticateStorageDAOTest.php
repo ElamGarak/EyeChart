@@ -420,6 +420,33 @@ class AuthenticateStorageDAOTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testPurgePurgesSessionRecord(): void
+    {
+        $sessionConfig = [
+            SessionMapper::GC_MAX_LIFETIME => 10
+        ];
+
+        $this->mockedResult->expects($this->any())
+            ->method('current');
+
+        $this->mockedDelete->expects($this->once())
+            ->method('from')
+            ->with(SessionMapper::TABLE);
+
+        $this->mockedDelete->expects($this->once())
+            ->method('where')
+            ->withAnyParameters();
+
+        $this->mockedSql->expects($this->any())
+            ->method('prepareStatementForSqlObject')
+            ->willReturnCallback(function(/** @noinspection PhpUnusedParameterInspection */
+                AbstractPreparableSql $param) {
+                return $this->mockedStatement;
+            });
+
+        $this->dao->purge($sessionConfig);
+    }
+
     /**
      * @return mixed[]
      */
