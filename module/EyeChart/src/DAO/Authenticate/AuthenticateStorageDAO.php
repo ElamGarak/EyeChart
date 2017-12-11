@@ -11,7 +11,6 @@ namespace EyeChart\DAO\Authenticate;
 
 use Assert\Assertion;
 use Exception;
-use EyeChart\Command\Commands\PurgeSessionCommand;
 use EyeChart\DAO\AbstractDAO;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
@@ -235,6 +234,16 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
      */
     public function purge(array $sessionConfig): void
     {
-        // Stub
+        $expirationTime = time() - $sessionConfig[SessionMapper::GC_MAX_LIFETIME];
+
+        $delete = parent::getSqlAdapter()->delete();
+        $delete->from(SessionMapper::TABLE);
+
+        $where = new Where();
+        $where->lessThan(SessionMapper::ACCESSED, $expirationTime);
+
+        $delete->where($where);
+
+        parent::executeStatement($delete);
     }
 }
