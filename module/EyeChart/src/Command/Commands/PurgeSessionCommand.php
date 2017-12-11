@@ -8,14 +8,15 @@ declare(strict_types=1);
  */
 
 namespace EyeChart\Command\Commands;
+
 /**
- * Class PurgeSessionCommand
+ * Class PurgeSessionHandler
  * @package EyeChart\Command\Commands
  */
 class PurgeSessionCommand extends AbstractCommand
 {
     /**
-     * PurgeSessionCommand constructor.
+     * PurgeSessionHandler constructor.
      */
     public function __construct()
     {
