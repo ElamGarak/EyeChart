@@ -195,9 +195,12 @@ class AuthenticateStorageModelTest extends TestCase
 
     public function testPurgeAssertsDaoPerge(): void
     {
-        $this->mockedAuthenticateStorageDAO->expects($this->once())
-            ->method('purge');
+        $command = new PurgeSessionCommand([]);
 
-        $this->model->purge(new PurgeSessionCommand([]));
+        $this->mockedAuthenticateStorageDAO->expects($this->once())
+            ->method('purge')
+            ->with($command->getSessionConfig());
+
+        $this->model->purge($command);
     }
 }

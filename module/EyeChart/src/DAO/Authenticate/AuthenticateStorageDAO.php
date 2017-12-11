@@ -230,7 +230,10 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
         return $result->isQueryResult();
     }
 
-    public function purge(PurgeSessionCommand $command): void
+    /**
+     * @param mixed[] $sessionConfig
+     */
+    public function purge(array $sessionConfig): void
     {
         // Stub
     }
