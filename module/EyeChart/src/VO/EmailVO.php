@@ -15,7 +15,7 @@ use Assert\Assertion;
  * Class EmailVO
  * @package EyeChart\VO
  */
-final class EmailVO extends AbstractVO
+final class EmailVO extends VO
 {
     /** @var string */
     protected $recipient;

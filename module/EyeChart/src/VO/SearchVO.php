@@ -16,7 +16,7 @@ use Assert\Assertion;
  * Class SearchVO
  * @package EyeChart\VO
  */
-final class SearchVO extends AbstractVO implements VOSearchInterface
+final class SearchVO extends VO implements VOSearchInterface
 {
     /** @var int */
     protected $limit;

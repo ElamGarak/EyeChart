@@ -11,14 +11,14 @@ namespace EyeChart\VO\Authentication;
 
 use Assert\Assertion;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\VO\AbstractVO;
+use EyeChart\VO\VO;
 use EyeChart\VO\VOInterface;
 
 /**
  * Class AuthenticationVO
  * @package EyeChart\VO\Authentication\
  */
-final class AuthenticationVO extends AbstractVO
+final class AuthenticationVO extends VO
 {
     /** @var string */
     protected $username = '';

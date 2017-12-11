@@ -13,7 +13,7 @@ namespace EyeChart\Mappers;
  * Class AuthenticateMapper
  * @package EyeChart\Entity\Authenticate
  */
-final class AuthenticateMapper extends AbstractMapper
+final class AuthenticateMapper extends Mapper
 {
     public const TABLE = 'users';
     public const ALIAS = 'u';

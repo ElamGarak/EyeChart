@@ -19,7 +19,7 @@ use EyeChart\VO\VOInterface;
  * Class AbstractEntity
  * @package EyeChart\Entity
  */
-class AbstractEntity implements EntityInterface
+abstract class AbstractEntity implements EntityInterface
 {
     /**
      * @param mixed $dataSource
@@ -59,7 +59,7 @@ class AbstractEntity implements EntityInterface
         try {
             foreach ($dataSource as $key => $value) {
                 if (! property_exists($this, $key)) {
-                    throw new Exception($key);
+                    continue;
                 }
 
                 $setter = "set" . ucfirst($key);
@@ -81,7 +81,7 @@ class AbstractEntity implements EntityInterface
                 $property = lcfirst($key);
 
                 if (! property_exists($this, $property)) {
-                    throw new Exception($property);
+                    continue;
                 }
 
                 $setter = "set" . ucfirst($key);

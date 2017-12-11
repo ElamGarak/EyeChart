@@ -13,6 +13,7 @@ namespace EyeChart\VO;
  * Class EmployeeVO
  * @package EyeChart\VO
  */
-final class EmployeeVO extends AbstractVO
+final class EmployeeVO extends VO
 {
+    // Stubbed
 }

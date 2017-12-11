@@ -13,7 +13,7 @@ namespace EyeChart\Mappers;
  * Class SessionMapper
  * @package EyeChart\Entity\Session
  */
-final class SessionMapper extends AbstractMapper
+final class SessionMapper extends Mapper
 {
     public const SCHEMA = '';
     public const TABLE  = 'session';

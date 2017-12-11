@@ -38,6 +38,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getUsername(): string
     {
@@ -47,6 +48,7 @@ class AuthenticateEntity extends AbstractEntity
     /**
      * @param string $username
      * @return AuthenticateEntity
+     * @codeCoverageIgnore
      */
     public function setUserName(string $username): AuthenticateEntity
     {
@@ -57,6 +59,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getPassword(): string
     {
@@ -66,6 +69,7 @@ class AuthenticateEntity extends AbstractEntity
     /**
      * @param string $password
      * @return AuthenticateEntity
+     * @codeCoverageIgnore
      */
     public function setPassword(string $password): AuthenticateEntity
     {
@@ -76,6 +80,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return string
+     * @codeCoverageIgnore
      */
     public function getToken(): string
     {
@@ -99,6 +104,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return bool
+     * @codeCoverageIgnore
      */
     public function getIsValid(): bool
     {
@@ -108,6 +114,7 @@ class AuthenticateEntity extends AbstractEntity
     /**
      * @param bool $isValid
      * @return AuthenticateEntity
+     * @codeCoverageIgnore
      */
     public function setIsValid(bool $isValid): AuthenticateEntity
     {
@@ -118,6 +125,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return mixed[]
+     * @codeCoverageIgnore
      */
     public function getUserData(): array
     {
@@ -127,6 +135,7 @@ class AuthenticateEntity extends AbstractEntity
     /**
      * @param array $userData
      * @return AuthenticateEntity
+     * @codeCoverageIgnore
      */
     public function setUserData(array $userData): AuthenticateEntity
     {
@@ -137,6 +146,7 @@ class AuthenticateEntity extends AbstractEntity
 
     /**
      * @return string[]
+     * @codeCoverageIgnore
      */
     public function getMessages(): array
     {

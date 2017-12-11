@@ -13,7 +13,7 @@ namespace EyeChart\Mappers;
  * Class AbstractMapper
  * @package EyeChart\Mappers
  */
-class AbstractMapper implements MapperInterface
+class Mapper implements MapperInterface
 {
     /**
      * @return self

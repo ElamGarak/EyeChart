@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\Tests\VO;
 
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\VO\AbstractVO;
+use EyeChart\VO\VO;
 use EyeChart\VO\TokenVO;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,7 @@ final class AbstractVOTest extends TestCase
      */
     public function testMagicSetterThrowsException(): void
     {
-        $subjectVO = new AbstractVO();
+        $subjectVO = new VO();
 
         /** @noinspection PhpUndefinedFieldInspection */
         $subjectVO->foo = 'bar';

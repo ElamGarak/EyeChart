@@ -9,18 +9,21 @@ declare(strict_types=1);
 
 namespace EyeChart\Command\Commands;
 
+use EyeChart\Exception\ForbiddenMagicSettingException;
+
 /**
  * Class AbstractCommand
  * @package EyeChart\Command\Commands
  */
-class AbstractCommand implements CommandInterface
+abstract class AbstractCommand implements CommandInterface
 {
     /**
      * @param string $field
      * @param $value
+     * @throws ForbiddenMagicSettingException
      */
     public function __set(string $field, $value): void
     {
-        // Prevent dynamic setting
+        throw new ForbiddenMagicSettingException();
     }
 }
