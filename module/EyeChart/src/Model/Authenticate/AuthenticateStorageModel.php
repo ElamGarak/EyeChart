@@ -200,6 +200,6 @@ class AuthenticateStorageModel implements StorageInterface
      */
     public function purge(PurgeSessionCommand $command): void
     {
-        // Stub
+        $this->authenticateStorageDao->purge($command);
     }
 }
