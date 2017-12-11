@@ -39,7 +39,7 @@ final class PurgeSessionsHandlerTest extends TestCase
 
     public function testHandle(): void
     {
-        $command = new PurgeSessionCommand();
+        $command = new PurgeSessionCommand([]);
 
         $this->mockedModel->expects($this->once())
             ->method('purge')
