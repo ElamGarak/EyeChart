@@ -15,6 +15,7 @@ use EyeChart\Tests\Fixtures\CommandBusAuthenticationFixture;
 use League\Tactician\CommandBus;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
+use Zend\Config\Config;
 use ZF\ApiProblem\ApiProblemResponse;
 
 /**
@@ -29,9 +30,16 @@ final class PurgeSessionControllerTest extends TestCase
     /** @var mixed */
     private static $expectedPayload;
 
+    /** @var Config */
+    private static $config;
+
     public static function setUpBeforeClass(): void
     {
         self::$commandBusFixture = new CommandBusAuthenticationFixture();
+        self::$config            = new Config([
+            'cookieLifetime' => 1,
+            'gcMaxlifetime'  => 2,
+        ]);
     }
 
     public function testRefreshSessionAction(): void
@@ -43,9 +51,9 @@ final class PurgeSessionControllerTest extends TestCase
 
         $mockedCommandBus->expects($this->once())
             ->method('handle')
-            ->with(new PurgeSessionCommand());
+            ->with(new PurgeSessionCommand(self::$config->toArray()));
 
-        $controller = new PurgeSessionsController($mockedCommandBus);
+        $controller = new PurgeSessionsController($mockedCommandBus, self::$config);
 
         $controller->getRequest()->setContent(json_encode(self::$expectedPayload));
         $controller->setEvent(self::$commandBusFixture->getEvent());
@@ -62,11 +70,11 @@ final class PurgeSessionControllerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockedCommandBus->expects($this->at(0))
+        $mockedCommandBus->expects($this->once())
             ->method('handle')
             ->willThrowException(new \Exception('I before e except after g'));
 
-        $controller = new PurgeSessionsController($mockedCommandBus);
+        $controller = new PurgeSessionsController($mockedCommandBus, self::$config);
 
         $controller->getRequest()->setContent(json_encode(self::$expectedPayload));
         $controller->setEvent(self::$commandBusFixture->getEvent());
