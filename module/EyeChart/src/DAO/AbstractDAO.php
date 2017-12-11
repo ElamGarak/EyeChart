@@ -91,7 +91,7 @@ abstract class AbstractDAO
     {
         foreach ($record as $key => $value) {
             switch (true) {
-                case (strpos($value, '.') === true) :
+                case (strpos($value, '.') !== false) :
                     $record[$key] = (float)$value;
 
                     break;
