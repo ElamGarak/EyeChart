@@ -15,7 +15,7 @@ use EyeChart\Exception\ForbiddenMagicSettingException;
  * Class AbstractCommand
  * @package EyeChart\Command\Commands
  */
-class AbstractCommand implements CommandInterface
+abstract class AbstractCommand implements CommandInterface
 {
     /**
      * @param string $field
