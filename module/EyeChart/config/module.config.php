@@ -44,6 +44,7 @@ return [
             Command\Handlers\Authenticate\AuthenticateHandler::class        => Command\Handlers\Authenticate\AuthenticateHandlerFactory::class,
             Command\Handlers\Email\EmailHandler::class                      => Command\Handlers\Email\EmailHandlerFactory::class,
             Command\Handlers\Session\SessionRefreshHandler::class           => Command\Handlers\Session\SessionRefreshHandlerFactory::class,
+            Command\Handlers\Session\PurgeSessionHandler::class             => Command\Handlers\Session\PurgeSessionHandlerFactory::class,
 
             // Models
             Model\Authenticate\AuthenticateModel::class                     => Model\Authenticate\AuthenticateModelFactory::class,
@@ -102,7 +103,7 @@ return [
             Command\Commands\AuthenticateCommand::class                     => Command\Handlers\Authenticate\AuthenticateHandler::class,
             Command\Commands\EmailCommand::class                            => Command\Handlers\Email\EmailHandler::class,
             Command\Commands\SessionRefreshCommand::class                   => Command\Handlers\Session\SessionRefreshHandler::class,
-            Command\Commands\PurgeSessionCommand::class                     => Command\Handlers\Session\PurgeSessionHandlerFactory::class
+            Command\Commands\PurgeSessionCommand::class                     => Command\Handlers\Session\PurgeSessionHandler::class
         ],
     ],
 ];
