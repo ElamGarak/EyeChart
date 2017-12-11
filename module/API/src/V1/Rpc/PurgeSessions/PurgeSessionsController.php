@@ -51,8 +51,8 @@ final class PurgeSessionsController extends AbstractActionController
     public function purgeSessionsAction()
     {
         try {
-            $this->executeCommand();
             $this->prepareCommandData();
+            $this->executeCommand();
             $this->prepareReturnData();
         } catch (\Exception $exception) {
             return new ApiProblemResponse(
