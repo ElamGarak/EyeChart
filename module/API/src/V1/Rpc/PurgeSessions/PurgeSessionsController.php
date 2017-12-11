@@ -8,6 +8,7 @@ declare(strict_types=1);
  */
 namespace API\V1\Rpc\PurgeSessions;
 
+use EyeChart\Command\Commands\PurgeSessionCommand;
 use League\Tactician\CommandBus;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
@@ -59,7 +60,9 @@ class PurgeSessionsController extends AbstractActionController
 
     private function executeCommand(): void
     {
-        // Stub
+        $this->commandBus->handle(
+            new PurgeSessionCommand()
+        );
     }
 
     private function prepareReturnData(): void
