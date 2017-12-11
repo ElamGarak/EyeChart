@@ -193,4 +193,9 @@ class AuthenticateStorageModel implements StorageInterface
 
         return $this->environment->get('timeoutWarningThreshold');
     }
+
+    public function purge()
+    {
+        // Stub
+    }
 }
