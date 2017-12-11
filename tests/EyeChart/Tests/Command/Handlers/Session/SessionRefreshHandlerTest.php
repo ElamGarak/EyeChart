@@ -7,7 +7,7 @@ declare(strict_types=1);
  * (c) Eye Chart
  */
 
-namespace EyeChart\Tests\Command\Handlers\SessionRefresh;
+namespace EyeChart\Tests\Command\Handlers\Session;
 
 use EyeChart\Command\Commands\SessionRefreshCommand;
 use EyeChart\Command\Handlers\Session\SessionRefreshHandler;
@@ -18,7 +18,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * Class SessionRefreshHandlerTest
- * @package EyeChart\Tests\Command\Handlers\SessionRefresh
+ * @package EyeChart\Tests\Command\Handlers\Session
  */
 class SessionRefreshHandlerTest extends TestCase
 {

@@ -37,11 +37,9 @@ return [
         'zf-apigility/api/module/rpc-service' => 'Apigility RPC update',
     ],
     // Session configuration
-    'session_config' => [
-        // Session cookie will expire in 1 hour.
-        'cookie_lifetime' => 60*60*1,
-        // Session data will be stored on server maximum for 30 days.
-        'gc_maxlifetime'     => 60*60*24*30,
+    'sessionConfig' => [
+        \EyeChart\Mappers\SessionMapper::COOKIE_LIFETIME => 60*60*1,
+        \EyeChart\Mappers\SessionMapper::GC_MAX_LIFETIME => 60*60*12,
     ],
     // Session storage configuration.
     'session_storage' => [
@@ -51,7 +49,7 @@ return [
         'config' => [
             'class' => Session\Config\SessionConfig::class,
             'options' => [
-                'name' => 'DriverManager',
+                'name' => 'EyeChart',
             ],
         ],
         'storage' => Session\Storage\SessionArrayStorage::class,

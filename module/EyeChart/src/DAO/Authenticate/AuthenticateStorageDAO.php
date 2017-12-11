@@ -228,4 +228,22 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 
         return $result->isQueryResult();
     }
+
+    /**
+     * @param mixed[] $sessionConfig
+     */
+    public function purge(array $sessionConfig): void
+    {
+        $expirationTime = time() - $sessionConfig[SessionMapper::GC_MAX_LIFETIME];
+
+        $delete = parent::getSqlAdapter()->delete();
+        $delete->from(SessionMapper::TABLE);
+
+        $where = new Where();
+        $where->lessThan(SessionMapper::ACCESSED, $expirationTime);
+
+        $delete->where($where);
+
+        parent::executeStatement($delete);
+    }
 }

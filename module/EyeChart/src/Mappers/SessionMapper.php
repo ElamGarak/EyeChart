@@ -33,5 +33,8 @@ final class SessionMapper extends AbstractMapper
     public const THRESHOLD      = 'threshold';
     public const ACTIVE_CHECK   = 'activeCheck';
 
+    public const COOKIE_LIFETIME = 'cookieLifetime';
+    public const GC_MAX_LIFETIME = 'gcMaxlifetime';
+
     public const MESSAGE_SESSION_NOT_FOUND = 'PHP Session ID was not found';
 }

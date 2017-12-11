@@ -18,7 +18,7 @@ use ZF\ContentNegotiation\ViewModel;
  * Class CheckSessionStatusController
  * @package API\V1\Rpc\CheckSessionStatus
  */
-class CheckSessionStatusController extends AbstractActionController
+final class CheckSessionStatusController extends AbstractActionController
 {
 
     /** @var AuthenticateStorageService */

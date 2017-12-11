@@ -16,7 +16,7 @@ use Psr\Container\ContainerInterface;
  * Class RefreshSessionControllerFactory
  * @package API\V1\Rpc\RefreshSession
  */
-class RefreshSessionControllerFactory
+final class RefreshSessionControllerFactory
 {
     /**
      * @param ContainerInterface $container

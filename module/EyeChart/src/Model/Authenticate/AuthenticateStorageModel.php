@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Model\Authenticate;
 
+use EyeChart\Command\Commands\PurgeSessionCommand;
 use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\EntityInterface;
@@ -192,5 +193,13 @@ class AuthenticateStorageModel implements StorageInterface
         }
 
         return $this->environment->get('timeoutWarningThreshold');
+    }
+
+    /**
+     * @param PurgeSessionCommand $command
+     */
+    public function purge(PurgeSessionCommand $command): void
+    {
+        $this->authenticateStorageDao->purge($command->getSessionConfig());
     }
 }

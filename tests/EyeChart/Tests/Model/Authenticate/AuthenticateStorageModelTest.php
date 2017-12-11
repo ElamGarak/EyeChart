@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace API\Tests\Model\Authenticate;
 
+use EyeChart\Command\Commands\PurgeSessionCommand;
 use EyeChart\DAO\Authenticate\AuthenticateStorageDAO;
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Entity\SessionEntity;
@@ -190,5 +191,16 @@ class AuthenticateStorageModelTest extends TestCase
         );
 
         $model->getUserSessionStatus($vo);
+    }
+
+    public function testPurgeAssertsDaoPerge(): void
+    {
+        $command = new PurgeSessionCommand([]);
+
+        $this->mockedAuthenticateStorageDAO->expects($this->once())
+            ->method('purge')
+            ->with($command->getSessionConfig());
+
+        $this->model->purge($command);
     }
 }

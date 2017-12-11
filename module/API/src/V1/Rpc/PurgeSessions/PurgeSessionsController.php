@@ -1,57 +1,56 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Created by Apigility.
- * Date: 10/13/2017
+ * Date: 12/10/2017
  * (c) 2017
  */
+namespace API\V1\Rpc\PurgeSessions;
 
-namespace API\V1\Rpc\RefreshSession;
-
-use EyeChart\Command\Commands\AuthenticateCommand;
-use EyeChart\Command\Commands\SessionRefreshCommand;
-use EyeChart\VO\Authentication\AuthenticationVO;
+use EyeChart\Command\Commands\PurgeSessionCommand;
 use League\Tactician\CommandBus;
+use Zend\Config\Config;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ContentNegotiation\ViewModel;
 
 /**
- * Class RefreshSessionController
- * @package API\V1\Rpc\RefreshSession
+ * Class PurgeSessionsController
+ * @package API\V1\Rpc\PurgeSessions
  */
-final class RefreshSessionController extends AbstractActionController
+final class PurgeSessionsController extends AbstractActionController
 {
     /** @var CommandBus */
     private $commandBus;
 
-    /** @var AuthenticationVO */
-    private $authenticationVO;
+    /** @var Config */
+    private $sessionConfig;
 
-    /** @var \stdClass */
-    private $inputData;
+    /** @var mixed[] */
+    private $sessionConfigurations;
 
     /** @var array */
     private $jsonReturn = [];
 
     /**
-     * RefreshSessionController constructor.
+     * PurgeSessionsController constructor.
      * @param CommandBus $commandBus
+     * @param Config $sessionConfig
      */
-    public function __construct(CommandBus $commandBus)
+    public function __construct(CommandBus $commandBus, Config $sessionConfig)
     {
-        $this->commandBus = $commandBus;
+        $this->commandBus    = $commandBus;
+        $this->sessionConfig = $sessionConfig;
     }
 
     /**
      * @return ApiProblemResponse|ViewModel
      */
-    public function refreshSessionAction()
+    public function purgeSessionsAction()
     {
         try {
-            $this->authenticate();
-            $this->extractAPIData();
             $this->prepareCommandData();
             $this->executeCommand();
             $this->prepareReturnData();
@@ -69,32 +68,18 @@ final class RefreshSessionController extends AbstractActionController
         return new ViewModel($this->jsonReturn);
     }
 
-    private function authenticate(): void
-    {
-        $this->commandBus->handle(
-            new AuthenticateCommand(
-                $this->getEvent()
-            )
-        );
-    }
-
-    private function extractAPIData(): void
-    {
-        $this->inputData = json_decode($this->getRequest()->getContent());
-    }
-
     /**
      * @codeCoverageIgnore
      */
     private function prepareCommandData(): void
     {
-        $this->authenticationVO = AuthenticationVO::build()->setToken($this->inputData->token);
+        $this->sessionConfigurations = $this->sessionConfig->toArray();
     }
 
     private function executeCommand(): void
     {
         $this->commandBus->handle(
-            new SessionRefreshCommand($this->authenticationVO)
+            new PurgeSessionCommand($this->sessionConfigurations)
         );
     }
 

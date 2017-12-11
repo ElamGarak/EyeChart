@@ -15,8 +15,9 @@ use Psr\Container\ContainerInterface;
 /**
  * Class CheckSessionStatusControllerFactory
  * @package API\V1\Rpc\CheckSessionStatus
+ * @codeCoverageIgnore
  */
-class CheckSessionStatusControllerFactory
+final class CheckSessionStatusControllerFactory
 {
 
     /**
