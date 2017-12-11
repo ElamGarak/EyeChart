@@ -11,6 +11,7 @@ namespace EyeChart\DAO\Authenticate;
 
 use Assert\Assertion;
 use Exception;
+use EyeChart\Command\Commands\PurgeSessionCommand;
 use EyeChart\DAO\AbstractDAO;
 use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
@@ -227,5 +228,10 @@ class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
         $result = parent::executeStatement($update);
 
         return $result->isQueryResult();
+    }
+
+    public function purge(PurgeSessionCommand $command): void
+    {
+        // Stub
     }
 }
