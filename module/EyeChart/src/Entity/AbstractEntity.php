@@ -19,7 +19,7 @@ use EyeChart\VO\VOInterface;
  * Class AbstractEntity
  * @package EyeChart\Entity
  */
-class AbstractEntity implements EntityInterface
+abstract class AbstractEntity implements EntityInterface
 {
     /**
      * @param mixed $dataSource

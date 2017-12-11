@@ -19,7 +19,7 @@ use Zend\Db\Sql\Sql;
  * Class AbstractDAO
  * @package EyeChart\DAO
  */
-class AbstractDAO
+abstract class AbstractDAO
 {
     /** @var Sql */
     private $sql;
