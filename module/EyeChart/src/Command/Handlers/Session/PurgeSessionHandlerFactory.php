@@ -9,7 +9,7 @@
 
 namespace EyeChart\Command\Handlers\Session;
 
-
+use Psr\Container\ContainerInterface;
 
 /**
  * Class PurgeSessionHandlerFactory
@@ -17,5 +17,15 @@ namespace EyeChart\Command\Handlers\Session;
  */
 final class PurgeSessionHandlerFactory
 {
-
+    /**
+     * @param ContainerInterface $container
+     * @return SessionRefreshHandler
+     * @codeCoverageIgnore
+     */
+    public function __invoke(ContainerInterface $container): PurgeSessionHandler
+    {
+        return new PurgeSessionHandler(
+            $container->get(PurgeSessionHandler::class)
+        );
+    }
 }
