@@ -16,7 +16,7 @@ use EyeChart\Mappers\AuthenticateMapper;
  * Class TokenVO
  * @package EyeChart\VO
  */
-final class TokenVO extends AbstractVO
+final class TokenVO extends VO
 {
 
     /** @var string */

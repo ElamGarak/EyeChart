@@ -18,7 +18,7 @@ use EyeChart\Exception\InvalidDynamicSettingException;
  * Class AbstractVO
  * @package EyeChart\VO
  */
-class AbstractVO implements VOInterface
+class VO implements VOInterface
 {
     /**
      * @return VOInterface

@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace EyeChart\VO\Authentication;
 
 use Assert\Assertion;
-use EyeChart\VO\AbstractVO;
+use EyeChart\VO\VO;
 use EyeChart\VO\VOInterface;
 
 /**
  * Class CredentialsVO
  * @package EyeChart\VO\Authentication
  */
-class CredentialsVO extends AbstractVO
+class CredentialsVO extends VO
 {
     /** @var string  */
     private $credentials = '';
