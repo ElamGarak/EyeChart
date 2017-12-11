@@ -38,8 +38,8 @@ return [
     ],
     // Session configuration
     'sessionConfig' => [
-        'cookieLifetime' => 60*60*1,
-        'gcMaxlifetime'  => 60*60*12,
+        \EyeChart\Mappers\SessionMapper::COOKIE_LIFETIME => 60*60*1,
+        \EyeChart\Mappers\SessionMapper::GC_MAX_LIFETIME => 60*60*12,
     ],
     // Session storage configuration.
     'session_storage' => [
