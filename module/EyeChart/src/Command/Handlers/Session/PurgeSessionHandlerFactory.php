@@ -9,6 +9,7 @@
 
 namespace EyeChart\Command\Handlers\Session;
 
+use EyeChart\Model\Authenticate\AuthenticateStorageModel;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -24,8 +25,6 @@ final class PurgeSessionHandlerFactory
      */
     public function __invoke(ContainerInterface $container): PurgeSessionHandler
     {
-        return new PurgeSessionHandler(
-            $container->get(PurgeSessionHandler::class)
-        );
+        return new PurgeSessionHandler($container->get(AuthenticateStorageModel::class));
     }
 }
