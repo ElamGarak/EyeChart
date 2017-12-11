@@ -51,7 +51,7 @@ return [
         'config' => [
             'class' => Session\Config\SessionConfig::class,
             'options' => [
-                'name' => 'DriverManager',
+                'name' => 'EyeChart',
             ],
         ],
         'storage' => Session\Storage\SessionArrayStorage::class,
