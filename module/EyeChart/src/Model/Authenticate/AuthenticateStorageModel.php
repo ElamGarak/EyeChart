@@ -15,7 +15,7 @@ use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\SettingNotFoundException;
 use EyeChart\Mappers\SessionMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\TokenVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Storage\StorageInterface;
@@ -25,7 +25,7 @@ use Zend\Config\Config;
  * Class AuthenticateStorageModel
  * @package EyeChart\Model\Authenticate
  */
-final class AuthenticateStorageModel implements StorageInterface
+class AuthenticateStorageModel implements StorageInterface
 {
     /** @var AuthenticateStorageDAO */
     private $authenticateStorageDao;
@@ -60,6 +60,7 @@ final class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @return bool
+     * @codeCoverageIgnore
      */
     public function isEmpty(): bool
     {
@@ -68,6 +69,7 @@ final class AuthenticateStorageModel implements StorageInterface
 
     /**
      * @return \mixed[]
+     * @codeCoverageIgnore
      */
     public function read(): array
     {
@@ -77,12 +79,16 @@ final class AuthenticateStorageModel implements StorageInterface
     /**
      * @param SessionEntity[] $storage
      * @return bool
+     * @codeCoverageIgnore
      */
     public function write($storage): bool
     {
         return $this->authenticateStorageDao->write($storage);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function clear(): void
     {
         $this->authenticateStorageDao->clear();
@@ -148,7 +154,7 @@ final class AuthenticateStorageModel implements StorageInterface
      */
     private function getExpirationTime(array $sessionRecord): int
     {
-        return max(($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time(), 0);
+        return (int) max(($sessionRecord[SessionMapper::ACCESSED] + $this->sessionEntity->getLifetime()) - time(), 0);
     }
 
     /**
@@ -162,6 +168,10 @@ final class AuthenticateStorageModel implements StorageInterface
         return ($remainingSeconds <= 0);
     }
 
+    /**
+     * @return bool
+     * @throws SettingNotFoundException
+     */
     private function activeSessionCheck(): bool
     {
         if (! $this->environment->get('activeSessionCheck')) {

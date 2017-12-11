@@ -11,6 +11,7 @@ namespace EyeChart\DAO\Authenticate;
 
 use EyeChart\Entity\SessionEntity;
 use Psr\Container\ContainerInterface;
+use Zend\Db\Sql\Sql;
 
 /**
  * Class AuthenticateStorageDAOFactory
@@ -25,9 +26,10 @@ final class AuthenticateStorageDAOFactory
      */
     public function __invoke(ContainerInterface $container): AuthenticateStorageDAO
     {
-        $adapter = $container->get('db');
+        /** @var Sql $sql */
+        $sql     = new Sql($container->get('db'));
         $entity  = $container->get(SessionEntity::class);
 
-        return new AuthenticateStorageDAO($adapter, $entity);
+        return new AuthenticateStorageDAO($sql, $entity);
     }
 }

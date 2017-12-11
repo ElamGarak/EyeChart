@@ -31,16 +31,6 @@ return array(
                     ),
                 ),
             ),
-            'api.rpc.edit-application-type' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/api/editApplicationType',
-                    'defaults' => array(
-                        'controller' => 'API\\V1\\Rpc\\EditApplicationType\\Controller',
-                        'action' => 'editApplicationType',
-                    ),
-                ),
-            ),
             'api.rpc.check-session-status' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -124,6 +114,7 @@ return array(
             'API\\V1\\Rpc\\Login\\Controller' => 'Json',
             'API\\V1\\Rpc\\Logout\\Controller' => 'Json',
             'API\\V1\\Rpc\\CheckSessionStatus\\Controller' => 'Json',
+            'API\\V1\\Rpc\\RefreshSession\\Controller' => 'Json',
             'API\\V1\\Rpc\\PurgeSessions\\Controller' => 'Json',
         ),
         'accept_whitelist' => array(
@@ -166,10 +157,6 @@ return array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
             ),
-            'API\\V1\\Rpc\\GetFuelCard\\Controller' => array(
-                0 => 'application/vnd.api.v1+json',
-                1 => 'application/json',
-            ),
             'API\\V1\\Rpc\\PurgeSessions\\Controller' => array(
                 0 => 'application/vnd.api.v1+json',
                 1 => 'application/json',
@@ -185,6 +172,9 @@ return array(
         ),
         'API\\V1\\Rpc\\Login\\Controller' => array(
             'input_filter' => 'API\\V1\\Rpc\\Login\\Validator',
+        ),
+        'API\\V1\\Rpc\\RefreshSession\\Controller' => array(
+            'input_filter' => 'API\\V1\\Rpc\\RefreshSession\\Validator',
         ),
     ),
     'input_filter_specs' => array(
@@ -214,6 +204,17 @@ return array(
                 'filters' => array(),
                 'name' => 'password',
                 'error_message' => 'Password was not provided',
+            ),
+        ),
+        'API\\V1\\Rpc\\RefreshSession\\Validator' => array(
+            0 => array(
+                'required' => true,
+                'validators' => array(),
+                'filters' => array(),
+                'name' => 'token',
+                'description' => 'Token',
+                'error_message' => 'Token required',
+                'field_type' => 'string',
             ),
         ),
     ),

@@ -30,7 +30,7 @@ class SessionEntity extends AbstractEntity
     protected $sessionUser = '';
 
     /** @var int */
-    protected $lastActive;
+    protected $lastActive = -1;
 
     /** @var string */
     protected $token = '';
@@ -45,12 +45,16 @@ class SessionEntity extends AbstractEntity
 
     /**
      * @param string $sessionId
+     *
+     * @return SessionEntity
      */
-    public function setSessionId(string $sessionId)
+    public function setSessionId(string $sessionId): SessionEntity
     {
         Assertion::maxLength($sessionId, 32);
 
         $this->sessionId = $sessionId;
+
+        return $this;
     }
 
     /**
@@ -135,6 +139,7 @@ class SessionEntity extends AbstractEntity
      */
     public function getLifetime(): int
     {
+        // TODO Put this back
         //return (int) ini_get('session.gc_maxlifetime');
         return 100000;
     }

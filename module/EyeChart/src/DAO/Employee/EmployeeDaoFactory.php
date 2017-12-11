@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace EyeChart\DAO\Employee;
 
 use Psr\Container\ContainerInterface;
+use Zend\Db\Sql\Sql;
 
 /**
  * Class EmployeeDaoFactory
@@ -24,9 +25,10 @@ final class EmployeeDaoFactory
      */
     public function __invoke(ContainerInterface $container): EmployeeDao
     {
-        $adapter = $container->get('db');
+        /** @var Sql $sql */
+        $sql = new Sql($container->get('db'));
 
-        return new EmployeeDao($adapter);
+        return new EmployeeDao($sql);
     }
 
 }

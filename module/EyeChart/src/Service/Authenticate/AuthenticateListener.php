@@ -11,7 +11,7 @@ namespace EyeChart\Service\Authenticate;
 
 use EyeChart\Entity\AuthenticateEntity;
 use EyeChart\Mappers\AuthenticateMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Config\Config;
@@ -23,7 +23,7 @@ use EyeChart\Exception\UnauthorizedException;
  * Class AuthenticateListener
  * @package EyeChart\Service\Authenticate
  */
-final class AuthenticateListener implements ListenerAggregateInterface
+class AuthenticateListener implements ListenerAggregateInterface
 {
 
     /** @var callable[] */
@@ -77,6 +77,17 @@ final class AuthenticateListener implements ListenerAggregateInterface
     }
 
     /**
+     * This is a test helper
+     *
+     * @return callable[]
+     * @codeCoverageIgnore
+     */
+    public function getListeners(): array
+    {
+        return $this->listeners;
+    }
+
+    /**
      * @param MvcEvent $mvcEvent
      * @throws UnauthorizedException
      */
@@ -91,10 +102,7 @@ final class AuthenticateListener implements ListenerAggregateInterface
 
         // check for authentication token within the header
         if (array_key_exists(AuthenticateMapper::TOKEN, $post)) {
-            $headers = array_merge(
-                $headers,
-                [AuthenticateMapper::HEADER => $post[AuthenticateMapper::TOKEN]]
-            );
+            $headers = array_merge($headers, [AuthenticateMapper::HEADER => $post[AuthenticateMapper::TOKEN]]);
         }
 
         $tokenRequired = false;
@@ -102,9 +110,6 @@ final class AuthenticateListener implements ListenerAggregateInterface
         // set default content-type if non set
         if (! isset($headers['Content-Type'])) {
             $headers['Content-Type'] = 'text/html';
-
-            // log all empty header until all are captured
-            error_log('Matched Route Name: ' . $mvcEvent->getRouteMatch()->getMatchedRouteName());
         }
 
         $routeName = $mvcEvent->getRouteMatch()->getMatchedRouteName();

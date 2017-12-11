@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 namespace API\V1\Rpc\Logout;
 
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use Zend\Mvc\Controller\AbstractActionController;
 use EyeChart\Service\Authenticate\AuthenticateService;
 use ZF\ApiProblem\ApiProblemResponse;

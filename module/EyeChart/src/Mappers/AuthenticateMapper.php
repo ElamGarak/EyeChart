@@ -20,6 +20,7 @@ final class AuthenticateMapper extends AbstractMapper
 
     public const USER_IDENTITY_ID = 'UserIdentityId';
     public const USER_NAME        = 'UserName';
+    public const CREDENTIALS      = 'Credentials';
     public const PASSWORD         = 'Password';
     public const IS_ACTIVE        = 'IsActive';
 
@@ -29,6 +30,12 @@ final class AuthenticateMapper extends AbstractMapper
     public const IS_VALID     = 'isValid';
     public const HEADER       = 'X-Authentication';
 
-    public const SESSION_EXPIRED_MESSAGE = 'Your session has expired';
-    public const SESSION_ENDED_MESSAGE   = 'Your session has ended';
+    public const DERIVED_CREDENTIALS = 'derivedCredentials';
+    public const STORED_CREDENTIALS  = 'storedCredentials';
+
+    public const SESSION_EXPIRED_MESSAGE               = 'Your session has expired';
+    public const SESSION_ENDED_MESSAGE                 = 'Your session has ended';
+    public const MESSAGE_ACCESS_TOKEN_RECORD_NOT_FOUND = 'Access token record was not found';
+    public const MESSAGE_USER_NOT_ACTIVE               = 'User is not active on this system';
+    public const MESSAGE_USER_IS_VALID                 = 'User is Valid';
 }

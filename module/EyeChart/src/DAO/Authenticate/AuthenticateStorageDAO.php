@@ -16,12 +16,11 @@ use EyeChart\Entity\EntityInterface;
 use EyeChart\Entity\SessionEntity;
 use EyeChart\Exception\MissingSessionException;
 use EyeChart\Mappers\SessionMapper;
-use EyeChart\VO\AuthenticationVO;
+use EyeChart\VO\Authentication\AuthenticationVO;
 use EyeChart\VO\VOInterface;
 use Zend\Authentication\Exception\ExceptionInterface;
 use Zend\Authentication\Storage\StorageInterface;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Predicate\Literal;
+use Zend\Db\Sql\Literal;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 
@@ -29,24 +28,20 @@ use Zend\Db\Sql\Where;
  * Class AuthenticateStorageDAO
  * @package EyeChart\DAO\Authenticate
  */
-final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
+class AuthenticateStorageDAO extends AbstractDAO implements StorageInterface
 {
-    /** @var Sql */
-    private $sql;
-
     /** @var SessionEntity */
     private $sessionEntity;
 
     /**
      * AuthenticateStorageService constructor.
-     * @param Adapter $adapter
+     * @param Sql $sql
      * @param SessionEntity $sessionEntity
      */
-    public function __construct(Adapter $adapter, SessionEntity $sessionEntity)
+    public function __construct(Sql $sql, SessionEntity $sessionEntity)
     {
-        parent::__construct($adapter);
+        parent::__construct($sql);
 
-        $this->sql           = new Sql($adapter);
         $this->sessionEntity = $sessionEntity;
     }
 
@@ -72,7 +67,7 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
      */
     public function read(): array
     {
-        $select = $this->sql->select();
+        $select = parent::getSqlAdapter()->select();
 
         $select->columns([
             SessionMapper::SESSION_RECORD_ID,
@@ -98,6 +93,10 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
         }
 
         $results = $this->parseDataTypes($result->getArrayCopy());
+
+        if (empty($results)) {
+            return [];
+        }
 
         $this->sessionEntity->setSessionRecordId($results[SessionMapper::SESSION_RECORD_ID])
                             ->setSessionUser($results[SessionMapper::SESSION_USER])
@@ -147,7 +146,7 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
             );
         }
 
-        $delete = $this->sql->delete();
+        $delete = parent::getSqlAdapter()->delete();
         $delete->from(SessionMapper::TABLE);
 
         $where = new Where();
@@ -166,14 +165,14 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
      */
     private function add(EntityInterface $sessionEntity): bool
     {
-        $insert = $this->sql->insert();
+        $insert = parent::getSqlAdapter()->insert();
 
-        $insert->values($test = [
+        $insert->values([
             SessionMapper::PHP_SESSION_ID => $sessionEntity->getSessionId(),
             SessionMapper::SESSION_USER   => $sessionEntity->getSessionUser(),
             SessionMapper::TOKEN          => $sessionEntity->getToken(),
-            SessionMapper::LIFETIME       => new Literal($this->sessionEntity->getLifetime()),
-            SessionMapper::ACCESSED       => new Literal($this->sessionEntity->getLastActive())
+            SessionMapper::LIFETIME       => new Literal($sessionEntity->getLifetime()),
+            SessionMapper::ACCESSED       => new Literal($sessionEntity->getLastActive())
         ]);
 
         $insert->into(SessionMapper::TABLE);
@@ -206,27 +205,12 @@ final class AuthenticateStorageDAO extends AbstractDAO implements StorageInterfa
     }
 
     /**
-     * @return mixed[]
-     * @deprecated
-     */
-    public function getUserStorage(): array
-    {
-        $userSession = $this->read();
-
-        if (array_key_exists($this->sessionEntity->getSessionRecordId(), $userSession)) {
-            return $userSession[$this->sessionEntity->getSessionRecordId()];
-        }
-
-        return [];
-    }
-
-    /**
      * @param string $token
      * @return bool
      */
     public function refresh(string $token): bool
     {
-        $update = $this->sql->update();
+        $update = parent::getSqlAdapter()->update();
 
         $update->table(SessionMapper::TABLE);
 

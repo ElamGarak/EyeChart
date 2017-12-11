@@ -32,4 +32,6 @@ final class SessionMapper extends AbstractMapper
     public const REMAINING      = 'remaining';
     public const THRESHOLD      = 'threshold';
     public const ACTIVE_CHECK   = 'activeCheck';
+
+    public const MESSAGE_SESSION_NOT_FOUND = 'PHP Session ID was not found';
 }

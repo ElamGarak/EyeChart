@@ -45,9 +45,8 @@
 		"zendframework/zend-xml2json" : "^3.0",
 		"zendframework/zend-test" : "^3.1",
 		"mikemix/tactician-module" : "^2.0",
-		"doctrine/orm" : "^2.5",
-		"doctrine/doctrine-orm-module": "^1.1",
-		"zendframework/zend-mail": "^2.8"
+		"zendframework/zend-mail": "^2.8",
+		"defuse/php-encryption": "^2.1"
 	},
 	"require-dev" : {
 		"zendframework/zend-developer-tools" : "^1.1",

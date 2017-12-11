@@ -7,14 +7,16 @@ declare(strict_types=1);
  * (c) 2017
  */
 
-namespace EyeChart\VO;
+namespace EyeChart\VO\Authentication;
 
 use Assert\Assertion;
 use EyeChart\Mappers\AuthenticateMapper;
+use EyeChart\VO\AbstractVO;
+use EyeChart\VO\VOInterface;
 
 /**
  * Class AuthenticationVO
- * @package EyeChart\VO
+ * @package EyeChart\VO\Authentication\
  */
 final class AuthenticationVO extends AbstractVO
 {
@@ -26,6 +28,12 @@ final class AuthenticationVO extends AbstractVO
 
     /** @var string */
     protected $token = '';
+
+    /** @var CredentialsVO */
+    protected $derivedCredentials;
+
+    /** @var CredentialsVO */
+    protected $storedCredentials;
 
     /**
      * @return VOInterface|AuthenticationVO
@@ -49,6 +57,22 @@ final class AuthenticationVO extends AbstractVO
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    /**
+     * @return CredentialsVO
+     */
+    public function getDerivedCredentials(): CredentialsVO
+    {
+        return $this->derivedCredentials;
+    }
+
+    /**
+     * @return CredentialsVO
+     */
+    public function getStoredCredentials(): CredentialsVO
+    {
+        return $this->storedCredentials;
     }
 
     /**
@@ -96,6 +120,28 @@ final class AuthenticationVO extends AbstractVO
         }
 
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @param CredentialsVO $derivedCredentials
+     * @return AuthenticationVO
+     */
+    public function setDerivedCredentials(CredentialsVO $derivedCredentials): AuthenticationVO
+    {
+        $this->derivedCredentials = $derivedCredentials;
+
+        return $this;
+    }
+
+    /**
+     * @param CredentialsVO $storedCredentials
+     * @return AuthenticationVO
+     */
+    public function setStoredCredentials(CredentialsVO $storedCredentials): AuthenticationVO
+    {
+        $this->storedCredentials = $storedCredentials;
 
         return $this;
     }

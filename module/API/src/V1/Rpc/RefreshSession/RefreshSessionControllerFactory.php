@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace API\V1\Rpc\RefreshSession;
 
-use EyeChart\Service\Authenticate\AuthenticateStorageService;
 use League\Tactician\CommandBus;
 use Psr\Container\ContainerInterface;
 
@@ -22,12 +21,12 @@ class RefreshSessionControllerFactory
     /**
      * @param ContainerInterface $container
      * @return RefreshSessionController
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): RefreshSessionController
     {
-        $service    = $container->get(AuthenticateStorageService::class);
         $commandBus = $container->get(CommandBus::class);
 
-        return new RefreshSessionController($service, $commandBus);
+        return new RefreshSessionController($commandBus);
     }
 }

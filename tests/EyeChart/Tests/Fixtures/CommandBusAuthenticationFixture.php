@@ -33,9 +33,11 @@ final class CommandBusAuthenticationFixture extends TestCase
     /** @var MvcEvent|PHPUnit_Framework_MockObject_MockObject */
     private $mockedMvcEvent;
 
+    /** @var Request|PHPUnit_Framework_MockObject_MockObject */
+    private $request;
+
     /**
      * CommandBusAuthenticationFixture constructor.
-     *
      * When instantiated, the command bus and mvc event are both mocked with a simulated authentication command.
      */
     public function __construct()
@@ -52,7 +54,7 @@ final class CommandBusAuthenticationFixture extends TestCase
 
         $this->mockedMvcEvent->expects($this->any())
             ->method('getRequest')
-            ->willReturn(new Request());
+            ->willReturn($this->getRequest());
 
         $this->mockedCommandBus->expects($this->any())
             ->method('handle')
@@ -118,5 +120,28 @@ final class CommandBusAuthenticationFixture extends TestCase
             ->willReturn($plugin);
 
         return $pluginManager;
+    }
+
+    /**
+     * @param Request|PHPUnit_Framework_MockObject_MockObject $request
+     */
+    public function resetRequest(Request $request): void
+    {
+        $this->request = $request;
+
+        self::__construct();
+    }
+
+    /**
+     * @return PHPUnit_Framework_MockObject_MockObject|Request
+     */
+    public function getRequest()
+    {
+        // Lazy getter allows for tester to optionally pass in their own request object
+        if (is_null($this->request)) {
+            $this->request = new Request();
+        }
+
+        return $this->request;
     }
 }
