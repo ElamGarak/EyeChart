@@ -19,6 +19,7 @@ final class LoginControllerFactory
     /**
      * @param ContainerInterface $container
      * @return LoginController
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): LoginController
     {

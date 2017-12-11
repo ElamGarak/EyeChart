@@ -20,6 +20,7 @@ class PurgeSessionsControllerFactory
     /**
      * @param ContainerInterface $container
      * @return PurgeSessionsController
+     * @codeCoverageIgnore
      */
     public function __invoke(ContainerInterface $container): PurgeSessionsController
     {
