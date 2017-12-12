@@ -19,8 +19,11 @@ use Zend\Http\Response;
  */
 class UserCredentialsDoNotMatchException extends InvalidArgumentException
 {
+    /** Used for testing */
+    public const MESSAGE = 'Credentials do not match';
+
     /** @var string  */
-    protected $message = "Credentials do not match";
+    protected $message = self::MESSAGE;
 
     /** @var int */
     protected $code = Response::STATUS_CODE_405;

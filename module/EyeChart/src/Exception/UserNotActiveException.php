@@ -19,8 +19,11 @@ use Zend\Http\Response;
  */
 class UserNotActiveException extends Exception
 {
+    /** Used for testing */
+    public const MESSAGE = 'User not active';
+
     /** @var string  */
-    protected $message = "User not active";
+    protected $message = self::MESSAGE;
 
     /** @var int */
     protected $code = Response::STATUS_CODE_412;
@@ -28,7 +31,7 @@ class UserNotActiveException extends Exception
     public function __construct(string $userId = '', int $code = Response::STATUS_CODE_412, Throwable $previous = null)
     {
         if (!empty($userId)) {
-            $this->message = "User [$userId] is not active";
+            $this->message = "User {$userId} is not active";
         }
 
         parent::__construct($this->message, $code, $previous);

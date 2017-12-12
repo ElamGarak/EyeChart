@@ -19,8 +19,11 @@ use Zend\Http\Response;
  */
 final class UserNotFoundException extends OutOfBoundsException
 {
+    /** Used for testing */
+    public const MESSAGE = 'User not found';
+
     /** @var string  */
-    protected $message = "User not found";
+    protected $message = self::MESSAGE;
 
     /** @var int */
     protected $code = Response::STATUS_CODE_404;
@@ -28,7 +31,7 @@ final class UserNotFoundException extends OutOfBoundsException
     public function __construct(string $userId = '', int $code = Response::STATUS_CODE_404, Throwable $previous = null)
     {
         if (!empty($userId)) {
-            $this->message = "User [$userId] was not found";
+            $this->message = "User {$userId} was not found";
         }
 
         parent::__construct($this->message, $code, $previous);
