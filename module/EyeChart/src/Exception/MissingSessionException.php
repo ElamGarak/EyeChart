@@ -35,10 +35,8 @@ class MissingSessionException extends RuntimeException
         int $code = 500,
         Throwable $previous = null
     ) {
-        parent::__construct(
-            "{$this->message} by token {$sessionEntity->getToken()} in {$method}",
-            $code,
-            $previous
-        );
+        $message = "{$this->message} by token {$sessionEntity->getToken()} in {$method}";
+
+        parent::__construct($message, $code, $previous);
     }
 }
