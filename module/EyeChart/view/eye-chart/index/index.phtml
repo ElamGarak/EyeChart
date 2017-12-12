@@ -3,7 +3,8 @@
 echo $this->doctype();
 ?>
 <html lang="en">
-    <?php echo $this->partial('partials/Head.phtml', [
+    <?php /** @noinspection PhpUndefinedFieldInspection */
+    echo $this->partial('partials/Head.phtml', [
         'menuRoute' => $this->menuRoute,
         'token'     => $this->token,
         'messages'  => $this->messages
