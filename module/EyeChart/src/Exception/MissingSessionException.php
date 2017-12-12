@@ -18,7 +18,7 @@ use Throwable;
  * Class MissingSessionException
  * @package EyeChart\Exception
  */
-class MissingSessionException extends RuntimeException
+final class MissingSessionException extends RuntimeException
 {
     protected $message = 'Failed to find session record';
 
