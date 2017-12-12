@@ -30,6 +30,17 @@ return [
                     'tokenRequired' => false,
                 ],
             ],
+            'charts' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/charts',
+                    'defaults' => [
+                        'controller' => Controller\Charts\ChartsController::class,
+                        'action'     => 'index',
+                    ],
+                    'tokenRequired' => true,
+                ],
+            ],
         ]
     ],
     'service_manager' => [
@@ -78,8 +89,9 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\Index\IndexController::class => Controller\Index\IndexControllerFactory::class,
-            Controller\LoginController::class       => InvokableFactory::class
+            Controller\Charts\ChartsController::class   => Controller\Charts\ChartsControllerFactory::class,
+            Controller\Index\IndexController::class     => Controller\Index\IndexControllerFactory::class,
+            Controller\LoginController::class           => InvokableFactory::class
         ]
     ],
     'view_manager' => [
