@@ -9,10 +9,7 @@ declare(strict_types=1);
 
 namespace EyeChart\Entity;
 
-use Assert\Assertion;
-use Exception;
 use EyeChart\Exception\InvalidDataSourceException;
-use EyeChart\Exception\UndefinedSetterException;
 use EyeChart\VO\VOInterface;
 
 /**
@@ -45,51 +42,39 @@ abstract class AbstractEntity implements EntityInterface
      */
     public function initializeByVO(VOInterface $vo): void
     {
-        Assertion::isInstanceOf($vo, VOInterface::class, "Invalid Value Object Passed to " . __METHOD__);
-
         $this->initializeByArray($vo->toArray());
     }
 
     /**
      * @param mixed[] $dataSource
-     * @throws UndefinedSetterException
      */
     public function initializeByArray(array $dataSource): void
     {
-        try {
-            foreach ($dataSource as $key => $value) {
-                if (! property_exists($this, $key)) {
-                    continue;
-                }
-
-                $setter = "set" . ucfirst($key);
-                $this->$setter($value);
+        foreach ($dataSource as $key => $value) {
+            if (! property_exists($this, $key)) {
+                continue;
             }
-        } catch (Exception $exception) {
-            throw new UndefinedSetterException($exception->getMessage(),__CLASS__);
+
+            $setter = "set" . ucfirst($key);
+            $this->$setter($value);
         }
     }
 
     /**
      * @param mixed[] $dataSource
-     * @throws UndefinedSetterException
      */
     public function hydrateFromDataBase(array $dataSource): void
     {
-        try {
-            foreach ($dataSource as $key => $value) {
-                $property = lcfirst($key);
+        foreach ($dataSource as $key => $value) {
+            $property = lcfirst($key);
 
-                if (! property_exists($this, $property)) {
-                    continue;
-                }
-
-                $setter = "set" . ucfirst($key);
-
-                $this->$setter($value);
+            if (! property_exists($this, $property)) {
+                continue;
             }
-        } catch (Exception $exception) {
-            throw new UndefinedSetterException($exception->getMessage(),__CLASS__);
+
+            $setter = "set" . ucfirst($key);
+
+            $this->$setter($value);
         }
     }
 

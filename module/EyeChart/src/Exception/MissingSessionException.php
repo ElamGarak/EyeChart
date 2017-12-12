@@ -18,7 +18,7 @@ use Throwable;
  * Class MissingSessionException
  * @package EyeChart\Exception
  */
-class MissingSessionException extends RuntimeException
+final class MissingSessionException extends RuntimeException
 {
     protected $message = 'Failed to find session record';
 
@@ -35,10 +35,8 @@ class MissingSessionException extends RuntimeException
         int $code = 500,
         Throwable $previous = null
     ) {
-        parent::__construct(
-            "{$this->message} by token {$sessionEntity->getToken()} in {$method}",
-            $code,
-            $previous
-        );
+        $message = "{$this->message} by token {$sessionEntity->getToken()} in {$method}";
+
+        parent::__construct($message, $code, $previous);
     }
 }
